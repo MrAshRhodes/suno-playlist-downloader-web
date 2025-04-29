@@ -2,6 +2,10 @@
 
 A web-based application for downloading playlists from Suno. This is a conversion of the original Tauri desktop application to a web app that can be hosted on Replit.
 
+## Live Demo
+
+Try the live hosted version: [https://suno-playlist-downloader.replit.app/](https://suno-playlist-downloader.replit.app/)
+
 ## Features
 
 - Search for Suno playlists by URL
