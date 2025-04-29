@@ -10,6 +10,9 @@ A web-based application for downloading playlists from Suno. This is a conversio
 - Embed album artwork into MP3 files
 - Configure naming templates for downloaded files
 - Track download progress
+- Dark mode support
+- Responsive design
+- Replit deployment ready
 
 ## Tech Stack
 
@@ -118,16 +121,23 @@ SESSION_SECRET=your-session-secret
 ├── client/                  # React frontend
 │   ├── public/              # Static assets for development
 │   ├── src/                 # React source code
-│   │   ├── components/      # UI components
+│   │   ├── components/      # UI components (with dark mode support)
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── icons/           # Application icons and images
 │   │   └── services/        # API and utility services
 │   └── dist/                # Built frontend files (not in repo)
 ├── public/                  # Pre-built static files for Replit
-│   └── assets/              # CSS, JS, and image assets
+│   └── assets/              # CSS, JS, and image assets (ready to deploy)
 ├── routes/                  # Express route handlers
+│   ├── playlist.js          # Playlist API endpoints
+│   ├── download.js          # Download API endpoints
+│   └── settings.js          # Settings API endpoints
 ├── utils/                   # Backend utility functions
-├── server.js                # Express server setup
-├── build.sh                 # Build script for deployment
+├── server.js                # Express server with multi-environment support
+├── build.sh                 # Build script for development and deployment
 ├── REPLIT_SETUP.md          # Instructions for Replit setup
+├── .replit                  # Replit configuration for Node.js
+├── replit.nix               # Nix environment configuration for Replit
 └── package.json             # Project dependencies
 ```
 

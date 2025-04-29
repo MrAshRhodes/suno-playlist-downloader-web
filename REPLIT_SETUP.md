@@ -14,7 +14,9 @@ mkdir -p public/assets
 
 2. Copy the pre-built client files into the public directory:
 
-For `public/index.html`:
+The `public/index.html` file is already provided in the repository and will be automatically pulled when you clone it. It references the correct asset files.
+
+The HTML structure is a standard Vite-built React application:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -24,8 +26,8 @@ For `public/index.html`:
     <link rel="icon" type="image/png" href="/assets/icons8-playlist-96-DxPLIIk9.png" />
     <title>Suno Playlist Downloader</title>
     <meta name="description" content="Download your Suno playlists - Web Version" />
-    <script type="module" crossorigin src="/assets/index-DcIVk8gE.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-C0B9bic8.css">
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css">
   </head>
   <body>
     <div id="root"></div>
@@ -33,12 +35,14 @@ For `public/index.html`:
 </html>
 ```
 
-3. Download the following files from the repository's Releases section and place them in your `public/assets` directory:
+Note that the actual filenames will contain unique hashes that are updated with each build.
+
+3. The latest files are already included in the repository's `public` directory:
    - `icons8-playlist-96-DxPLIIk9.png`
    - `index-C0B9bic8.css`
-   - `index-DcIVk8gE.js`
+   - Latest JS file (currently `index-Bb-rIR6f.js`)
 
-   These files are available as attachments in the GitHub repository's latest release.
+   These files should be automatically pulled when you clone the repository. The index.html file references the correct asset files.
 
 ## Running the Application
 
@@ -57,7 +61,19 @@ If you encounter issues:
 1. Check that all the asset files exist in the `public/assets` directory
 2. Ensure the server is running with `NODE_ENV=production`
 3. Look at the server logs to see where it's trying to find the client files
-4. If all else fails, the application will still run in API-only mode, which provides basic functionality
+4. Make sure your Replit is using Node.js 16.x as specified in the replit.nix file
+5. If you're experiencing dark mode issues, ensure the latest client build is being used
+
+### Dark Mode Issues
+
+If you encounter any dark mode text readability issues:
+1. Check that you're using the latest version from the repository
+2. Verify that the `public/index.html` file references the most recent JS file
+3. The application should automatically detect your system's theme preference
+
+### API-Only Mode
+
+If all else fails, the application will still run in API-only mode, which provides basic functionality.
 
 ## Manual API Testing
 
