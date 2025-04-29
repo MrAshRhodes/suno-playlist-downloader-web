@@ -71,7 +71,7 @@ export default function DirectSettingsButton() {
             
             <TextInput
               label={<Text c={theme.colorScheme === 'dark' ? 'gray.3' : 'dark.9'}>Filename Template</Text>}
-              description={<Text size="xs" c={theme.colorScheme === 'dark' ? 'gray.5' : 'gray.7'}>Use {trackno} for track number and {name} for song title</Text>}
+              description={<Text size="xs" c={theme.colorScheme === 'dark' ? 'gray.5' : 'gray.7'}>Use {'{'+'trackno'+'}'} for track number and {'{'+'name'+'}'} for song title</Text>}
               value={settings.filename}
               onChange={(e) => setSettings({ ...settings, filename: e.target.value })}
               styles={{
