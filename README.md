@@ -10,7 +10,9 @@ Try the live hosted version: [https://suno-playlist-downloader.replit.app/](http
 
 If you find this tool useful, please consider supporting:
 
-### Original Developer
+### Original Developer - [DrummerSi](https://github.com/DrummerSi/suno-downloader)
+
+DrummerSi
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/drummer_si)
 
