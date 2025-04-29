@@ -47,13 +47,18 @@ app.use('/api/settings', settingsRoutes);
 // Serve static assets if in production
 // Check multiple possible dist locations for Replit environment
 const possiblePaths = [
-  path.join(__dirname, 'client/dist'),                 // Default path
-  path.join(__dirname, '../client/dist'),              // One level up
-  '/home/runner/suno-playlist-downloader-web/client/dist',  // Replit path
+  path.join(__dirname, 'client/dist'),                // Default path
+  path.join(__dirname, '../client/dist'),             // One level up
+  '/home/runner/suno-playlist-downloader-web/client/dist',  // Replit path with repo name
   '/home/runner/client/dist',                         // Replit alternative
-  path.join(__dirname, '../client/dist'),             // Another alternative
+  path.resolve(process.cwd(), 'client/dist'),         // Absolute path from current directory
   path.join(__dirname, 'dist'),                       // Directly in root
-  path.join(process.cwd(), 'client/dist')             // Using current working directory
+  process.cwd(),                                      // Current working directory root (for debugging)
+  '/home/runner',                                     // Replit root
+  '/home/runner/suno-playlist-downloader-web',        // Replit project root
+  path.join(__dirname, '../dist'),                    // One level up, dist folder
+  '/home/runner/app/client/dist',                     // Alternative Replit path
+  path.join(process.cwd(), '../client/dist')          // One level up from cwd
 ];
 
 // Log environment for debugging
@@ -99,15 +104,61 @@ try {
     }
     
     if (distPath) {
-      app.use(express.static(distPath));
+      console.log('🌟 Setting up static file serving from:', distPath);
+      
+      // Check if we're serving a directory or directly the index.html file
+      const staticPath = fs.statSync(distPath).isDirectory() ? distPath : path.dirname(distPath);
+      app.use(express.static(staticPath));
+      
+      // For all other routes, serve the index.html
       app.get('*', (req, res) => {
-        res.sendFile(path.join(distPath, 'index.html'));
+        const indexFile = fs.statSync(distPath).isDirectory() 
+          ? path.join(distPath, 'index.html')
+          : distPath;
+          
+        console.log('🌐 Serving index file from:', indexFile);
+        if (fs.existsSync(indexFile)) {
+          res.sendFile(indexFile);
+        } else {
+          res.status(404).send('Index file not found at ' + indexFile);
+        }
       });
     } else {
+      // List all files in current directory for debugging
+      console.log('📂 Files in current directory:');
+      try {
+        const files = fs.readdirSync(process.cwd());
+        console.log(files);
+        
+        // Also check client directory if it exists
+        const clientDir = path.join(process.cwd(), 'client');
+        if (fs.existsSync(clientDir)) {
+          console.log('📂 Files in client directory:');
+          console.log(fs.readdirSync(clientDir));
+        }
+      } catch (err) {
+        console.error('Error listing files:', err);
+      }
+      
       // Fallback to API-only mode if client can't be found
-      console.log('Running in API-only mode (client not found)');
+      console.log('⚠️ Running in API-only mode (client not found)');
       app.get('/', (req, res) => {
-        res.status(200).send('API running. Client not found - please build the client with npm run client-build');
+        res.status(200).send(`
+        <html>
+          <head><title>Suno Playlist Downloader - API Mode</title></head>
+          <body>
+            <h1>API running in headless mode</h1>
+            <p>Client not found - please build the client with <code>npm run client-build</code></p>
+            <h2>Debug Info:</h2>
+            <pre>
+              Current directory: ${__dirname}
+              Working directory: ${process.cwd()}
+              NODE_ENV: ${process.env.NODE_ENV}
+              Checked paths: ${possiblePaths.join('\n              ')}
+            </pre>
+          </body>
+        </html>
+        `);
       });
     }
   }

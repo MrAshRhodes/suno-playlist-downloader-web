@@ -5,13 +5,14 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "NODE_ENV=production node server.js",
+    "start": "node server.js",
     "dev": "nodemon server.js",
     "client": "cd client && npm run dev",
-    "client-build": "cd client && npm run build",
+    "client-build": "cd client && npm install && npm run build",
     "dev-full": "concurrently \"npm run dev\" \"npm run client\"",
     "postinstall": "npm run client-build",
-    "build": "npm run client-build"
+    "build": "npm run client-build",
+    "deploy": "npm run client-build && npm start"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",

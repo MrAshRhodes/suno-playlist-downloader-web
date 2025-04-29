@@ -1,0 +1,9 @@
+{
+  "modules": ["nodejs-18"],
+  "entrypoint": "server.js",
+  "run": "npm run deploy",
+  "compile": "npm run client-build",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

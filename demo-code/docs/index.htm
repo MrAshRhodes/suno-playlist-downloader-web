@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suno Music Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "pt8ptgfe4u");
+    </script>
+    <script>
+        async function getReleaseAssetUrl(repo, tag = 'latest', assetRegex) {
+            const apiUrl = `https://api.github.com/repos/${repo}/releases/${tag}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        Accept: 'application/vnd.github.v3+json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`GitHub API returned ${response.status}: ${response.statusText}`);
+                }
+
+                const release = await response.json();
+                const asset = release.assets.find(asset => assetRegex.test(asset.name));
+
+                if (!asset) {
+                    throw new Error(`No asset found matching ${assetRegex}`);
+                }
+
+                return asset.browser_download_url;
+            } catch (error) {
+                console.error('Error fetching release asset URL:', error.message);
+                return null;
+            }
+        }
+
+
+        getReleaseAssetUrl('DrummerSi/suno-downloader', 'latest', /\.msi/)
+            .then(url => {
+                if (url) {
+                    console.log('Download URL:', url);
+                    document.getElementById('download-windows').href = url;
+                } else {
+                    console.log('No matching asset found.');
+                }
+            });
+
+        getReleaseAssetUrl('DrummerSi/suno-downloader', 'latest', /\.dmg/)
+            .then(url => {
+                if (url) {
+                    console.log('Download URL:', url);
+                    document.getElementById('download-mac').href = url;
+                } else {
+                    console.log('No matching asset found.');
+                }
+            });
+
+    </script>
+</head>
+
+<body>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Suno Music Downloader</h1>
+            <p>Quickly and easily download your Suno music playlists</p>
+            <div class="buttons">
+                <a href="#" id="download-windows" class="btn primary"><i class="fa-brands fa-windows"></i> Download for
+                    Windows</a>
+                <a href="#" id="download-mac" class="btn secondary"><i class="fa-brands fa-apple"></i> Download for
+                    macOS (x64)</a>
+            </div>
+            <div style="padding-top: 15px;">Version 1.1.0</div>
+
+            <img src="./suno-app.png"
+                style="max-width: 100%; margin-top: 20px; filter: drop-shadow(0px 0px 5px #000); " />
+        </div>
+    </section>
+
+</body>
+
+</html>
