@@ -1,4 +1,4 @@
-run = "npm start"
+run = "bash build.sh && NODE_ENV=production npm start"
 entrypoint = "server.js"
 hidden = [".config", "package-lock.json"]
 
@@ -8,6 +8,7 @@ enableFlow = true
 
 [env]
 NODE_ENV = "production"
+PATH = "/home/runner/.npm-global/bin:/home/runner/${REPL_SLUG}/node_modules/.bin:${PATH}"
 
 [packager]
 language = "nodejs"
@@ -26,9 +27,12 @@ pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
   start = ["typescript-language-server", "--stdio"]
 
 [deployment]
-build = ["npm", "run", "client-build"]
+build = ["bash", "build.sh"]
 run = ["npm", "start"]
 deploymentTarget = "cloudrun"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json"]
+
+[onBoot]
+command = "chmod +x build.sh && npm config set prefix /home/runner/.npm-global && npm install -g typescript"

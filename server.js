@@ -108,8 +108,17 @@ try {
       // Build the client if it doesn't exist
       console.log('Attempting to build client...');
       try {
-        // We already imported execSync at the top
-        execSync('npm run client-build', { stdio: 'inherit' });
+        // First, check if build.sh exists and try to run it
+        const buildScript = path.join(__dirname, 'build.sh');
+        if (fs.existsSync(buildScript)) {
+          console.log('Running build.sh script...');
+          execSync(`chmod +x ${buildScript} && ${buildScript}`, { stdio: 'inherit' });
+        } else {
+          // Fallback to npm script
+          console.log('build.sh not found, using npm client-build...');
+          execSync('npm run client-build', { stdio: 'inherit' });
+        }
+        
         console.log('Build completed, checking for dist folder again...');
         
         // Check again after build

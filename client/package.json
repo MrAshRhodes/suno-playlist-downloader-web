@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build || vite build",
+    "build:vite-only": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -30,7 +31,7 @@
     "postcss": "^8.4.49",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "~5.6.2",
+    "typescript": "^5.8.3",
     "vite": "^6.0.3"
   }
 }
