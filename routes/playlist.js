@@ -16,13 +16,39 @@ router.post('/fetch', async (req, res) => {
       return res.status(400).json({ message: 'Playlist URL is required' });
     }
     
-    // Extract playlist ID from URL
-    const playlistIdMatch = url.match(/\/playlists\/([a-zA-Z0-9-]+)/);
-    if (!playlistIdMatch || !playlistIdMatch[1]) {
-      return res.status(400).json({ message: 'Invalid playlist URL. Please provide a valid Suno playlist URL.' });
+    // Extract playlist ID from URL - supports various URL formats
+    let playlistId;
+    
+    // Try multiple regex patterns to extract playlist ID
+    const patterns = [
+      /\/playlists\/([a-zA-Z0-9-]+)/,    // /playlists/id
+      /playlists\/([a-zA-Z0-9-]+)/,      // playlists/id
+      /playlist\/([a-zA-Z0-9-]+)/,       // playlist/id (singular)
+      /\/playlist\/([a-zA-Z0-9-]+)/,     // /playlist/id (singular)
+      /[?&]id=([a-zA-Z0-9-]+)/,          // ?id=id or &id=id
+      /([a-zA-Z0-9-]{22,36})/            // Just the ID itself (if it's in UUID format)
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        playlistId = match[1];
+        break;
+      }
     }
     
-    const playlistId = playlistIdMatch[1];
+    // If no patterns matched
+    if (!playlistId) {
+      // Last resort: try to use the URL as an ID directly
+      if (url.length >= 10 && /^[a-zA-Z0-9-]+$/.test(url)) {
+        playlistId = url;
+        console.log("Using URL as direct ID:", playlistId);
+      } else {
+        return res.status(400).json({ message: 'Invalid playlist URL or ID. Please provide a valid Suno playlist URL or ID.' });
+      }
+    }
+    
+    console.log("Fetching playlist with ID:", playlistId);
     
     // Fetch from Suno API
     const response = await fetch(`https://studio-api.prod.suno.com/api/playlist/${playlistId}/`);
