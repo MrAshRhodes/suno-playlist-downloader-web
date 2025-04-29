@@ -1,0 +1,247 @@
+/* Apple-inspired Modern Styles */
+
+:root {
+  --apple-blue: #0071e3;
+  --apple-background: #f5f5f7;
+  --apple-dark: #1d1d1f;
+  --apple-text: #86868b;
+  --apple-card: #ffffff;
+  --apple-border: rgba(0, 0, 0, 0.1);
+  --apple-hover: rgba(0, 0, 0, 0.05);
+  --apple-radius: 12px;
+  --apple-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --transition-speed: 0.15s;
+}
+
+/* Light Theme Variables */
+:root.light-mode {
+  --background-color: #f5f5f7;
+  --text-color: #1d1d1f;
+  --text-secondary: #86868b;
+  --card-background: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --hover-color: rgba(0, 0, 0, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.06);
+  --section-border: rgba(0, 0, 0, 0.06);
+  --button-bg: #f5f5f7;
+  --button-group-bg: rgba(0, 0, 0, 0.03);
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --progress-bg: rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Theme Variables */
+:root.dark-mode {
+  --background-color: #1a1a1a;
+  --text-color: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --card-background: #2c2c2e;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-color: rgba(255, 255, 255, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --section-border: rgba(255, 255, 255, 0.06);
+  --button-bg: #2c2c2e;
+  --button-group-bg: rgba(255, 255, 255, 0.05);
+  --header-bg: rgba(40, 40, 40, 0.8);
+  --progress-bg: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions */
+button, 
+input, 
+a, 
+.card, 
+.table-row, 
+.progress-bar {
+  transition: all var(--transition-speed) ease-in-out;
+}
+
+/* Modern table styling */
+thead tr th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: transparent;
+  padding: 16px !important;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Improve table row hover with subtle animation */
+tbody tr {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:hover {
+  background-color: var(--hover-color);
+}
+
+/* Table styles for dark mode */
+:root.dark-mode tbody tr td {
+  color: var(--text-color);
+}
+
+:root.dark-mode table {
+  color: var(--text-color);
+}
+
+:root.dark-mode tbody tr {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root.dark-mode tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Modern cards */
+.card {
+  background-color: var(--card-background);
+  border-radius: var(--apple-radius);
+  box-shadow: 0 4px 24px var(--shadow-color);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Style for buttons */
+button {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Better focus styles for interactivity */
+button:focus, 
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--apple-blue);
+}
+
+/* Style for progress bar */
+.progress-container {
+  width: 100%;
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.progress-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--apple-blue), #6fb0ff);
+  border-radius: 8px;
+}
+
+/* Heading styles */
+.section-heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.section-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--apple-blue);
+  color: white;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+/* Animation for the download process - smoother */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.downloading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Input styling */
+input, select, textarea {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+  background-color: var(--card-background);
+  color: var(--text-color);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
+}
+
+/* Dark mode specific input styles */
+:root.dark-mode input, 
+:root.dark-mode select, 
+:root.dark-mode textarea {
+  background-color: #3a3a3c;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+:root.dark-mode input:focus, 
+:root.dark-mode select:focus, 
+:root.dark-mode textarea:focus {
+  border-color: #0071e3;
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 3px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+}
