@@ -1,10 +1,16 @@
 #!/bin/bash
+echo "Starting build process..."
+
 # Install server dependencies
+echo "Installing server dependencies..."
 npm install
 
 # Install client dependencies and build
+echo "Installing client dependencies and building..."
 cd client && npm install && npm run build
 cd ..
 
-# Start the server
-npm start
+echo "Build completed!"
+
+# Note: We don't start the server here anymore - let Replit handle that
+# npm start

@@ -1,0 +1,33 @@
+run = "npm start"
+entrypoint = "server.js"
+hidden = [".config", "package-lock.json"]
+
+[nix]
+channel = "stable-22_11"
+
+[env]
+NODE_ENV = "production"
+
+[packager]
+language = "nodejs"
+
+[packager.features]
+packageSearch = true
+guessImports = true
+enabledForHosting = false
+
+[unitTest]
+language = "nodejs"
+
+[languages.javascript]
+pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
+  [languages.javascript.languageServer]
+  start = ["typescript-language-server", "--stdio"]
+
+[deployment]
+build = ["npm", "run", "client-build"]
+run = ["npm", "start"]
+deploymentTarget = "cloudrun"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json"]
