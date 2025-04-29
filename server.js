@@ -58,7 +58,11 @@ const possiblePaths = [
   '/home/runner/suno-playlist-downloader-web',        // Replit project root
   path.join(__dirname, '../dist'),                    // One level up, dist folder
   '/home/runner/app/client/dist',                     // Alternative Replit path
-  path.join(process.cwd(), '../client/dist')          // One level up from cwd
+  path.join(process.cwd(), '../client/dist'),         // One level up from cwd
+  // Additional Replit paths
+  '/home/runner/suno-playlist-downloader/client/dist',
+  '/home/runner/dist',
+  '/home/runner/app/dist'
 ];
 
 // Log environment for debugging
@@ -66,10 +70,28 @@ console.log('Current directory:', __dirname);
 console.log('Current working directory:', process.cwd());
 console.log('NODE_ENV:', process.env.NODE_ENV);
 
+// Log all possible paths for debugging
+console.log('Checking the following paths for client files:');
+possiblePaths.forEach((p, i) => {
+  console.log(`[${i}] ${p} (exists: ${fs.existsSync(p)})`);
+  if (fs.existsSync(p)) {
+    try {
+      console.log(`  - Contents: ${fs.readdirSync(p).join(', ')}`);
+      
+      // Check for index.html specifically
+      const indexPath = path.join(p, 'index.html');
+      console.log(`  - index.html exists: ${fs.existsSync(indexPath)}`);
+    } catch (e) {
+      console.log(`  - Error reading directory: ${e.message}`);
+    }
+  }
+});
+
 // Determine which path exists and use it
 let distPath = null;
 try {
-  if (process.env.NODE_ENV === 'production') {
+  // Always try to serve static files, regardless of environment
+  {
     // Try all possible paths
     for (const testPath of possiblePaths) {
       console.log('Checking path:', testPath);
