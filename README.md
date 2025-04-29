@@ -168,8 +168,16 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - This web version is a conversion of the original desktop application to a web-based version
 - Suno for their music generation platform
 
-## Support the Original Developer
+## Support
+
+### Support the Original Developer
 
 This application is based on the work of [DrummerSi](https://github.com/DrummerSi). If you find this tool useful, please consider supporting the original developer:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/drummer_si)
+
+### Support the Web Version Server Costs
+
+The web version is hosted and maintained by focusedlofibeats. If you find the web version valuable, please consider supporting the server costs:
+
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/focusedlofibeats)
