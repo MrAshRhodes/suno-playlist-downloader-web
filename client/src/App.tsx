@@ -406,7 +406,7 @@ function App() {
                         flex={1}
                         value={playlistUrl}
                         onChange={(event) => setPlaylistUrl(event.currentTarget.value)}
-                        rightSection={<IconLink color="#0071e3" />}
+                        rightSection={<IconLink color={theme === 'dark' ? '#42a9ff' : '#0071e3'} />}
                         disabled={isGettingPlaylist || isDownloading}
                         placeholder="https://suno.com/playlist/..."
                         styles={{
@@ -414,12 +414,18 @@ function App() {
                                 borderRadius: '12px',
                                 padding: '14px 16px',
                                 fontSize: '16px',
-                                border: '1px solid rgba(0, 0, 0, 0.1)',
-                                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                                border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+                                boxShadow: theme === 'dark' ? '0 1px 2px rgba(0, 0, 0, 0.2)' : '0 1px 2px rgba(0, 0, 0, 0.05)',
                                 transition: 'all 0.2s ease',
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit',
                                 '&:focus': {
-                                    borderColor: '#0071e3',
-                                    boxShadow: '0 0 0 3px rgba(0, 113, 227, 0.1)'
+                                    borderColor: theme === 'dark' ? '#42a9ff' : '#0071e3',
+                                    boxShadow: theme === 'dark' ? 
+                                      '0 0 0 3px rgba(66, 169, 255, 0.1)' : 
+                                      '0 0 0 3px rgba(0, 113, 227, 0.1)'
+                                },
+                                '&::placeholder': {
+                                    color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)'
                                 }
                             }
                         }}
@@ -510,8 +516,8 @@ function App() {
                         <Popover.Target>
                             <ActionIcon variant="subtle" size="sm" color="gray"><IconHelpCircle /></ActionIcon>
                         </Popover.Target>
-                        <Popover.Dropdown w={240}>
-                            <Text>
+                        <Popover.Dropdown w={240} bg={theme === 'dark' ? 'dark.6' : 'white'}>
+                            <Text c={theme === 'dark' ? 'gray.3' : 'dark.9'}>
                                 Choose individual files to download one by one, or ZIP to download the entire playlist as a single file.
                             </Text>
                         </Popover.Dropdown>

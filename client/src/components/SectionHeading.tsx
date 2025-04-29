@@ -1,4 +1,4 @@
-import { Flex, Text, Box } from '@mantine/core';
+import { Flex, Text, Box, useMantineTheme } from '@mantine/core';
 import { ReactNode } from 'react';
 
 interface SectionHeadingProps {
@@ -11,13 +11,17 @@ interface SectionHeadingProps {
  * Section heading component with numbered circle - Apple style
  */
 function SectionHeading({ number, title, children }: SectionHeadingProps) {
+  // Get current theme
+  const theme = useMantineTheme();
+  const isDark = theme.colorScheme === 'dark';
+
   return (
     <Flex 
       align="center" 
       mb={16} 
       pb={12}
       style={{
-        borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
+        borderBottom: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.06)'
       }}
     >
       <Box 
@@ -38,8 +42,8 @@ function SectionHeading({ number, title, children }: SectionHeadingProps) {
       <Text 
         fw={600} 
         fz="lg" 
+        c={isDark ? 'gray.3' : 'dark.9'}
         style={{ 
-          color: '#1d1d1f', 
           letterSpacing: '-0.3px' 
         }}
       >
