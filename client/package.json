@@ -10,28 +10,28 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/core": "^7.15.3",
-    "@mantine/form": "^7.15.3",
-    "@mantine/hooks": "^7.15.3",
-    "@mantine/modals": "^7.15.3",
-    "@mantine/notifications": "^7.15.3",
-    "@tabler/icons-react": "^3.28.1",
+    "@mantine/core": "^6.0.13",
+    "@mantine/form": "^6.0.13",
+    "@mantine/hooks": "^6.0.13",
+    "@mantine/modals": "^6.0.13",
+    "@mantine/notifications": "^6.0.13",
+    "@tabler/icons-react": "^2.20.0",
     "filenamify": "^6.0.0",
-    "p-limit": "^6.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "scroll-into-view-if-needed": "^3.1.0",
-    "uuid": "^9.0.1"
+    "p-limit": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "scroll-into-view-if-needed": "^3.0.6",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@types/uuid": "^9.0.8",
-    "@vitejs/plugin-react": "^4.3.4",
-    "postcss": "^8.4.49",
-    "postcss-preset-mantine": "^1.17.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "postcss": "^8.4.24",
+    "postcss-preset-mantine": "^1.8.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "^5.8.3",
-    "vite": "^6.0.3"
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9"
   }
 }
