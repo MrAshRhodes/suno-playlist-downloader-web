@@ -150,5 +150,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Original Tauri app by DrummerSi
+- Original Tauri app by [DrummerSi](https://github.com/DrummerSi/suno-downloader) - Please consider [supporting him on Ko-fi](https://ko-fi.com/drummer_si)
+- This web version is a conversion of the original desktop application to a web-based version
 - Suno for their music generation platform
+
+## Support the Original Developer
+
+This application is based on the work of [DrummerSi](https://github.com/DrummerSi). If you find this tool useful, please consider supporting the original developer:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/drummer_si)

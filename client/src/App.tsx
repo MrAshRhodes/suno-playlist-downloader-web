@@ -584,24 +584,45 @@ function App() {
 
                 <Footer
                     firstComponent={
-                        <Flex justify="center" align="center" w="100%">
-                            <Text size="sm" c="dimmed" mr={10}>
-                                Suno Playlist Downloader - Web Version
-                            </Text>
-                            <Button 
-                                component="a"
-                                href="https://buymeacoffee.com/focusedlofibeats"
-                                target="_blank"
-                                leftSection={<IconCoffee size={16} />}
-                                variant="subtle"
-                                size="xs"
-                                style={{
-                                    color: theme === 'light' ? '#0071e3' : '#42a9ff',
-                                    transition: 'all 0.2s ease',
-                                }}
-                            >
-                                Buy Me A Coffee
-                            </Button>
+                        <Flex justify="space-between" align="center" w="100%">
+                            <Flex align="center">
+                                <Text size="sm" c="dimmed" mr={10}>
+                                    Web Version
+                                </Text>
+                                <Button 
+                                    component="a"
+                                    href="https://buymeacoffee.com/focusedlofibeats"
+                                    target="_blank"
+                                    leftSection={<IconCoffee size={16} />}
+                                    variant="subtle"
+                                    size="xs"
+                                    style={{
+                                        color: theme === 'light' ? '#0071e3' : '#42a9ff',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                >
+                                    Support Server Costs
+                                </Button>
+                            </Flex>
+                            <Flex align="center">
+                                <Text size="sm" c="dimmed" mr={10}>
+                                    Based on <a href="https://github.com/DrummerSi/suno-downloader" target="_blank" rel="noopener noreferrer" style={{ color: theme === 'light' ? '#0071e3' : '#42a9ff' }}>DrummerSi's</a> original app
+                                </Text>
+                                <Button 
+                                    component="a"
+                                    href="https://ko-fi.com/drummer_si"
+                                    target="_blank"
+                                    leftSection={<IconCoffee size={16} />}
+                                    variant="subtle"
+                                    size="xs"
+                                    style={{
+                                        color: theme === 'light' ? '#0071e3' : '#42a9ff',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                >
+                                    Support Original Author
+                                </Button>
+                            </Flex>
                         </Flex>
                     }
                     secondComponent={
