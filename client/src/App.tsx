@@ -389,10 +389,11 @@ function App() {
                             <Popover.Target>
                                 <ActionIcon variant="subtle" size="sm" color="gray"><IconHelpCircle /></ActionIcon>
                             </Popover.Target>
-                            <Popover.Dropdown>
+                            <Popover.Dropdown bg={theme === 'dark' ? 'dark.6' : 'white'}>
                                 <Group w={240} gap={4}>
-                                    <Image radius="md" src="./assets/copy-playlist.png" />
-                                    <Text>Navigate to your Suno playlist, and click the 'Copy playlist' button as shown</Text>
+                                    <Text c={theme === 'dark' ? 'gray.3' : 'dark.9'}>
+                                        Navigate to your Suno playlist, and click the 'Copy playlist' button to get the URL
+                                    </Text>
                                 </Group>
                             </Popover.Dropdown>
                         </Popover>

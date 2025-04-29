@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActionIcon, Tooltip, Box, Paper, Stack, Group, TextInput, Switch, Button, Text } from '@mantine/core';
+import { ActionIcon, Tooltip, Box, Paper, Stack, Group, TextInput, Switch, Button, Text, useMantineTheme } from '@mantine/core';
 import { IconSettings, IconX } from '@tabler/icons-react';
 
 type SettingsValues = {
@@ -12,6 +12,7 @@ type SettingsValues = {
  * Direct settings component that doesn't use modal system
  */
 export default function DirectSettingsButton() {
+  const theme = useMantineTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<SettingsValues>({
     filename: localStorage.getItem('suno-name-template') || '{trackno} - {name}',
@@ -45,18 +46,20 @@ export default function DirectSettingsButton() {
           shadow="md"
           p="md"
           withBorder
+          bg={theme.colorScheme === 'dark' ? 'dark.6' : 'white'}
           style={{
             position: 'absolute',
             top: '45px',
             right: '0',
             width: '300px',
             zIndex: 1000,
-            borderRadius: '8px'
+            borderRadius: '8px',
+            borderColor: theme.colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
           }}
         >
           <Stack spacing="md">
             <Group position="apart">
-              <Text weight={600}>Settings</Text>
+              <Text fw={600} c={theme.colorScheme === 'dark' ? 'gray.3' : 'dark.9'}>Settings</Text>
               <ActionIcon 
                 size="sm" 
                 onClick={() => setIsOpen(false)}
@@ -67,22 +70,29 @@ export default function DirectSettingsButton() {
             </Group>
             
             <TextInput
-              label="Filename Template"
-              description="Use {trackno} for track number and {name} for song title"
+              label={<Text c={theme.colorScheme === 'dark' ? 'gray.3' : 'dark.9'}>Filename Template</Text>}
+              description={<Text size="xs" c={theme.colorScheme === 'dark' ? 'gray.5' : 'gray.7'}>Use {trackno} for track number and {name} for song title</Text>}
               value={settings.filename}
               onChange={(e) => setSettings({ ...settings, filename: e.target.value })}
+              styles={{
+                input: {
+                  color: theme.colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit',
+                }
+              }}
             />
             
             <Switch
-              label="Embed album artwork"
+              label={<Text c={theme.colorScheme === 'dark' ? 'gray.3' : 'dark.9'}>Embed album artwork</Text>}
               checked={settings.embedArt}
               onChange={(e) => setSettings({ ...settings, embedArt: e.target.checked })}
+              color="blue"
             />
             
             <Switch
-              label="Overwrite existing files"
+              label={<Text c={theme.colorScheme === 'dark' ? 'gray.3' : 'dark.9'}>Overwrite existing files</Text>}
               checked={settings.overwriteFiles}
               onChange={(e) => setSettings({ ...settings, overwriteFiles: e.target.checked })}
+              color="blue"
             />
             
             <Group position="right" mt="md">
