@@ -606,7 +606,7 @@ function App() {
                             </Flex>
                             <Flex align="center">
                                 <Text size="sm" c="dimmed" mr={10}>
-                                    Based on <a href="https://github.com/DrummerSi/suno-downloader" target="_blank" rel="noopener noreferrer" style={{ color: theme === 'light' ? '#0071e3' : '#42a9ff' }}>DrummerSi's</a> original app
+                                    Based on <a href="https://github.com/DrummerSi/suno-downloader" target="_blank" rel="noopener noreferrer" style={{ color: theme === 'light' ? '#0071e3' : '#42a9ff', textDecoration: 'none' }}>DrummerSi's</a> original app
                                 </Text>
                                 <Button 
                                     component="a"
