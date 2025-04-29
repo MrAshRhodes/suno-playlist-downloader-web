@@ -4,6 +4,57 @@ import fetch from 'node-fetch';
 const router = express.Router();
 
 /**
+ * @route POST /api/playlist/fetch
+ * @description Fetch playlist by URL
+ * @access Public
+ */
+router.post('/fetch', async (req, res) => {
+  try {
+    const { url } = req.body;
+    
+    if (!url) {
+      return res.status(400).json({ message: 'Playlist URL is required' });
+    }
+    
+    // Extract playlist ID from URL
+    const playlistIdMatch = url.match(/\/playlists\/([a-zA-Z0-9-]+)/);
+    if (!playlistIdMatch || !playlistIdMatch[1]) {
+      return res.status(400).json({ message: 'Invalid playlist URL. Please provide a valid Suno playlist URL.' });
+    }
+    
+    const playlistId = playlistIdMatch[1];
+    
+    // Fetch from Suno API
+    const response = await fetch(`https://studio-api.prod.suno.com/api/playlist/${playlistId}/`);
+    
+    if (!response.ok) {
+      return res.status(response.status).json({ 
+        message: `Failed to fetch playlist: ${response.statusText}`
+      });
+    }
+    
+    const data = await response.json();
+    
+    // Transform data into a simpler format
+    const tracks = data.playlist_clips.map(({ clip }) => ({
+      id: clip.id,
+      title: clip.title,
+      duration: clip.metadata.duration,
+      audio_url: clip.audio_url
+    }));
+    
+    res.json({
+      title: data.name,
+      image: data.image_url,
+      tracks: tracks
+    });
+  } catch (error) {
+    console.error('Playlist fetch error:', error);
+    res.status(500).json({ message: 'Failed to fetch playlist data' });
+  }
+});
+
+/**
  * @route GET /api/playlist/:id
  * @description Proxy endpoint to get playlist data from Suno API
  * @access Public

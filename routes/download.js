@@ -19,6 +19,85 @@ if (!fs.existsSync(TEMP_DIR)) {
 }
 
 /**
+ * @route GET /api/download/track/:id
+ * @description Download a track by ID
+ * @access Public
+ */
+router.get('/track/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({ error: 'Track ID is required' });
+    }
+    
+    // Fetch track info from Suno API
+    const response = await fetch(`https://studio-api.prod.suno.com/api/clip/${id}/`);
+    
+    if (!response.ok) {
+      return res.status(response.status).json({ 
+        error: `Failed to fetch track data: ${response.statusText}`
+      });
+    }
+    
+    const clip = await response.json();
+    
+    // Create a temporary session directory
+    const sessionDir = await createTempDirectory();
+    const fileName = filenamify(`${clip.title}.mp3`);
+    const filePath = path.join(sessionDir, fileName);
+    
+    // Download the audio file
+    const audioResponse = await fetch(clip.audio_url);
+    if (!audioResponse.ok) {
+      throw new Error(`Failed to download audio: ${audioResponse.statusText}`);
+    }
+    
+    const audioBuffer = await audioResponse.arrayBuffer();
+    fs.writeFileSync(filePath, Buffer.from(audioBuffer));
+    
+    // Embed image if available
+    if (clip.image_url) {
+      const imagePath = path.join(sessionDir, `cover.jpg`);
+      const imageResponse = await fetch(clip.image_url);
+      
+      if (imageResponse.ok) {
+        const imageBuffer = await imageResponse.arrayBuffer();
+        fs.writeFileSync(imagePath, Buffer.from(imageBuffer));
+        
+        // Embed the image into the MP3
+        const tags = {
+          title: clip.title,
+          image: {
+            mime: 'image/jpeg',
+            type: { id: 3, name: 'front cover' },
+            description: 'Cover Art',
+            imageBuffer: fs.readFileSync(imagePath)
+          }
+        };
+        
+        NodeID3.write(tags, filePath);
+      }
+    }
+    
+    // Send the file for download
+    res.download(filePath, fileName, (err) => {
+      if (err) {
+        console.error('Download error:', err);
+      }
+      
+      // Clean up temp files after download
+      setTimeout(() => {
+        cleanupTempDirectory(sessionDir);
+      }, 5000);
+    });
+  } catch (error) {
+    console.error('Track download error:', error);
+    res.status(500).json({ error: 'Failed to download track' });
+  }
+});
+
+/**
  * @route GET /api/download/song
  * @description Download a single song with optional image embedding
  * @access Public

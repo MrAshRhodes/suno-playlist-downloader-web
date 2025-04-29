@@ -244,14 +244,6 @@ try {
               <div id="result" class="result"></div>
             </div>
 
-            <div class="section">
-              <h2>Server Info</h2>
-              <pre>
-Current directory: ${__dirname}
-Working directory: ${process.cwd()}
-NODE_ENV: ${process.env.NODE_ENV}
-              </pre>
-            </div>
 
             <script>
               document.getElementById('playlistForm').addEventListener('submit', async (e) => {
