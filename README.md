@@ -26,15 +26,15 @@ A web-based application for downloading playlists from Suno. This is a conversio
 ## Setup and Running
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 16+ (Node.js 16.x required for Replit)
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository
 ```
-git clone <repository-url>
-cd suno-playlist-downloader/web-version
+git clone https://github.com/MrAshRhodes/suno-playlist-downloader-web.git
+cd suno-playlist-downloader-web
 ```
 
 2. Install server dependencies
@@ -84,10 +84,22 @@ npm start
 
 ## Deployment to Replit
 
+### Automated Deployment
+
 1. Create a new Replit project
-2. Import the code from this repository
-3. Install dependencies with `npm install`
-4. Start the server with `npm start`
+2. Choose "Import from GitHub" and enter: `https://github.com/MrAshRhodes/suno-playlist-downloader-web.git`
+3. Click "Run" - the application will automatically:
+   - Install dependencies
+   - Use pre-built static files from the `/public` directory
+   - Start the server on the Replit URL
+
+### Manual Setup (if needed)
+
+If the pre-built static files aren't working for any reason, see the [REPLIT_SETUP.md](REPLIT_SETUP.md) file for detailed instructions on setting up the public directory manually.
+
+### Replit Environment
+
+The application is configured to work with Replit's Node.js 16.x environment, which is specified in the `replit.nix` file. The `.replit` file contains the necessary configuration for building and running the application in the Replit environment.
 
 ## Environment Variables
 
@@ -102,15 +114,20 @@ SESSION_SECRET=your-session-secret
 ## Project Structure
 
 ```
-web-version/
+/
 ├── client/                  # React frontend
-│   ├── public/              # Static assets
-│   └── src/                 # React source code
-│       ├── components/      # UI components
-│       └── services/        # API and utility services
+│   ├── public/              # Static assets for development
+│   ├── src/                 # React source code
+│   │   ├── components/      # UI components
+│   │   └── services/        # API and utility services
+│   └── dist/                # Built frontend files (not in repo)
+├── public/                  # Pre-built static files for Replit
+│   └── assets/              # CSS, JS, and image assets
 ├── routes/                  # Express route handlers
 ├── utils/                   # Backend utility functions
 ├── server.js                # Express server setup
+├── build.sh                 # Build script for deployment
+├── REPLIT_SETUP.md          # Instructions for Replit setup
 └── package.json             # Project dependencies
 ```
 

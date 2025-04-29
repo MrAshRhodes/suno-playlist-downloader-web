@@ -1,2 +1,0 @@
-Version config URL
-https://github.com/DrummerSi/suno-downloader/releases/latest/download/latest.json
