@@ -3,7 +3,7 @@ entrypoint = "server.js"
 hidden = [".config", "package-lock.json"]
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-21_11"
 
 [env]
 NODE_ENV = "production"
