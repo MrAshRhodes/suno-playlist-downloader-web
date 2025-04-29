@@ -53,6 +53,7 @@ const possiblePaths = [
   '/home/runner/client/dist',                         // Replit alternative
   path.resolve(process.cwd(), 'client/dist'),         // Absolute path from current directory
   path.join(__dirname, 'dist'),                       // Directly in root
+  path.join(__dirname, 'public'),                     // Static files in public directory
   process.cwd(),                                      // Current working directory root (for debugging)
   '/home/runner',                                     // Replit root
   '/home/runner/suno-playlist-downloader-web',        // Replit project root
@@ -62,7 +63,8 @@ const possiblePaths = [
   // Additional Replit paths
   '/home/runner/suno-playlist-downloader/client/dist',
   '/home/runner/dist',
-  '/home/runner/app/dist'
+  '/home/runner/app/dist',
+  '/home/runner/workspace/public'                     // Replit public directory
 ];
 
 // Log environment for debugging

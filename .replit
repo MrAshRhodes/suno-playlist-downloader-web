@@ -1,4 +1,4 @@
-run = "npm install && NODE_ENV=production npm start"
+run = "chmod +x build.sh && ./build.sh && NODE_ENV=production npm start"
 entrypoint = "server.js"
 hidden = [".config", "package-lock.json"]
 
@@ -25,9 +25,13 @@ pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
   start = ["typescript-language-server", "--stdio"]
 
 [deployment]
-build = ["npm", "install"]
+build = ["chmod +x build.sh", "./build.sh"]
 run = ["node", "server.js"]
 deploymentTarget = "cloudrun"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json"]
+
+# Files in the public directory will be served as static assets
+[staticFiles]
+directory = "public"
