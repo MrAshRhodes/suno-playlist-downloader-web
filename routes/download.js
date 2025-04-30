@@ -24,12 +24,18 @@ if (!fs.existsSync(TEMP_DIR)) {
  * @access Public
  */
 router.get('/track/:id', async (req, res) => {
+  let sessionDir = null;
+  
   try {
     const { id } = req.params;
     
     if (!id) {
       return res.status(400).json({ error: 'Track ID is required' });
     }
+    
+    // Increase server timeout
+    req.setTimeout(300000); // 5 minutes
+    res.setTimeout(300000); // 5 minutes
     
     // Fetch track info from Suno API
     const response = await fetch(`https://studio-api.prod.suno.com/api/clip/${id}/`);
@@ -43,7 +49,7 @@ router.get('/track/:id', async (req, res) => {
     const clip = await response.json();
     
     // Create a temporary session directory
-    const sessionDir = await createTempDirectory();
+    sessionDir = await createTempDirectory();
     const fileName = filenamify(`${clip.title}.mp3`);
     const filePath = path.join(sessionDir, fileName);
     
@@ -80,20 +86,55 @@ router.get('/track/:id', async (req, res) => {
       }
     }
     
-    // Send the file for download
-    res.download(filePath, fileName, (err) => {
-      if (err) {
-        console.error('Download error:', err);
+    // Set appropriate headers
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    
+    // Stream the file instead of using res.download
+    const fileStream = fs.createReadStream(filePath);
+    
+    // Handle stream events
+    fileStream.on('error', (err) => {
+      console.error('Stream error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Error streaming audio file' });
       }
-      
-      // Clean up temp files after download
+    });
+    
+    fileStream.on('end', () => {
+      // Clean up temp files after streaming completes
+      setTimeout(() => {
+        if (sessionDir) {
+          cleanupTempDirectory(sessionDir);
+        }
+      }, 5000);
+    });
+    
+    // Detect client disconnection
+    req.on('close', () => {
+      console.log('Client disconnected, cleaning up resources');
+      fileStream.destroy();
+      if (sessionDir) {
+        setTimeout(() => {
+          cleanupTempDirectory(sessionDir);
+        }, 5000);
+      }
+    });
+    
+    // Pipe the file to the response
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Track download error:', error);
+    // Clean up if there was an error
+    if (sessionDir) {
       setTimeout(() => {
         cleanupTempDirectory(sessionDir);
       }, 5000);
-    });
-  } catch (error) {
-    console.error('Track download error:', error);
-    res.status(500).json({ error: 'Failed to download track' });
+    }
+    
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to download track' });
+    }
   }
 });
 
@@ -103,6 +144,8 @@ router.get('/track/:id', async (req, res) => {
  * @access Public
  */
 router.get('/song', async (req, res) => {
+  let sessionDir = null;
+  
   try {
     const { audioUrl, imageUrl, title, trackNumber, embedImage } = req.query;
     
@@ -110,8 +153,12 @@ router.get('/song', async (req, res) => {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
     
+    // Increase server timeout
+    req.setTimeout(300000); // 5 minutes
+    res.setTimeout(300000); // 5 minutes
+    
     // Create a temporary session directory
-    const sessionDir = await createTempDirectory();
+    sessionDir = await createTempDirectory();
     const fileName = filenamify(`${trackNumber ? `${String(trackNumber).padStart(2, '0')} - ` : ''}${title}.mp3`);
     const filePath = path.join(sessionDir, fileName);
     
@@ -149,20 +196,55 @@ router.get('/song', async (req, res) => {
       }
     }
     
-    // Send the file for download
-    res.download(filePath, fileName, (err) => {
-      if (err) {
-        console.error('Download error:', err);
+    // Set appropriate headers
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    
+    // Stream the file instead of using res.download
+    const fileStream = fs.createReadStream(filePath);
+    
+    // Handle stream events
+    fileStream.on('error', (err) => {
+      console.error('Stream error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Error streaming audio file' });
       }
-      
-      // Clean up temp files after download
+    });
+    
+    fileStream.on('end', () => {
+      // Clean up temp files after streaming completes
+      setTimeout(() => {
+        if (sessionDir) {
+          cleanupTempDirectory(sessionDir);
+        }
+      }, 5000);
+    });
+    
+    // Detect client disconnection
+    req.on('close', () => {
+      console.log('Client disconnected, cleaning up resources');
+      fileStream.destroy();
+      if (sessionDir) {
+        setTimeout(() => {
+          cleanupTempDirectory(sessionDir);
+        }, 5000);
+      }
+    });
+    
+    // Pipe the file to the response
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Song download error:', error);
+    // Clean up if there was an error
+    if (sessionDir) {
       setTimeout(() => {
         cleanupTempDirectory(sessionDir);
       }, 5000);
-    });
-  } catch (error) {
-    console.error('Song download error:', error);
-    res.status(500).json({ error: 'Failed to download song' });
+    }
+    
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to download song' });
+    }
   }
 });
 
@@ -178,11 +260,17 @@ router.post('/playlist', async (req, res) => {
     return res.status(400).json({ error: 'Invalid playlist data' });
   }
   
+  let sessionDir = null;
+  
   try {
     // Create session directory
-    const sessionDir = await createTempDirectory();
+    sessionDir = await createTempDirectory();
     const zipFile = new AdmZip();
     const downloadPromises = [];
+    
+    // Increase server timeout for large playlists
+    req.setTimeout(900000); // 15 minutes
+    res.setTimeout(900000); // 15 minutes
     
     // Process each song
     for (const clip of clips) {
@@ -250,20 +338,56 @@ router.post('/playlist', async (req, res) => {
     const zipPath = path.join(sessionDir, filenamify(`${playlist.name}.zip`));
     zipFile.writeZip(zipPath);
     
-    // Send the ZIP file for download
-    res.download(zipPath, `${filenamify(playlist.name)}.zip`, (err) => {
-      if (err) {
-        console.error('ZIP download error:', err);
+    // Set appropriate headers
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${filenamify(playlist.name)}.zip"`);
+    
+    // Stream the file instead of using res.download
+    const fileStream = fs.createReadStream(zipPath);
+    
+    // Handle stream events
+    fileStream.on('error', (err) => {
+      console.error('Stream error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Error streaming ZIP file' });
       }
-      
-      // Clean up temp files after download
-      setTimeout(() => {
-        cleanupTempDirectory(sessionDir);
-      }, 10000);
     });
+    
+    fileStream.on('end', () => {
+      // Clean up temp files after streaming completes
+      setTimeout(() => {
+        if (sessionDir) {
+          cleanupTempDirectory(sessionDir);
+        }
+      }, 15000);
+    });
+    
+    // Detect client disconnection
+    req.on('close', () => {
+      console.log('Client disconnected, cleaning up resources');
+      fileStream.destroy();
+      if (sessionDir) {
+        setTimeout(() => {
+          cleanupTempDirectory(sessionDir);
+        }, 5000);
+      }
+    });
+    
+    // Pipe the file to the response
+    fileStream.pipe(res);
+    
   } catch (error) {
     console.error('Playlist download error:', error);
-    res.status(500).json({ error: 'Failed to download playlist' });
+    // Clean up if there was an error
+    if (sessionDir) {
+      setTimeout(() => {
+        cleanupTempDirectory(sessionDir);
+      }, 5000);
+    }
+    
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to download playlist' });
+    }
   }
 });
 
