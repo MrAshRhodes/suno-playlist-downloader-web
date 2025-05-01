@@ -22,8 +22,8 @@ language = "nodejs"
 
 [languages.javascript]
 pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
-  [languages.javascript.languageServer]
-  start = ["typescript-language-server", "--stdio"]
+[languages.javascript.languageServer]
+start = ["typescript-language-server", "--stdio"]
 
 [deployment]
 build = ["chmod +x build.sh", "./build.sh"]
