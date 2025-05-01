@@ -1,7 +1,6 @@
 run = "chmod +x build.sh && ./build.sh && NODE_ENV=production npm start"
 entrypoint = "server.js"
 hidden = [".config", "package-lock.json"]
-modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-22_11"
@@ -22,8 +21,8 @@ language = "nodejs"
 
 [languages.javascript]
 pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
-[languages.javascript.languageServer]
-start = ["typescript-language-server", "--stdio"]
+  [languages.javascript.languageServer]
+  start = ["typescript-language-server", "--stdio"]
 
 [deployment]
 build = ["chmod +x build.sh", "./build.sh"]
@@ -36,8 +35,3 @@ requiredFiles = [".replit", "replit.nix", "package.json"]
 # Files in the public directory will be served as static assets
 [staticFiles]
 directory = "public"
-exclude = ["/api/**"]  # Exclude API routes from static file handling
-
-[[ports]]
-localPort = 3000
-externalPort = 80
