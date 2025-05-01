@@ -24,12 +24,12 @@ DrummerSi
 
 - Search for Suno playlists by URL
 - View all songs in a playlist
-- Download individual songs or entire playlists as ZIP files
+- Download entire playlists as ZIP files
 - Embed album artwork into MP3 files
 - Configure naming templates for downloaded files
 - Track download progress
-- Dark mode support
-- Responsive design
+- Enhanced dark mode support with intuitive theme switching
+- Responsive design for all device sizes
 - Replit deployment ready
 
 ## Tech Stack
@@ -38,16 +38,19 @@ DrummerSi
 - Express.js server
 - Node.js for file processing
 - node-id3 for MP3 metadata handling
+- Server-Sent Events (SSE) for real-time progress tracking
 
 ### Frontend
 - React with TypeScript
 - Mantine UI components
 - Vite for building
+- CSS variables for theme management
 
 ## Setup and Running
 
 ### Prerequisites
-- Node.js 16+ (Node.js 16.x required for Replit)
+- Node.js 20+ (recommended for local development)
+- Node.js 20 supported on Replit deployment
 - npm or yarn
 
 ### Installation
@@ -120,7 +123,7 @@ If the pre-built static files aren't working for any reason, see the [REPLIT_SET
 
 ### Replit Environment
 
-The application is configured to work with Replit's Node.js 16.x environment, which is specified in the `replit.nix` file. The `.replit` file contains the necessary configuration for building and running the application in the Replit environment.
+The application is configured to work with Replit's Node.js 20.x environment, which is specified in the `.replit` file's modules section. The application leverages Replit's built-in support for serving static files from the `/public` directory and proper port mapping from 3000 to 80 for external access. The dark mode support has been fully tested and optimized for the Replit environment.
 
 ## Environment Variables
 
@@ -139,22 +142,22 @@ SESSION_SECRET=your-session-secret
 ├── client/                  # React frontend
 │   ├── public/              # Static assets for development
 │   ├── src/                 # React source code
-│   │   ├── components/      # UI components (with dark mode support)
-│   │   ├── hooks/           # Custom React hooks
+│   │   ├── components/      # UI components with comprehensive dark mode support
+│   │   ├── hooks/           # Custom React hooks including useDarkMode
 │   │   ├── icons/           # Application icons and images
 │   │   └── services/        # API and utility services
-│   └── dist/                # Built frontend files (not in repo)
-├── public/                  # Pre-built static files for Replit
+│   └── dist/                # Built frontend files (generated during build)
+├── public/                  # Pre-built static files for Replit deployment
 │   └── assets/              # CSS, JS, and image assets (ready to deploy)
 ├── routes/                  # Express route handlers
 │   ├── playlist.js          # Playlist API endpoints
-│   ├── download.js          # Download API endpoints
+│   ├── download.js          # Download API endpoints (ZIP downloads only)
 │   └── settings.js          # Settings API endpoints
 ├── utils/                   # Backend utility functions
 ├── server.js                # Express server with multi-environment support
 ├── build.sh                 # Build script for development and deployment
 ├── REPLIT_SETUP.md          # Instructions for Replit setup
-├── .replit                  # Replit configuration for Node.js
+├── .replit                  # Replit configuration for Node.js 20
 ├── replit.nix               # Nix environment configuration for Replit
 └── package.json             # Project dependencies
 ```
