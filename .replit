@@ -36,6 +36,7 @@ requiredFiles = [".replit", "replit.nix", "package.json"]
 # Files in the public directory will be served as static assets
 [staticFiles]
 directory = "public"
+exclude = ["/api/**"]  # Exclude API routes from static file handling
 
 [[ports]]
 localPort = 3000

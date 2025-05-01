@@ -196,9 +196,19 @@ function App() {
         console.log('App component mounted successfully');
         // Check API connection
         fetch('/api/debug')
-            .then(response => response.json())
+            .then(response => {
+                console.log('API debug response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`API responded with status ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => console.log('API connection test:', data))
-            .catch(error => console.error('API connection error:', error));
+            .catch(error => {
+                console.error('API connection error:', error);
+                // Non-blocking error - application can still function without the debug endpoint
+                console.log('Continuing with application despite API error');
+            });
     }, []);
 
     // Update body classes when theme changes

@@ -24,7 +24,10 @@ const app = express();
 
 // Middleware
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,6 +46,13 @@ app.use(session({
 app.use('/api/playlist', playlistRoutes);
 app.use('/api/download', downloadRoutes);
 app.use('/api/settings', settingsRoutes);
+
+// Debug route with enhanced logging
+app.get('/api/debug', (req, res) => {
+  console.log('Debug endpoint hit:', req.path, req.headers);
+  res.setHeader('Content-Type', 'application/json');
+  res.json({ message: 'Server is working correctly', timestamp: new Date().toISOString() });
+});
 
 // Serve static assets if in production
 // Check multiple possible dist locations for Replit environment
