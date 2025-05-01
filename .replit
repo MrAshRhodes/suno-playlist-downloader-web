@@ -1,6 +1,7 @@
 run = "chmod +x build.sh && ./build.sh && NODE_ENV=production npm start"
 entrypoint = "server.js"
 hidden = [".config", "package-lock.json"]
+modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-22_11"
@@ -35,3 +36,7 @@ requiredFiles = [".replit", "replit.nix", "package.json"]
 # Files in the public directory will be served as static assets
 [staticFiles]
 directory = "public"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
