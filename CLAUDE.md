@@ -18,3 +18,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **State Management**: React useState/useEffect hooks, avoid global state when possible
 - **File Structure**: Components in src/components, services in src/services
 - **File Naming**: Component files use PascalCase (.tsx), service files use PascalCase (.ts)
+
+## Version Control
+- Use git to track changes and make rollback easy

@@ -52,40 +52,7 @@ export async function existsFile(path: string): Promise<boolean> {
   return false;
 }
 
-/**
- * Initiates a direct download of a single song
- * @param audioUrl URL of the audio file
- * @param imageUrl URL of the image file
- * @param title Song title
- * @param trackNumber Track number
- * @param embedImage Whether to embed image
- */
-export async function downloadSong(
-  audioUrl: string, 
-  imageUrl: string, 
-  title: string, 
-  trackNumber?: number, 
-  embedImage: boolean = true
-): Promise<void> {
-  const params = new URLSearchParams({
-    audioUrl,
-    imageUrl,
-    title,
-    ...(trackNumber !== undefined && { trackNumber: trackNumber.toString() }),
-    embedImage: embedImage.toString()
-  });
-  
-  // Create download link and trigger it
-  const downloadUrl = `${API_BASE}/download/song?${params.toString()}`;
-  
-  // Create and trigger a temporary anchor element to start the download
-  const link = document.createElement('a');
-  link.href = downloadUrl;
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+// Individual song download function removed - ZIP download only
 
 /**
  * Initiates a download of an entire playlist

@@ -268,17 +268,17 @@ function App() {
                     <p style={{ 
                         margin: 0,
                         color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit'
-                    }}>Download music from your Suno playlists directly to your device. Files will be saved to your browser's default download location.</p>
+                    }}>Download music from Suno playlists or user profiles directly to your device. Enter a playlist URL or @username. Files will be saved to your browser's default download location.</p>
                 </div>
             </div>
 
-            <h3>1. Paste playlist link</h3>
+            <h3>1. Paste playlist link or username</h3>
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                 <input 
                     type="text" 
                     value={playlistUrl}
                     onChange={(e) => setPlaylistUrl(e.target.value)}
-                    placeholder="https://suno.com/playlist/..."
+                    placeholder="https://suno.com/playlist/... or @username"
                     disabled={isGettingPlaylist || isDownloading}
                     style={{ 
                         flexGrow: 1, 

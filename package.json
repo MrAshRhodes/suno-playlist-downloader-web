@@ -25,7 +25,8 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
-    "node-id3": "^0.2.6"
+    "node-id3": "^0.2.6",
+    "puppeteer": "^24.9.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

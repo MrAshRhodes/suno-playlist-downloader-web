@@ -8,3 +8,4 @@ temp/
 *.zip
 .replit.backup
 demo-code/
+**/.claude/settings.local.json
