@@ -113,7 +113,7 @@ function App() {
         // Get template from localStorage if available
         const savedTemplate = localStorage.getItem('suno-name-template');
         const effectiveTemplate = savedTemplate || template;
-        
+
         const songNumber = song.no.toString().padStart(2, "0");
         const songTitle = filenamify(song.title);
         return effectiveTemplate.replace("{trackno}", songNumber).replace("{name}", songTitle);
@@ -212,13 +212,13 @@ function App() {
             setPlaylistClips((prevClips) =>
                 prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Success }))
             );
-            
+
             cleanup();
             showSuccess("Playlist ZIP file download initiated");
         } catch (error) {
             console.error("Download failed:", error);
             showError("Failed to download playlist");
-            
+
             // Mark all as failed
             setPlaylistClips((prevClips) =>
                 prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Error }))
@@ -339,14 +339,14 @@ function App() {
                                 </div>
                             </Group>
                         </Flex>
-                        
+
                         <Flex align="center" h="100%">
                             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
                         </Flex>
                     </Flex>
                 </Box>
             </AppShell.Header>
-            
+
             <AppShell.Main
                 style={{
                     display: "flex",
@@ -378,10 +378,10 @@ function App() {
                             Download music from your Suno playlists directly to your device. Files will be saved to your browser's default download location.
                         </Text>
                     </Flex>
-                    
+
                     {/* Removed test modal - it's not working */}
                 </Paper>
-                
+
                 {/* Top Section */}
                 <Flex justify="space-between">
                     <SectionHeading number="1" title="Paste playlist link">
@@ -517,7 +517,7 @@ function App() {
                         </Popover.Dropdown>
                     </Popover>
                 </SectionHeading>
-                
+
                 <Flex gap="lg" direction="row" mb={24}>
                     <Flex 
                         gap="md" 
@@ -561,7 +561,7 @@ function App() {
                             Download as ZIP
                         </Button>
                     </Flex>
-                    
+
                     <Button
                         variant="filled"
                         disabled={isGettingPlaylist || isDownloading || (!playlistData)}
@@ -590,7 +590,7 @@ function App() {
                             </Text>
                             <Button 
                                 component="a"
-                                href="https://buymeacoffee.com/focusedlofibeats"
+                                href="https://buymeacoffee.com/focused"
                                 target="_blank"
                                 leftSection={<IconCoffee size={16} />}
                                 variant="subtle"

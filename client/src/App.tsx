@@ -61,7 +61,7 @@ function App() {
     const [downloadPercentage, setDownloadPercentage] = useState(0);
     const [completedItems, setCompletedItems] = useState(0);
     const [sessionId] = useState(uuidv4());
-    
+
     console.log('App state initialized successfully');
 
     const songTable = useRef<HTMLTableElement>(null);
@@ -151,13 +151,13 @@ function App() {
             setPlaylistClips((prevClips) =>
                 prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Success }))
             );
-            
+
             cleanup();
             showSuccess("Playlist ZIP file download initiated");
         } catch (error) {
             console.error("Download failed:", error);
             showError("Failed to download playlist");
-            
+
             // Mark all as failed
             setPlaylistClips((prevClips) =>
                 prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Error }))
@@ -475,7 +475,7 @@ function App() {
                         marginRight: "10px" 
                     }}>Web Version</span>
                     <a 
-                        href="https://buymeacoffee.com/focusedlofibeats" 
+                        href="https://buymeacoffee.com/focused" 
                         target="_blank" 
                         style={{ 
                             color: "#0071e3", 
