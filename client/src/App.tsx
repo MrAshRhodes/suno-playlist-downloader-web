@@ -229,6 +229,32 @@ function App() {
             backgroundColor: theme === 'dark' ? '#1a1a1a' : '#f5f5f7',
             color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f'
         }}>
+            <div style={{ 
+                display: "flex", 
+                justifyContent: "center", 
+                marginBottom: "15px" 
+            }}>
+                <a 
+                    href="https://buymeacoffee.com/focused" 
+                    target="_blank" 
+                    style={{ 
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        color: theme === 'dark' ? "#ffdd00" : "#0071e3", 
+                        textDecoration: "none", 
+                        fontSize: "14px",
+                        padding: "8px 16px",
+                        borderRadius: "20px",
+                        backgroundColor: theme === 'dark' ? 'rgba(255, 221, 0, 0.1)' : 'rgba(0, 113, 227, 0.1)',
+                        transition: "background-color 0.2s ease"
+                    }}
+                >
+                    <IconCoffee size={18} />
+                    Support Server Costs
+                </a>
+            </div>
+
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <div style={{ background: 'linear-gradient(135deg, #0071e3, #42a9ff)', borderRadius: '10px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -466,26 +492,8 @@ function App() {
                 borderTop: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #eee", 
                 paddingTop: "20px", 
                 display: "flex", 
-                justifyContent: "space-between" 
+                justifyContent: "flex-end" 
             }}>
-                <div>
-                    <span style={{ 
-                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : "#666", 
-                        fontSize: "14px", 
-                        marginRight: "10px" 
-                    }}>Web Version</span>
-                    <a 
-                        href="https://buymeacoffee.com/focused" 
-                        target="_blank" 
-                        style={{ 
-                            color: "#0071e3", 
-                            textDecoration: "none", 
-                            fontSize: "14px" 
-                        }}
-                    >
-                        Support Server Costs
-                    </a>
-                </div>
                 <div>
                     <span style={{ 
                         color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : "#666", 
