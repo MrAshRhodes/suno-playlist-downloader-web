@@ -18,7 +18,7 @@ DrummerSi
 
 ### Web Version Server Costs
 
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/focusedlofibeats)
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/focused)
 
 ## Features
 
