@@ -88,45 +88,45 @@ Requirements for the visual modernization milestone. Each maps to roadmap phases
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| THME-01 | — | Pending |
-| THME-02 | — | Pending |
-| THME-03 | — | Pending |
-| THME-04 | — | Pending |
-| THME-05 | — | Pending |
-| THME-06 | — | Pending |
-| THME-07 | — | Pending |
-| THME-08 | — | Pending |
-| GLAS-01 | — | Pending |
-| GLAS-02 | — | Pending |
-| GLAS-03 | — | Pending |
-| GLAS-04 | — | Pending |
-| GLAS-05 | — | Pending |
-| GLAS-06 | — | Pending |
-| GLAS-07 | — | Pending |
-| TYPO-01 | — | Pending |
-| TYPO-02 | — | Pending |
-| TYPO-03 | — | Pending |
-| TYPO-04 | — | Pending |
-| TYPO-05 | — | Pending |
-| TYPO-06 | — | Pending |
-| TYPO-07 | — | Pending |
-| ART-01 | — | Pending |
-| ART-02 | — | Pending |
-| ART-03 | — | Pending |
-| ART-04 | — | Pending |
-| ART-05 | — | Pending |
-| ART-06 | — | Pending |
-| ART-07 | — | Pending |
-| ANIM-01 | — | Pending |
-| ANIM-02 | — | Pending |
-| ANIM-03 | — | Pending |
-| ANIM-04 | — | Pending |
+| THME-01 | Phase 1 | Pending |
+| THME-05 | Phase 1 | Pending |
+| THME-02 | Phase 2 | Pending |
+| THME-03 | Phase 2 | Pending |
+| THME-04 | Phase 2 | Pending |
+| THME-06 | Phase 2 | Pending |
+| THME-07 | Phase 2 | Pending |
+| THME-08 | Phase 2 | Pending |
+| ART-01 | Phase 3 | Pending |
+| ART-02 | Phase 3 | Pending |
+| ART-03 | Phase 3 | Pending |
+| ART-04 | Phase 3 | Pending |
+| ART-05 | Phase 3 | Pending |
+| ART-06 | Phase 3 | Pending |
+| ART-07 | Phase 3 | Pending |
+| GLAS-01 | Phase 4 | Pending |
+| GLAS-02 | Phase 4 | Pending |
+| GLAS-03 | Phase 4 | Pending |
+| GLAS-04 | Phase 4 | Pending |
+| GLAS-05 | Phase 4 | Pending |
+| GLAS-06 | Phase 4 | Pending |
+| GLAS-07 | Phase 4 | Pending |
+| TYPO-01 | Phase 5 | Pending |
+| TYPO-02 | Phase 5 | Pending |
+| TYPO-03 | Phase 5 | Pending |
+| TYPO-04 | Phase 5 | Pending |
+| TYPO-05 | Phase 5 | Pending |
+| TYPO-06 | Phase 5 | Pending |
+| TYPO-07 | Phase 5 | Pending |
+| ANIM-01 | Phase 6 | Pending |
+| ANIM-02 | Phase 6 | Pending |
+| ANIM-03 | Phase 6 | Pending |
+| ANIM-04 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 33 total
-- Mapped to phases: 0 (awaiting roadmap)
-- Unmapped: 33 ⚠️
+- Mapped to phases: 33
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-11*
-*Last updated: 2026-04-11 after initial definition*
+*Last updated: 2026-04-11 after roadmap creation*
