@@ -29,7 +29,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. App.tsx contains no `theme === 'dark' ? ... : ...` inline style ternaries
   2. Theme switching works correctly by toggling a class on `<html>` via classList (not assignment)
   3. All previously-inline colors and values are declared as CSS custom properties in index.css
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 01-01-PLAN.md — Declare CSS tokens in index.css, replace all inline ternaries in App.tsx, fix useEffect clobber bug
 **UI hint**: yes
 
 ### Phase 2: Theme System
@@ -103,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. CSS Variable Foundation | 0/TBD | Not started | - |
+| 1. CSS Variable Foundation | 0/1 | Planning complete | - |
 | 2. Theme System | 0/TBD | Not started | - |
 | 3. Generative Art Background | 0/TBD | Not started | - |
 | 4. Glassmorphism Surfaces | 0/TBD | Not started | - |
