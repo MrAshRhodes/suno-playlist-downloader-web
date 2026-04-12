@@ -32,7 +32,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Toggling theme causes no flash — cross-fade is smooth with no unstyled frames
   4. All content sections sit inside 24px radius cards that visually lift from the page (inner glow dark, soft drop shadow light)
   5. Headers render at 18-24pt semi-bold, body at 14pt, using Inter or system font stack
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Theme palette, Inter font, and transition fix (THME-01, THME-02, THME-03)
+- [ ] 01-02-PLAN.md — Card system, typography hierarchy, accent consistency, and logo (CARD-01, CARD-02, TYPO-01, TYPO-02)
+
 **UI hint**: yes
 
 ### Phase 2: Atmospheric Art
@@ -66,6 +71,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Monolith | 0/TBD | Not started | - |
+| 1. Core Monolith | 0/2 | Planned | - |
 | 2. Atmospheric Art | 0/TBD | Not started | - |
 | 3. Interactions & Polish | 0/TBD | Not started | - |
