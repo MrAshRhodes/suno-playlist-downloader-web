@@ -211,14 +211,23 @@ function App() {
             });
     }, []);
 
+    // Update body classes when theme changes
+    useEffect(() => {
+        // Set the theme class on the document element
+        document.documentElement.className = theme === 'dark' ? 'dark-mode' : 'light-mode';
+        // Set background and text color on body
+        document.body.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f5f5f7';
+        document.body.style.color = theme === 'dark' ? '#f5f5f7' : '#1d1d1f';
+    }, [theme]);
+
     // Full UI with only ZIP downloads
     return (
-        <div style={{
-            padding: "20px",
-            maxWidth: "1200px",
+        <div style={{ 
+            padding: "20px", 
+            maxWidth: "1200px", 
             margin: "0 auto",
-            backgroundColor: 'var(--background-color)',
-            color: 'var(--text-color)'
+            backgroundColor: theme === 'dark' ? '#1a1a1a' : '#f5f5f7',
+            color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f'
         }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -240,7 +249,7 @@ function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'var(--text-color)'
+                        color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f'
                     }}
                 >
                     {theme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
@@ -250,15 +259,15 @@ function App() {
             <div style={{ 
                 marginBottom: "20px", 
                 padding: "15px", 
-                border: "1px solid var(--border-color)",
+                border: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #e0e0e0", 
                 borderRadius: "10px",
-                backgroundColor: 'var(--card-background)'
+                backgroundColor: theme === 'dark' ? '#2c2c2e' : '#ffffff'
             }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <IconInfoCircle color='var(--accent-color)' size={24} />
-                    <p style={{
+                    <IconInfoCircle color={theme === 'dark' ? "#1a82e2" : "#0071e3"} size={24} />
+                    <p style={{ 
                         margin: 0,
-                        color: 'var(--text-color)'
+                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit'
                     }}>Download music from Suno playlists or user profiles directly to your device. Enter a playlist URL or @username. Files will be saved to your browser's default download location.</p>
                 </div>
             </div>
@@ -275,9 +284,12 @@ function App() {
                         flexGrow: 1, 
                         padding: "10px", 
                         borderRadius: "5px", 
-                        border: "1px solid var(--border-color)",
-                        backgroundColor: 'var(--input-bg)',
-                        color: 'var(--text-color)'
+                        border: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid #ccc",
+                        backgroundColor: theme === 'dark' ? '#3a3a3c' : '#ffffff',
+                        color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f',
+                        "::placeholder": {
+                            color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)'
+                        }
                     }}
                     className={theme === 'dark' ? 'dark-placeholder' : 'light-placeholder'}
                 />
@@ -287,11 +299,11 @@ function App() {
                     style={{ 
                         padding: "10px 20px", 
                         borderRadius: "5px", 
-                        backgroundColor: 'var(--accent-color)',
-                        color: "white",
+                        backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3", 
+                        color: "white", 
                         border: "none",
                         cursor: "pointer",
-                        boxShadow: 'var(--button-shadow)',
+                        boxShadow: theme === 'dark' ? "0 2px 5px rgba(0,0,0,0.2)" : "none",
                         transition: "background-color 0.2s ease, box-shadow 0.2s ease"
                     }}
                 >
@@ -302,12 +314,12 @@ function App() {
             <h3>2. Review songs</h3>
             <div style={{ 
                 marginBottom: "20px", 
-                border: "1px solid var(--border-color)",
-                borderRadius: "10px",
-                padding: "15px",
-                maxHeight: "300px",
+                border: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #e0e0e0", 
+                borderRadius: "10px", 
+                padding: "15px", 
+                maxHeight: "300px", 
                 overflowY: "auto",
-                backgroundColor: 'var(--card-background)'
+                backgroundColor: theme === 'dark' ? '#2c2c2e' : '#ffffff'
             }}>
                 <table ref={songTable} style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
@@ -315,32 +327,32 @@ function App() {
                             <th style={{ 
                                 textAlign: "left", 
                                 padding: "8px", 
-                                color: 'var(--text-secondary-muted)',
-                                borderBottom: '1px solid var(--border-color)'
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
                             }}>
                                 Img
                             </th>
                             <th style={{ 
                                 textAlign: "left", 
                                 padding: "8px", 
-                                color: 'var(--text-secondary-muted)',
-                                borderBottom: '1px solid var(--border-color)'
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
                             }}>
                                 Title
                             </th>
                             <th style={{ 
                                 textAlign: "right", 
                                 padding: "8px", 
-                                color: 'var(--text-secondary-muted)',
-                                borderBottom: '1px solid var(--border-color)'
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
                             }}>
                                 Length
                             </th>
                             <th style={{ 
                                 textAlign: "center", 
                                 padding: "8px", 
-                                color: 'var(--text-secondary-muted)',
-                                borderBottom: '1px solid var(--border-color)'
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
                             }}>
                                 Status
                             </th>
@@ -352,8 +364,8 @@ function App() {
                                 key={clip.id} 
                                 data-id={`row-${clip.id}`} 
                                 style={{ 
-                                    borderBottom: '1px solid var(--border-color)',
-                                    color: 'var(--text-color)'
+                                    borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee',
+                                    color: theme === 'dark' ? '#f5f5f7' : 'inherit'
                                 }}
                             >
                                 <td style={{ padding: "8px", width: "50px" }}>
@@ -367,20 +379,20 @@ function App() {
                                     <div>
                                         <strong>{clip.title}</strong>
                                         <span style={{ 
-                                            backgroundColor: 'var(--accent-color)',
-                                            color: "white",
-                                            fontSize: "10px",
-                                            padding: "2px 6px",
-                                            borderRadius: "10px",
+                                            backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3", 
+                                            color: "white", 
+                                            fontSize: "10px", 
+                                            padding: "2px 6px", 
+                                            borderRadius: "10px", 
                                             marginLeft: "6px",
-                                            boxShadow: 'var(--badge-shadow)'
+                                            boxShadow: theme === 'dark' ? "0 1px 3px rgba(0,0,0,0.3)" : "none"
                                         }}>
                                             {clip.model_version}
                                         </span>
                                     </div>
-                                    <div style={{
-                                        color: 'var(--text-tertiary)',
-                                        fontSize: "12px"
+                                    <div style={{ 
+                                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#666', 
+                                        fontSize: "12px" 
                                     }}>
                                         {clip.tags}
                                     </div>
@@ -405,15 +417,15 @@ function App() {
                     style={{ 
                         padding: "10px 20px", 
                         borderRadius: "5px", 
-                        backgroundColor: 'var(--accent-color)',
-                        color: "white",
+                        backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3", 
+                        color: "white", 
                         border: "none",
                         display: "flex",
                         alignItems: "center",
                         gap: "8px",
                         cursor: (isGettingPlaylist || isDownloading || (!playlistData)) ? "not-allowed" : "pointer",
                         opacity: (isGettingPlaylist || isDownloading || (!playlistData)) ? "0.6" : "1",
-                        boxShadow: 'var(--button-shadow)',
+                        boxShadow: theme === 'dark' ? "0 2px 5px rgba(0,0,0,0.2)" : "none",
                         transition: "background-color 0.2s ease, box-shadow 0.2s ease"
                     }}
                 >
@@ -425,24 +437,24 @@ function App() {
             {isDownloading && (
                 <div style={{ marginBottom: "20px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
-                        <span style={{
-                            color: 'var(--text-color)'
+                        <span style={{ 
+                            color: theme === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'inherit'
                         }}>{downloadPercentage}%</span>
                     </div>
                     <div style={{ 
                         height: "4px", 
-                        backgroundColor: 'var(--progress-bg)',
-                        borderRadius: "2px",
-                        overflow: "hidden"
+                        backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : '#eee', 
+                        borderRadius: "2px", 
+                        overflow: "hidden" 
                     }}>
                         <div 
                             style={{ 
                                 height: "100%", 
                                 width: `${downloadPercentage}%`, 
-                                backgroundColor: 'var(--progress-fill)',
+                                backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3",
                                 borderRadius: "2px",
                                 transition: "width 0.3s ease",
-                                boxShadow: 'var(--progress-glow)'
+                                boxShadow: theme === 'dark' ? "0 0 5px rgba(26, 130, 226, 0.5)" : "none"
                             }} 
                         />
                     </div>
@@ -451,14 +463,14 @@ function App() {
 
             <footer style={{ 
                 marginTop: "40px", 
-                borderTop: "1px solid var(--border-color)",
+                borderTop: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #eee", 
                 paddingTop: "20px", 
                 display: "flex", 
                 justifyContent: "space-between" 
             }}>
                 <div>
                     <span style={{ 
-                        color: 'var(--text-secondary-muted)',
+                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : "#666", 
                         fontSize: "14px", 
                         marginRight: "10px" 
                     }}>Web Version</span>
@@ -476,7 +488,7 @@ function App() {
                 </div>
                 <div>
                     <span style={{ 
-                        color: 'var(--text-secondary-muted)',
+                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : "#666", 
                         fontSize: "14px", 
                         marginRight: "10px" 
                     }}>

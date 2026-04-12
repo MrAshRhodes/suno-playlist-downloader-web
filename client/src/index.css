@@ -50,15 +50,6 @@ body {
   --header-bg: rgba(255, 255, 255, 0.8);
   --progress-bg: rgba(0, 0, 0, 0.05);
   --scrollbar-thumb: rgba(0, 0, 0, 0.2);
-  --accent-color: #0071e3;
-  --input-bg: #ffffff;
-  --text-secondary-muted: #666;
-  --text-tertiary: rgba(0, 0, 0, 0.3);
-  --text-on-accent: #ffffff;
-  --button-shadow: none;
-  --badge-shadow: none;
-  --progress-fill: #0071e3;
-  --progress-glow: none;
 }
 
 :root.dark-mode {
@@ -75,13 +66,4 @@ body {
   --header-bg: rgba(40, 40, 40, 0.8);
   --progress-bg: rgba(255, 255, 255, 0.1);
   --scrollbar-thumb: rgba(255, 255, 255, 0.2);
-  --accent-color: #1a82e2;
-  --input-bg: #3a3a3c;
-  --text-secondary-muted: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.5);
-  --text-on-accent: #ffffff;
-  --button-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  --badge-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --progress-fill: #1a82e2;
-  --progress-glow: 0 0 5px rgba(26, 130, 226, 0.5);
 }

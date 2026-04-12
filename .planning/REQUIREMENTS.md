@@ -9,11 +9,11 @@ Requirements for the visual modernization milestone. Each maps to roadmap phases
 
 ### Theme Foundation
 
-- [x] **THME-01**: All inline `theme === 'dark' ? ...` ternaries in App.tsx extracted to CSS custom properties
+- [ ] **THME-01**: All inline `theme === 'dark' ? ...` ternaries in App.tsx extracted to CSS custom properties
 - [ ] **THME-02**: Dark theme uses Monolith palette — #0a0e1a primary background, #111627 secondary
 - [ ] **THME-03**: Light theme upgraded to Monolith light aesthetic — warm ivory palette with matching polish
 - [ ] **THME-04**: Mantine v6 colorScheme synced with useDarkMode hook (Mantine components render correctly in both themes)
-- [x] **THME-05**: document.documentElement.className clobber bug fixed (use classList, not assignment)
+- [ ] **THME-05**: document.documentElement.className clobber bug fixed (use classList, not assignment)
 - [ ] **THME-06**: Theme toggle triggers smooth cross-fade via CSS variable transition (200-300ms)
 - [ ] **THME-07**: Ambient color bleed — subtle radial gradient tints at page edges using accent color
 - [ ] **THME-08**: All color combinations pass WCAG AA contrast ratio (4.5:1 for text, 3:1 for large text)
@@ -88,8 +88,8 @@ Requirements for the visual modernization milestone. Each maps to roadmap phases
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| THME-01 | Phase 1 | Complete |
-| THME-05 | Phase 1 | Complete |
+| THME-01 | Phase 1 | Pending |
+| THME-05 | Phase 1 | Pending |
 | THME-02 | Phase 2 | Pending |
 | THME-03 | Phase 2 | Pending |
 | THME-04 | Phase 2 | Pending |
