@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: planning
-stopped_at: Phase 1 UI-SPEC approved
-last_updated: "2026-04-11T16:37:28.108Z"
-last_activity: 2026-04-11 — Roadmap created, ready for phase 1 planning
+milestone: v2.0
+milestone_name: monolith-ui
+status: defining-requirements
+stopped_at: null
+last_updated: "2026-04-12T09:55:00.000Z"
+last_activity: 2026-04-12 — Milestone v2.0 started, defining requirements
 progress:
-  total_phases: 6
+  total_phases: 0
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,17 +18,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-11)
+See: .planning/PROJECT.md (updated 2026-04-12)
 
 **Core value:** Visual modernization only — every download flow, setting, and API call unchanged
-**Current focus:** Phase 1 — CSS Variable Foundation
+**Current focus:** Defining requirements for Monolith UI milestone
 
 ## Current Position
 
-Phase: 1 of 6 (CSS Variable Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-04-11 — Roadmap created, ready for phase 1 planning
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-12 — Milestone v2.0 started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -57,13 +57,11 @@ Progress: [░░░░░░░░░░] 0%
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- Init: Monolith dark theme as design foundation (proven aesthetic, WCAG AA verified)
-- Init: p5.js audio waveform for generative art (music-themed, Perlin noise — no mic permission)
-- Init: Phase order locked — CSS vars → theme → art → glass → typo → anim (hard dependency chain)
-- Init: All changes confined to client/src/ — server untouched
+- v1.0: CSS variable extraction approach rejected — invisible refactoring with no visible improvement
+- v1.0: Direct visual overhaul committed (766c401) — glassmorphism, dark-first palette, support banner
+- v2.0: Monolith design system adopted — brutalist-minimalist from weather app project
+- v2.0: Deliver visible results every phase — no invisible plumbing phases
+- v2.0: Mantine v6 body bg override needs !important to beat framework injection
 
 ### Pending Todos
 
@@ -71,10 +69,10 @@ None yet.
 
 ### Blockers/Concerns
 
-None yet.
+- Codebase diverges from live Replit version (some features on live not in repo)
 
 ## Session Continuity
 
-Last session: 2026-04-11T16:37:28.105Z
-Stopped at: Phase 1 UI-SPEC approved
-Resume file: .planning/phases/01-css-variable-foundation/01-UI-SPEC.md
+Last session: 2026-04-12
+Stopped at: Milestone v2.0 initialization
+Resume file: null

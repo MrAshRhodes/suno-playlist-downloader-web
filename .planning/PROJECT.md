@@ -1,12 +1,26 @@
-# Suno Playlist Downloader — Visual Modernization
+# Suno Playlist Downloader — Monolith UI
 
 ## What This Is
 
-A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. It's live on Replit and fully functional. This project focuses exclusively on visual modernization — upgrading the UI to a premium dark-first design with algorithmic art, while preserving all existing functionality.
+A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. It's live on Replit and fully functional. This milestone rebuilds the UI using the Monolith design system — brutalist-minimalist, premium, authoritative — while preserving all existing functionality.
 
 ## Core Value
 
 The app must continue to work exactly as it does now — every download flow, every setting, every API call unchanged. Visual changes only.
+
+## Current Milestone: v2.0 Monolith UI
+
+**Goal:** Rebuild the UI using the Monolith design system — brutalist-minimalist, premium, authoritative
+
+**Target features:**
+- Monolith dark mode (Rich Black #0A0A0A, Deep Gray #1A1A1A cards, inner glow depth)
+- Monolith light mode (Warm Ivory #F2EFE9, Muted Beige #E8E4DB cards, soft drop shadows)
+- Deep Blue accent #3B4A6B across both modes
+- 24px radius cards with tactile depth
+- Inter/system font type hierarchy
+- p5.js atmospheric audio waveform background
+- Micro-animations and state transitions
+- Polished components (table, inputs, buttons, progress)
 
 ## Requirements
 
@@ -19,18 +33,21 @@ The app must continue to work exactly as it does now — every download flow, ev
 - ✓ Progress tracking with per-song status updates during download — existing
 - ✓ Session-based temp file management with automatic cleanup — existing
 - ✓ Replit deployment with Node.js 20 — existing
+- ✓ CSS variable foundation with classList theme toggle — v1.0 commit 766c401
+- ✓ Support Server Costs banner at top — v1.0 commit 766c401
 
 ### Active
 
-- [ ] Full UI redesign with Monolith dark theme aesthetic (deep blue-black palette, frosted glass cards)
-- [ ] Upgrade both light and dark themes to Monolith design language
-- [ ] Audio waveform algorithmic art background (p5.js, seeded randomness)
-- [ ] Modern typography, spacing, and layout overhaul
-- [ ] Smooth animations and transitions throughout
-- [ ] Frosted glass/glassmorphism card surfaces
-- [ ] Refined table styling with better visual hierarchy
-- [ ] Polished input, button, and progress bar designs
-- [ ] Responsive and accessible (WCAG AA contrast)
+- [ ] Monolith dark mode: Rich Black #0A0A0A bg, Deep Gray #1A1A1A cards, white text, inner glow/subtle border depth
+- [ ] Monolith light mode: Warm Ivory #F2EFE9 bg, Muted Beige #E8E4DB cards, Dark Charcoal #332F2E text, soft drop shadows
+- [ ] Deep Blue accent #3B4A6B for buttons, active states, links (both modes)
+- [ ] 24px radius information cards with tactile depth (3D shadows light, glow dark)
+- [ ] Inter/system font with type hierarchy (semi-bold headers 18-24pt, tight letter-spacing, body 14pt)
+- [ ] p5.js atmospheric audio waveform background (music-themed, ambient, non-distracting)
+- [ ] Micro-animations and smooth state transitions
+- [ ] Polished table/song list with hover states and visual hierarchy
+- [ ] Polished inputs, buttons, and progress bar with glow effects
+- [ ] WCAG AA contrast ratios verified
 
 ### Out of Scope
 
@@ -39,20 +56,20 @@ The app must continue to work exactly as it does now — every download flow, ev
 - Database or auth changes — no backend modifications
 - Migration to newer Mantine version — keep Mantine v6 for stability
 - Mobile app or desktop (Tauri) work — web only
+- Navigation sidebar — app is single-page, not multi-pane
 
 ## Context
 
-**Current state:** Apple-inspired design with basic light/dark mode. Heavy inline styles in App.tsx. CSS variables in index.css. Mantine v6 components partially used (mostly raw HTML elements). Minimal animations beyond a pulse keyframe. No visual flair or art.
+**Current state:** Basic glassmorphism dark-first design (commit 766c401). CSS variables in place. classList-based theme toggle working. Support banner restored. Functional but "basic looking" per user feedback.
 
-**Target aesthetic:** Monolith dark theme from the weather app project:
-- Backgrounds: `#0a0e1a` (primary), `#111627` (secondary)
-- Text: `#f0f2f8` (primary), `#a0a8c0` (secondary), `#6b7394` (muted)
-- Frosted glass: `rgba(255,255,255,0.1)` with backdrop-blur
-- Softened shadows (0.6 opacity max)
-- Subtle vignette/ambient color tints
-- WCAG AA verified contrast ratios
+**Target aesthetic:** Monolith design system (brutalist-minimalist):
+- Dark: Rich Black #0A0A0A, Deep Gray #1A1A1A, White text, Deep Blue #3B4A6B accent
+- Light: Warm Ivory #F2EFE9, Muted Beige #E8E4DB, Dark Charcoal #332F2E, same accent
+- Cards: 24px radius, soft shadows (light), inner glow (dark)
+- Typography: Inter/system, Extra Bold for hero elements, Semi-bold 18-24pt headers, 14pt body
+- Atmospheric effects: radial gradients behind key content
 
-**Art direction:** Audio waveform generative art using p5.js — music-themed, ambient, non-distracting background that reinforces the playlist/music context.
+**Design reference:** ~/Downloads/monolith_design_system_document.html
 
 **Stack:** React 18 + Mantine v6 + Vite 4 + TypeScript (client), Express + Node.js 20 (server, untouched)
 
@@ -68,11 +85,11 @@ The app must continue to work exactly as it does now — every download flow, ev
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Monolith dark theme as design foundation | Proven aesthetic from weather app, WCAG AA verified, premium feel | — Pending |
-| Both themes upgraded (not dark-only) | User wants light mode option preserved with matching quality | — Pending |
-| Audio waveform for algorithmic art | Music-themed — fits playlist context better than abstract particles | — Pending |
-| p5.js for generative art | Lightweight, well-documented, seeded randomness for reproducibility | — Pending |
-| Full redesign scope | Maximum visual impact — new layout, typography, spacing, animations | — Pending |
+| Monolith design system | Brutalist-minimalist, proven in weather app, premium feel | Active |
+| Both themes from Monolith spec | Warm Ivory light + Rich Black dark, consistent Deep Blue accent | Active |
+| Audio waveform for algorithmic art | Music-themed — fits playlist context | Active |
+| p5.js for generative art | Lightweight, seeded randomness, reproducible | Active |
+| Deliver visible results per phase | v1.0 lesson: invisible refactoring rejected, every phase must show progress | Active |
 
 ## Evolution
 
