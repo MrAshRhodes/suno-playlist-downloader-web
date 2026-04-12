@@ -5,6 +5,7 @@ status: draft
 shadcn_initialized: false
 preset: none
 created: 2026-04-12
+revised: 2026-04-12
 ---
 
 # Phase 1 — UI Design Contract
@@ -52,14 +53,20 @@ Exceptions: none
 | Role | Size | Weight | Line Height | Letter Spacing |
 |------|------|--------|-------------|----------------|
 | Body | 14px | 400 (regular) | 1.5 | -0.01em |
-| Label / Caption | 12px | 500 (medium) | 1.4 | 0.06em (uppercase labels) |
-| Section Heading | 18px | 600 (semi-bold) | 1.2 | -0.02em |
-| Playlist Name | 20px | 600 (semi-bold) | 1.2 | -0.02em |
-| Hero / App Title | 24px | 800 (extra bold) | 1.1 | -0.03em |
+| Label / Caption | 12px | 400 (regular) | 1.4 | 0.06em (uppercase labels) |
+| Section Heading / Playlist Name | 20px | 600 (semi-bold) | 1.2 | -0.02em |
+| Hero / App Title | 24px | 600 (semi-bold) | 1.1 | -0.03em |
 
-Font weights loaded from Google Fonts: 400, 600, 800 (`display=swap`). Weight 500 served by browser interpolation or nearest available.
+Font weights loaded from Google Fonts: 400, 600 (`display=swap`). Size alone carries hierarchy between 20px and 24px roles — no extra weight required.
 
-**Source:** CONTEXT.md D-04, D-06. RESEARCH.md Pattern 4 (font import location: `client/index.html` `<head>`).
+Google Fonts link (update from prior 3-weight load):
+```html
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+```
+
+**Revision note (2026-04-12):** Reduced from 5 sizes to 4 (merged 18px Section Heading + 20px Playlist Name into single 20px role; 2px delta insufficient to carry separate hierarchy). Reduced from 4 weights (400, 500, 600, 800) to 2 (400, 600). Weight 500 dropped (browser interpolation only). Weight 800 dropped (24px size at 600 is visually prominent without extra weight). Label/Caption reassigned from 500 to 400.
+
+**Source:** CONTEXT.md D-04, D-06. RESEARCH.md Pattern 4 (font import location: `client/index.html` `<head>`). Checker revision: dimension 4 compliance.
 
 ---
 
@@ -171,6 +178,14 @@ Rename touch-point: `.glass-card` used in `App.tsx` line 269. One rename require
 Affected sections: song table, URL input area, info banner, support banner — all identical radius and shadow. No exceptions.
 
 **Source:** CONTEXT.md D-01, D-02, D-03. RESEARCH.md Pattern 3.
+
+---
+
+## Visual Hierarchy
+
+Primary visual anchor: app title + primary CTA button row.
+
+The 24px semi-bold app title is the topmost focal point. The "Download Playlist" CTA button (accent background `#3B4A6B`) anchors the action zone directly below. All other elements — playlist name (20px), section headings (20px), body (14px) — are subordinate to this anchor pair.
 
 ---
 
@@ -299,7 +314,7 @@ No registries. No third-party component blocks. Mantine v6 is the only component
 
 | File | What Changes |
 |------|-------------|
-| `client/index.html` | Add Google Fonts `<link>` tags for Inter (weights 400, 600, 800) |
+| `client/index.html` | Add Google Fonts `<link>` tags for Inter (weights 400, 600 only — 800 dropped) |
 | `client/src/index.css` | Update all `--bg-*`, `--text-*`, `--accent*`, `--shadow-card`, `--border-*` vars in both theme blocks |
 | `client/src/App.css` | Rename `.glass-card` → `.monolith-card`, update radius to 24px, update typography classes, add Mantine component overrides, remove `backdrop-filter` |
 | `client/src/main.tsx` | Delete AppWrapper `useEffect` that sets `document.body.style.*` (lines 30-36) |
