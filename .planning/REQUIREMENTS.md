@@ -67,29 +67,29 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| THME-01 | TBD | Pending |
-| THME-02 | TBD | Pending |
-| THME-03 | TBD | Pending |
-| CARD-01 | TBD | Pending |
-| CARD-02 | TBD | Pending |
-| TYPO-01 | TBD | Pending |
-| TYPO-02 | TBD | Pending |
-| ART-01 | TBD | Pending |
-| ART-02 | TBD | Pending |
-| ART-03 | TBD | Pending |
-| INTR-01 | TBD | Pending |
-| INTR-02 | TBD | Pending |
-| INTR-03 | TBD | Pending |
-| INTR-04 | TBD | Pending |
-| PLSH-01 | TBD | Pending |
-| PLSH-02 | TBD | Pending |
-| PLSH-03 | TBD | Pending |
+| THME-01 | Phase 1 | Pending |
+| THME-02 | Phase 1 | Pending |
+| THME-03 | Phase 1 | Pending |
+| CARD-01 | Phase 1 | Pending |
+| CARD-02 | Phase 1 | Pending |
+| TYPO-01 | Phase 1 | Pending |
+| TYPO-02 | Phase 1 | Pending |
+| ART-01 | Phase 2 | Pending |
+| ART-02 | Phase 2 | Pending |
+| ART-03 | Phase 2 | Pending |
+| INTR-01 | Phase 3 | Pending |
+| INTR-02 | Phase 3 | Pending |
+| INTR-03 | Phase 3 | Pending |
+| INTR-04 | Phase 3 | Pending |
+| PLSH-01 | Phase 3 | Pending |
+| PLSH-02 | Phase 3 | Pending |
+| PLSH-03 | Phase 3 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17 (pending roadmap)
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-12 after milestone v2.0 initialization*
+*Last updated: 2026-04-12 after roadmap creation*

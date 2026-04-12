@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: monolith-ui
-status: defining-requirements
+status: ready-to-plan
 stopped_at: null
-last_updated: "2026-04-12T09:55:00.000Z"
-last_activity: 2026-04-12 — Milestone v2.0 started, defining requirements
+last_updated: "2026-04-12T10:00:00.000Z"
+last_activity: 2026-04-12 — Roadmap created, 3 phases defined
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-12)
 
 **Core value:** Visual modernization only — every download flow, setting, and API call unchanged
-**Current focus:** Defining requirements for Monolith UI milestone
+**Current focus:** Phase 1 — Core Monolith
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 1 of 3 (Core Monolith)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-12 — Milestone v2.0 started
+Status: Ready to plan
+Last activity: 2026-04-12 — Roadmap created, 17 requirements mapped to 3 phases
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -58,9 +58,9 @@ Progress: [░░░░░░░░░░] 0%
 ### Decisions
 
 - v1.0: CSS variable extraction approach rejected — invisible refactoring with no visible improvement
-- v1.0: Direct visual overhaul committed (766c401) — glassmorphism, dark-first palette, support banner
-- v2.0: Monolith design system adopted — brutalist-minimalist from weather app project
-- v2.0: Deliver visible results every phase — no invisible plumbing phases
+- v1.0: Direct visual overhaul committed (766c401) — dark-first palette, support banner, classList theme toggle
+- v2.0: Monolith design system adopted — brutalist-minimalist, proven in weather app project
+- v2.0: 3 phases chosen (not 6) — fewer, meatier phases, every phase delivers visible results
 - v2.0: Mantine v6 body bg override needs !important to beat framework injection
 
 ### Pending Todos
@@ -74,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-12
-Stopped at: Milestone v2.0 initialization
+Stopped at: Roadmap created — ready to plan Phase 1
 Resume file: null
