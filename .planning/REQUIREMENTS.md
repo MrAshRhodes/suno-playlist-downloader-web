@@ -1,132 +1,95 @@
-# Requirements: Suno Playlist Downloader — Visual Modernization
+# Requirements: Suno Playlist Downloader — Monolith UI
 
-**Defined:** 2026-04-11
-**Core Value:** The app must continue to work exactly as it does now — every download flow, every setting, every API call unchanged. Visual changes only.
+**Defined:** 2026-04-12
+**Core Value:** Visual modernization only — every download flow, setting, and API call unchanged
 
-## v1 Requirements
+## v2.0 Requirements
 
-Requirements for the visual modernization milestone. Each maps to roadmap phases.
+### Theme
 
-### Theme Foundation
+- [ ] **THME-01**: Dark mode uses Monolith Rich Black palette (#0A0A0A bg, #1A1A1A cards, #FFFFFF text, #3B4A6B accent)
+- [ ] **THME-02**: Light mode uses Monolith Warm Ivory palette (#F2EFE9 bg, #E8E4DB cards, #332F2E text, #3B4A6B accent)
+- [ ] **THME-03**: Theme toggle transitions smoothly between modes with no flash of unstyled content
 
-- [ ] **THME-01**: All inline `theme === 'dark' ? ...` ternaries in App.tsx extracted to CSS custom properties
-- [ ] **THME-02**: Dark theme uses Monolith palette — #0a0e1a primary background, #111627 secondary
-- [ ] **THME-03**: Light theme upgraded to Monolith light aesthetic — warm ivory palette with matching polish
-- [ ] **THME-04**: Mantine v6 colorScheme synced with useDarkMode hook (Mantine components render correctly in both themes)
-- [ ] **THME-05**: document.documentElement.className clobber bug fixed (use classList, not assignment)
-- [ ] **THME-06**: Theme toggle triggers smooth cross-fade via CSS variable transition (200-300ms)
-- [ ] **THME-07**: Ambient color bleed — subtle radial gradient tints at page edges using accent color
-- [ ] **THME-08**: All color combinations pass WCAG AA contrast ratio (4.5:1 for text, 3:1 for large text)
+### Cards & Surfaces
 
-### Glassmorphism
+- [ ] **CARD-01**: All content sections use 24px radius cards with Monolith depth (soft shadows light, inner glow dark)
+- [ ] **CARD-02**: Cards have distinct surface elevation from background in both modes
 
-- [ ] **GLAS-01**: URL input section rendered as frosted glass card (backdrop-filter: blur, semi-transparent background)
-- [ ] **GLAS-02**: Song table section rendered as frosted glass card
-- [ ] **GLAS-03**: Download section rendered as frosted glass card
-- [ ] **GLAS-04**: Header floats above content with frosted glass treatment
-- [ ] **GLAS-05**: Firefox @supports fallback — high-opacity solid background when backdrop-filter unavailable
-- [ ] **GLAS-06**: Vignette overlay — radial gradient pulling visual focus toward center content
-- [ ] **GLAS-07**: Maximum 4 simultaneous backdrop-filter elements for GPU performance
+### Typography
 
-### Typography & Polish
+- [ ] **TYPO-01**: App uses Inter/system font with proper hierarchy (semi-bold 18-24pt headers, 14pt body, tight letter-spacing)
+- [ ] **TYPO-02**: Hero/title elements use bold weight with visual prominence
 
-- [ ] **TYPO-01**: Type hierarchy established — weight 600 titles, 400 body, 300 labels, uppercase + letter-spacing on column headers
-- [ ] **TYPO-02**: Inter variable font self-hosted via @fontsource-variable/inter
-- [ ] **TYPO-03**: Buttons have gradient background, soft glow on hover, scale(0.98) on active
-- [ ] **TYPO-04**: Inputs have visible focus ring with accent color glow
-- [ ] **TYPO-05**: Progress bar has gradient fill, glow effect on active end, smooth width transition
-- [ ] **TYPO-06**: Song thumbnails have rounded corners (6-8px), subtle colored border ring, faint drop shadow
-- [ ] **TYPO-07**: Icon/logo treatment refined — subtle glow, better proportions
+### Atmospheric Art
 
-### Generative Art
+- [ ] **ART-01**: p5.js audio waveform canvas renders behind UI content as ambient background
+- [ ] **ART-02**: Waveform uses seeded randomness for reproducible patterns
+- [ ] **ART-03**: Background is non-distracting and music-themed
 
-- [ ] **ART-01**: p5.js audio waveform canvas renders as full-page background behind UI content
-- [ ] **ART-02**: Waveform uses Perlin noise (not p5.sound) — no microphone permission prompts
-- [ ] **ART-03**: Canvas has pointer-events: none so UI remains interactive
-- [ ] **ART-04**: Canvas responds to theme changes without teardown/recreate (no flash)
-- [ ] **ART-05**: Seeded randomness for reproducible waveform patterns
-- [ ] **ART-06**: Runs at ~30fps, Retina-capped for performance
-- [ ] **ART-07**: p5.js instance mode with proper useEffect cleanup (handles React 18 Strict Mode double-mount)
+### Interactions
 
-### Animation
+- [ ] **INTR-01**: Buttons have hover/active states with accent glow effects
+- [ ] **INTR-02**: Progress bar has glow effect and smooth animation
+- [ ] **INTR-03**: Table rows have hover states with subtle background transition
+- [ ] **INTR-04**: State changes (loading, downloading) animate smoothly
 
-- [ ] **ANIM-01**: Smooth state transitions between loading, results, and downloading states (300-400ms, opacity/transform)
-- [ ] **ANIM-02**: Song table rows fade/slide in with staggered delay (20-30ms per row) on playlist load
-- [ ] **ANIM-03**: Active download row has shimmer effect (moving gradient overlay)
-- [ ] **ANIM-04**: All animations respect @media (prefers-reduced-motion: reduce)
+### Polish
 
-## v2 Requirements
+- [ ] **PLSH-01**: Support Server Costs banner styled to match Monolith theme
+- [ ] **PLSH-02**: All colors meet WCAG AA contrast ratios
+- [ ] **PLSH-03**: Scrollbar styled to match theme
 
-### Enhanced Animation
+## Future Requirements
 
-- **ANIM-05**: Page load entrance animation sequence
-- **ANIM-06**: Settings panel slide/fade transition
+### Enhanced Art
 
-### Extended Polish
+- **ART-04**: Waveform reacts to actual audio playback (requires audio preview feature)
+- **ART-05**: Multiple waveform modes (particle, frequency bars, etc.)
 
-- **TYPO-08**: Playlist name and song count displayed prominently above table with styled typography
-- **TYPO-09**: Custom scrollbar styling for song table (minimal, neutral)
+### Responsive
+
+- **RESP-01**: Mobile-optimized single-column layout
+- **RESP-02**: Tablet two-column layout
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Particle systems / floating orbs | Visual noise, no music relevance, hard to tune to ambient |
-| Animated gradient backgrounds | GPU-intensive, causes layout shifts, dates quickly |
-| Parallax scrolling | Single-screen workflow, no scroll depth to justify it |
-| Skeleton loading screens | Only one async operation, spinner sufficient |
-| Heavy backdrop-blur (>4 elements) | GPU performance degradation on lower-end machines |
-| Animated counter on download % | Gimmicky on utility tool, progress bar sufficient |
-| Toast notification redesign | Mantine notifications work fine, low ROI for risk |
-| p5.sound library | Triggers microphone permission prompt |
-| Any backend/API changes | Functionality is frozen |
-| New features (search, filter, preview) | Visual-only scope |
-| Mantine v7 upgrade | Breaking changes, risk to stability |
-| Mobile app / Tauri desktop | Web only |
+| Backend/API changes | Functionality is frozen |
+| New features (search, preview, etc.) | Visual only milestone |
+| Mantine v7 upgrade | Breaking changes, risk to functionality |
+| Navigation sidebar | Single-page app, not multi-pane |
+| Desktop (Tauri) work | Web only |
+| Mobile app | Web only |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| THME-01 | Phase 1 | Pending |
-| THME-05 | Phase 1 | Pending |
-| THME-02 | Phase 2 | Pending |
-| THME-03 | Phase 2 | Pending |
-| THME-04 | Phase 2 | Pending |
-| THME-06 | Phase 2 | Pending |
-| THME-07 | Phase 2 | Pending |
-| THME-08 | Phase 2 | Pending |
-| ART-01 | Phase 3 | Pending |
-| ART-02 | Phase 3 | Pending |
-| ART-03 | Phase 3 | Pending |
-| ART-04 | Phase 3 | Pending |
-| ART-05 | Phase 3 | Pending |
-| ART-06 | Phase 3 | Pending |
-| ART-07 | Phase 3 | Pending |
-| GLAS-01 | Phase 4 | Pending |
-| GLAS-02 | Phase 4 | Pending |
-| GLAS-03 | Phase 4 | Pending |
-| GLAS-04 | Phase 4 | Pending |
-| GLAS-05 | Phase 4 | Pending |
-| GLAS-06 | Phase 4 | Pending |
-| GLAS-07 | Phase 4 | Pending |
-| TYPO-01 | Phase 5 | Pending |
-| TYPO-02 | Phase 5 | Pending |
-| TYPO-03 | Phase 5 | Pending |
-| TYPO-04 | Phase 5 | Pending |
-| TYPO-05 | Phase 5 | Pending |
-| TYPO-06 | Phase 5 | Pending |
-| TYPO-07 | Phase 5 | Pending |
-| ANIM-01 | Phase 6 | Pending |
-| ANIM-02 | Phase 6 | Pending |
-| ANIM-03 | Phase 6 | Pending |
-| ANIM-04 | Phase 6 | Pending |
+| THME-01 | TBD | Pending |
+| THME-02 | TBD | Pending |
+| THME-03 | TBD | Pending |
+| CARD-01 | TBD | Pending |
+| CARD-02 | TBD | Pending |
+| TYPO-01 | TBD | Pending |
+| TYPO-02 | TBD | Pending |
+| ART-01 | TBD | Pending |
+| ART-02 | TBD | Pending |
+| ART-03 | TBD | Pending |
+| INTR-01 | TBD | Pending |
+| INTR-02 | TBD | Pending |
+| INTR-03 | TBD | Pending |
+| INTR-04 | TBD | Pending |
+| PLSH-01 | TBD | Pending |
+| PLSH-02 | TBD | Pending |
+| PLSH-03 | TBD | Pending |
 
 **Coverage:**
-- v1 requirements: 33 total
-- Mapped to phases: 33
-- Unmapped: 0
+- v2.0 requirements: 17 total
+- Mapped to phases: 0
+- Unmapped: 17 (pending roadmap)
 
 ---
-*Requirements defined: 2026-04-11*
-*Last updated: 2026-04-11 after roadmap creation*
+*Requirements defined: 2026-04-12*
+*Last updated: 2026-04-12 after milestone v2.0 initialization*
