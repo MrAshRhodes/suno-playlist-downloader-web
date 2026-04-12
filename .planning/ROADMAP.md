@@ -12,7 +12,7 @@ Six phases transform the existing Apple-inspired UI into a premium Monolith dark
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: CSS Variable Foundation** - Extract ~60 inline ternaries from App.tsx into CSS custom properties
+- [x] **Phase 1: CSS Variable Foundation** - Extract ~60 inline ternaries from App.tsx into CSS custom properties (completed 2026-04-12)
 - [ ] **Phase 2: Theme System** - Apply full Monolith palette to both dark and light themes, sync Mantine
 - [ ] **Phase 3: Generative Art Background** - p5.js audio waveform canvas behind all UI content
 - [ ] **Phase 4: Glassmorphism Surfaces** - Frosted glass cards, header, and vignette layered over waveform
@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. All previously-inline colors and values are declared as CSS custom properties in index.css
 **Plans**: 1 plan
 Plans:
-- [ ] 01-01-PLAN.md — Declare CSS tokens in index.css, replace all inline ternaries in App.tsx, fix useEffect clobber bug
+- [x] 01-01-PLAN.md — Declare CSS tokens in index.css, replace all inline ternaries in App.tsx, fix useEffect clobber bug
 **UI hint**: yes
 
 ### Phase 2: Theme System
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. CSS Variable Foundation | 0/1 | Planning complete | - |
+| 1. CSS Variable Foundation | 1/1 | Complete   | 2026-04-12 |
 | 2. Theme System | 0/TBD | Not started | - |
 | 3. Generative Art Background | 0/TBD | Not started | - |
 | 4. Glassmorphism Surfaces | 0/TBD | Not started | - |
