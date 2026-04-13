@@ -13,14 +13,15 @@ function ThemeToggle({ theme, toggleTheme }: ThemeToggleProps) {
   return (
     <Tooltip label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
       <ActionIcon
-        variant="light"
-        color={theme === 'light' ? 'blue' : 'yellow'}
+        variant="subtle"
+        color="gray"
         onClick={toggleTheme}
         size="lg"
         radius="md"
         aria-label="Toggle color scheme"
         style={{
-          backgroundColor: theme === 'light' ? 'rgba(0, 113, 227, 0.1)' : 'rgba(255, 213, 0, 0.1)',
+          backgroundColor: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
           transition: 'all 0.2s ease',
         }}
       >

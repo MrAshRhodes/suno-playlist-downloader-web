@@ -232,7 +232,7 @@ function App() {
             <header className="app-header">
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div className="app-logo">
-                        <IconVinyl size={22} color="#ffffff" stroke={1.5} />
+                        <img src="/assets/logo.png" width={38} height={38} alt="Suno Downloader" />
                     </div>
                     <h4 className="app-title">Suno Playlist Downloader</h4>
                 </div>
@@ -266,7 +266,7 @@ function App() {
             </div>
 
             <h3 className="section-heading">2. Review songs</h3>
-            <div className="glass-card" style={{
+            <div className="monolith-card" style={{
                 marginBottom: "24px",
                 padding: "4px",
                 maxHeight: "320px",
