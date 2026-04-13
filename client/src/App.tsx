@@ -327,7 +327,7 @@ function App() {
             </div>
 
             {isDownloading && (
-                <div style={{ marginBottom: "24px" }}>
+                <div className="progress-section" style={{ marginBottom: "24px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                         <span style={{ color: "var(--text-secondary)", fontSize: "14px" }}>{downloadPercentage}%</span>
                     </div>
