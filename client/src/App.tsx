@@ -1,33 +1,33 @@
 import "./App.css";
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import {
-  ActionIcon,
-  AppShell,
-  Badge,
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Group,
-  Image,
-  Popover,
-  Progress,
-  Stack,
-  Table,
-  Text,
+import { 
+  ActionIcon, 
+  AppShell, 
+  Badge, 
+  Box, 
+  Button, 
+  Divider, 
+  Flex, 
+  Group, 
+  Image, 
+  Popover, 
+  Progress, 
+  Stack, 
+  Table, 
+  Text, 
   TextInput,
   Title,
   Alert,
   Paper
 } from "@mantine/core";
 
-import {
-  IconBrandGithub,
-  IconCoffee,
+import { 
+  IconBrandGithub, 
+  IconCoffee, 
   IconDownload,
-  IconHelpCircle,
-  IconLink,
+  IconHelpCircle, 
+  IconLink, 
   IconVinyl,
   IconInfoCircle,
   IconSun,
@@ -49,7 +49,6 @@ import SimpleSettingsModal from "./components/SimpleSettingsModal";
 import TestModal from "./components/TestModal";
 import DirectSettingsButton from "./components/DirectSettingsButton";
 import StatusIcon from "./components/StatusIcon";
-import WaveformBackground from './components/WaveformBackground';
 import filenamify from "filenamify";
 import scrollIntoView from "scroll-into-view-if-needed";
 
@@ -212,99 +211,222 @@ function App() {
             });
     }, []);
 
-    // Ensure theme class is applied (hook handles classList, this is a safety net)
+    // Update body classes when theme changes
     useEffect(() => {
-        const add = theme === 'dark' ? 'dark-mode' : 'light-mode';
-        const remove = theme === 'dark' ? 'light-mode' : 'dark-mode';
-        document.documentElement.classList.add(add);
-        document.documentElement.classList.remove(remove);
+        // Set the theme class on the document element
+        document.documentElement.className = theme === 'dark' ? 'dark-mode' : 'light-mode';
+        // Set background and text color on body
+        document.body.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f5f5f7';
+        document.body.style.color = theme === 'dark' ? '#f5f5f7' : '#1d1d1f';
     }, [theme]);
 
+    // Full UI with only ZIP downloads
     return (
-        <>
-          <WaveformBackground seed={42} />
-          <div className="app-wrapper">
-            {/* Support Server Costs banner */}
-            <div className="support-banner">
-                <IconCoffee size={16} color="var(--banner-text)" />
-                <a href="https://buymeacoffee.com/focused" target="_blank" rel="noopener noreferrer">
+        <div style={{ 
+            padding: "20px", 
+            maxWidth: "1200px", 
+            margin: "0 auto",
+            backgroundColor: theme === 'dark' ? '#1a1a1a' : '#f5f5f7',
+            color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f'
+        }}>
+            <div style={{ 
+                display: "flex", 
+                justifyContent: "center", 
+                marginBottom: "15px" 
+            }}>
+                <a 
+                    href="https://buymeacoffee.com/focused" 
+                    target="_blank" 
+                    style={{ 
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        color: theme === 'dark' ? "#ffdd00" : "#0071e3", 
+                        textDecoration: "none", 
+                        fontSize: "14px",
+                        padding: "8px 16px",
+                        borderRadius: "20px",
+                        backgroundColor: theme === 'dark' ? 'rgba(255, 221, 0, 0.1)' : 'rgba(0, 113, 227, 0.1)',
+                        transition: "background-color 0.2s ease"
+                    }}
+                >
+                    <IconCoffee size={18} />
                     Support Server Costs
                 </a>
             </div>
 
-            <header className="app-header">
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div className="app-logo-fallback">
+            <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ background: 'linear-gradient(135deg, #0071e3, #42a9ff)', borderRadius: '10px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <IconVinyl size={22} color="#ffffff" stroke={1.5} />
                     </div>
-                    <h4 className="app-title">Suno Playlist Downloader</h4>
+                    <div>
+                        <h4 style={{ margin: 0 }}>Suno Playlist Downloader</h4>
+                    </div>
                 </div>
-                <button className="theme-toggle" onClick={toggleTheme}>
+                <button 
+                    onClick={toggleTheme}
+                    style={{ 
+                        backgroundColor: 'transparent', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        padding: '8px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f'
+                    }}
+                >
                     {theme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
                 </button>
             </header>
 
-            <div className="info-banner">
-                <IconInfoCircle color="var(--accent)" size={22} style={{ flexShrink: 0 }} />
-                <p>Download music from Suno playlists or user profiles directly to your device. Enter a playlist URL or @username. Files will be saved to your browser's default download location.</p>
+            <div style={{ 
+                marginBottom: "20px", 
+                padding: "15px", 
+                border: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #e0e0e0", 
+                borderRadius: "10px",
+                backgroundColor: theme === 'dark' ? '#2c2c2e' : '#ffffff'
+            }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <IconInfoCircle color={theme === 'dark' ? "#1a82e2" : "#0071e3"} size={24} />
+                    <p style={{ 
+                        margin: 0,
+                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit'
+                    }}>Download music from your Suno playlists directly to your device. Files will be saved to your browser's default download location.</p>
+                </div>
             </div>
 
-            <h3 className="section-heading">1. Paste playlist link or username</h3>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
-                <input
-                    type="text"
+            <h3>1. Paste playlist link</h3>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                <input 
+                    type="text" 
                     value={playlistUrl}
                     onChange={(e) => setPlaylistUrl(e.target.value)}
-                    placeholder="https://suno.com/playlist/... or @username"
+                    placeholder="https://suno.com/playlist/..."
                     disabled={isGettingPlaylist || isDownloading}
-                    className="input-field"
+                    style={{ 
+                        flexGrow: 1, 
+                        padding: "10px", 
+                        borderRadius: "5px", 
+                        border: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid #ccc",
+                        backgroundColor: theme === 'dark' ? '#3a3a3c' : '#ffffff',
+                        color: theme === 'dark' ? '#f5f5f7' : '#1d1d1f',
+                        "::placeholder": {
+                            color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)'
+                        }
+                    }}
+                    className={theme === 'dark' ? 'dark-placeholder' : 'light-placeholder'}
                 />
-                <button
+                <button 
                     onClick={getPlaylist}
                     disabled={isGettingPlaylist || isDownloading}
-                    className="btn-accent"
+                    style={{ 
+                        padding: "10px 20px", 
+                        borderRadius: "5px", 
+                        backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3", 
+                        color: "white", 
+                        border: "none",
+                        cursor: "pointer",
+                        boxShadow: theme === 'dark' ? "0 2px 5px rgba(0,0,0,0.2)" : "none",
+                        transition: "background-color 0.2s ease, box-shadow 0.2s ease"
+                    }}
                 >
                     Get playlist songs
                 </button>
             </div>
 
-            <h3 className="section-heading">2. Review songs</h3>
-            <div className="monolith-card" style={{
-                marginBottom: "24px",
-                padding: "4px",
-                maxHeight: "320px",
-                overflowY: "auto"
+            <h3>2. Review songs</h3>
+            <div style={{ 
+                marginBottom: "20px", 
+                border: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #e0e0e0", 
+                borderRadius: "10px", 
+                padding: "15px", 
+                maxHeight: "300px", 
+                overflowY: "auto",
+                backgroundColor: theme === 'dark' ? '#2c2c2e' : '#ffffff'
             }}>
-                <table ref={songTable} className="song-table">
+                <table ref={songTable} style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
                         <tr>
-                            <th>Img</th>
-                            <th>Title</th>
-                            <th style={{ textAlign: "right" }}>Length</th>
-                            <th style={{ textAlign: "center" }}>Status</th>
+                            <th style={{ 
+                                textAlign: "left", 
+                                padding: "8px", 
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
+                            }}>
+                                Img
+                            </th>
+                            <th style={{ 
+                                textAlign: "left", 
+                                padding: "8px", 
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
+                            }}>
+                                Title
+                            </th>
+                            <th style={{ 
+                                textAlign: "right", 
+                                padding: "8px", 
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
+                            }}>
+                                Length
+                            </th>
+                            <th style={{ 
+                                textAlign: "center", 
+                                padding: "8px", 
+                                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#666',
+                                borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee'
+                            }}>
+                                Status
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {playlistData && playlistClips?.map((clip) => (
-                            <tr key={clip.id} data-id={`row-${clip.id}`}>
-                                <td style={{ width: "50px" }}>
-                                    <img
-                                        src={clip.image_url}
-                                        alt=""
-                                        style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover" }}
+                            <tr 
+                                key={clip.id} 
+                                data-id={`row-${clip.id}`} 
+                                style={{ 
+                                    borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #eee',
+                                    color: theme === 'dark' ? '#f5f5f7' : 'inherit'
+                                }}
+                            >
+                                <td style={{ padding: "8px", width: "50px" }}>
+                                    <img 
+                                        src={clip.image_url} 
+                                        alt="" 
+                                        style={{ width: "40px", height: "40px", borderRadius: "3px", objectFit: "cover" }}
                                     />
                                 </td>
-                                <td>
+                                <td style={{ padding: "8px" }}>
                                     <div>
                                         <strong>{clip.title}</strong>
-                                        <span className="model-badge">{clip.model_version}</span>
+                                        <span style={{ 
+                                            backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3", 
+                                            color: "white", 
+                                            fontSize: "10px", 
+                                            padding: "2px 6px", 
+                                            borderRadius: "10px", 
+                                            marginLeft: "6px",
+                                            boxShadow: theme === 'dark' ? "0 1px 3px rgba(0,0,0,0.3)" : "none"
+                                        }}>
+                                            {clip.model_version}
+                                        </span>
                                     </div>
-                                    <div className="tag-text">{clip.tags}</div>
+                                    <div style={{ 
+                                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#666', 
+                                        fontSize: "12px" 
+                                    }}>
+                                        {clip.tags}
+                                    </div>
                                 </td>
-                                <td style={{ textAlign: "right", fontFamily: "monospace" }}>
+                                <td style={{ textAlign: "right", padding: "8px", fontFamily: "monospace" }}>
                                     {formatSecondsToTime(clip.duration)}
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+                                <td style={{ textAlign: "center", padding: "8px" }}>
                                     <StatusIcon status={clip.status} />
                                 </td>
                             </tr>
@@ -313,13 +435,25 @@ function App() {
                 </table>
             </div>
 
-            <h3 className="section-heading">3. Download playlist</h3>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "24px" }}>
-                <button
-                    onClick={handleDownload}
+            <h3>3. Download playlist</h3>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
+                <button 
+                    onClick={handleDownload} 
                     disabled={isGettingPlaylist || isDownloading || (!playlistData)}
-                    className="btn-accent"
-                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                    style={{ 
+                        padding: "10px 20px", 
+                        borderRadius: "5px", 
+                        backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3", 
+                        color: "white", 
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        cursor: (isGettingPlaylist || isDownloading || (!playlistData)) ? "not-allowed" : "pointer",
+                        opacity: (isGettingPlaylist || isDownloading || (!playlistData)) ? "0.6" : "1",
+                        boxShadow: theme === 'dark' ? "0 2px 5px rgba(0,0,0,0.2)" : "none",
+                        transition: "background-color 0.2s ease, box-shadow 0.2s ease"
+                    }}
                 >
                     <IconDownload size={18} />
                     Download as ZIP
@@ -327,42 +461,68 @@ function App() {
             </div>
 
             {isDownloading && (
-                <div className="progress-section" style={{ marginBottom: "24px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                        <span style={{ color: "var(--text-secondary)", fontSize: "14px" }}>{downloadPercentage}%</span>
+                <div style={{ marginBottom: "20px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
+                        <span style={{ 
+                            color: theme === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'inherit'
+                        }}>{downloadPercentage}%</span>
                     </div>
-                    <div className="progress-track">
-                        <div className="progress-fill" style={{ width: `${downloadPercentage}%` }} />
+                    <div style={{ 
+                        height: "4px", 
+                        backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : '#eee', 
+                        borderRadius: "2px", 
+                        overflow: "hidden" 
+                    }}>
+                        <div 
+                            style={{ 
+                                height: "100%", 
+                                width: `${downloadPercentage}%`, 
+                                backgroundColor: theme === 'dark' ? "#1a82e2" : "#0071e3",
+                                borderRadius: "2px",
+                                transition: "width 0.3s ease",
+                                boxShadow: theme === 'dark' ? "0 0 5px rgba(26, 130, 226, 0.5)" : "none"
+                            }} 
+                        />
                     </div>
                 </div>
             )}
 
-            <footer className="app-footer">
+            <footer style={{ 
+                marginTop: "40px", 
+                borderTop: theme === 'dark' ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #eee", 
+                paddingTop: "20px", 
+                display: "flex", 
+                justifyContent: "flex-end" 
+            }}>
                 <div>
-                    <a
-                        href="https://buymeacoffee.com/focused"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Support Server Costs
-                    </a>
-                </div>
-                <div>
-                    <span>
-                        Based on{' '}
-                        <a href="https://github.com/DrummerSi/suno-downloader" target="_blank" rel="noopener noreferrer">
-                            DrummerSi's
-                        </a>
-                        {' '}original app
+                    <span style={{ 
+                        color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : "#666", 
+                        fontSize: "14px", 
+                        marginRight: "10px" 
+                    }}>
+                        Based on <a 
+                            href="https://github.com/DrummerSi/suno-downloader" 
+                            target="_blank" 
+                            style={{ 
+                                color: "#0071e3", 
+                                textDecoration: "none" 
+                            }}
+                        >DrummerSi's</a> original app
                     </span>
-                    <span style={{ margin: "0 8px", color: "var(--border-color)" }}>|</span>
-                    <a href="https://ko-fi.com/drummer_si" target="_blank" rel="noopener noreferrer">
+                    <a 
+                        href="https://ko-fi.com/drummer_si" 
+                        target="_blank" 
+                        style={{ 
+                            color: "#0071e3", 
+                            textDecoration: "none", 
+                            fontSize: "14px" 
+                        }}
+                    >
                         Support Original Author
                     </a>
                 </div>
             </footer>
         </div>
-        </>
     );
 }
 

@@ -22,8 +22,8 @@ language = "nodejs"
 
 [languages.javascript]
 pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
-[languages.javascript.languageServer]
-start = ["typescript-language-server", "--stdio"]
+  [languages.javascript.languageServer]
+  start = ["typescript-language-server", "--stdio"]
 
 [deployment]
 build = ["chmod +x build.sh", "./build.sh"]
@@ -36,8 +36,38 @@ requiredFiles = [".replit", "replit.nix", "package.json"]
 # Files in the public directory will be served as static assets
 [staticFiles]
 directory = "public"
-exclude = ["/api/**"]  # Exclude API routes from static file handling
 
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Dev Server"
+
+[[workflows.workflow]]
+name = "Dev Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd client && ./node_modules/.bin/vite"
+waitForPort = 5000
