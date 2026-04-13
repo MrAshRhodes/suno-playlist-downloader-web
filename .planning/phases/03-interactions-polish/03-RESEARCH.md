@@ -316,16 +316,13 @@ Apply `.progress-section` to the wrapper div containing the progress bar in App.
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Mantine Loader override mechanism**
-   - What we know: Loader uses SVG internally; `color` prop sets Mantine color tokens
-   - What's unclear: Whether `color: var(--accent)` on the wrapper overrides the SVG stroke correctly
-   - Recommendation: Try CSS override first; fallback is editing StatusIcon.tsx to pass the accent hex directly as a prop
+1. **Mantine Loader override mechanism** — RESOLVED
+   - Answer: Mantine v6 Oval loader renders `<svg stroke={color}>` as inline attribute. The CSS `color` property does NOT cascade to SVG `stroke`. The correct override is `.mantine-Loader-root { stroke: var(--accent) !important; }` targeting `stroke` directly on the SVG root element (Box renders SVG as the root). Verified via `client/node_modules/@mantine/core/esm/Loader/loaders/Oval.js` source.
 
-2. **WCAG for `--text-secondary` dark mode**
-   - What we know: `#B3B3B3` on `#0A0A0A` = 9.44:1 — already passes
-   - What's unclear: Nothing — this is already compliant, no change needed
+2. **WCAG for `--text-secondary` dark mode** — RESOLVED
+   - Answer: `#B3B3B3` on `#0A0A0A` = 9.44:1 — already passes. No change needed.
 
 ---
 

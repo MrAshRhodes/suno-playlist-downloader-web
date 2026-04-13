@@ -42,9 +42,9 @@ created: 2026-04-13
 | 03-01-02 | 01 | 1 | INTR-02 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
 | 03-01-03 | 01 | 1 | INTR-03 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
 | 03-01-04 | 01 | 1 | INTR-04 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
-| 03-02-01 | 02 | 1 | PLSH-01 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
-| 03-02-02 | 02 | 1 | PLSH-02 | — | N/A | manual-devtools | `npm run build` | N/A | ⬜ pending |
-| 03-02-03 | 02 | 1 | PLSH-03 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
+| 03-02-01 | 02 | 2 | PLSH-01 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
+| 03-02-02 | 02 | 2 | PLSH-02 | — | N/A | manual-devtools | `npm run build` | N/A | ⬜ pending |
+| 03-02-03 | 02 | 2 | PLSH-03 | — | N/A | manual-visual | `npm run build` | N/A | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
