@@ -74,6 +74,10 @@ Progress: [░░░░░░░░░░] 0%
 
 None yet.
 
+### Roadmap Evolution
+
+- Phase 4 added: Add Google Ads to the bottom of the site
+
 ### Blockers/Concerns
 
 - Codebase diverges from live Replit version (some features on live not in repo)

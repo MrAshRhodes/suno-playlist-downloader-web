@@ -74,3 +74,13 @@ Phases execute in numeric order: 1 → 2 → 3
 | 1. Core Monolith | 0/2 | Planned | - |
 | 2. Atmospheric Art | 0/TBD | Not started | - |
 | 3. Interactions & Polish | 0/TBD | Not started | - |
+
+### Phase 4: Add Google Ads to the bottom of the site
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 3
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 4 to break down)
