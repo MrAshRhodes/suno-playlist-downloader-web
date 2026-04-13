@@ -227,7 +227,7 @@ function App() {
             {/* Support Server Costs banner */}
             <div className="support-banner">
                 <IconCoffee size={16} color="var(--banner-text)" />
-                <a href="https://buymeacoffee.com/focusedlofibeats" target="_blank" rel="noopener noreferrer">
+                <a href="https://buymeacoffee.com/focused" target="_blank" rel="noopener noreferrer">
                     Support Server Costs
                 </a>
             </div>
@@ -340,7 +340,7 @@ function App() {
             <footer className="app-footer">
                 <div>
                     <a
-                        href="https://buymeacoffee.com/focusedlofibeats"
+                        href="https://buymeacoffee.com/focused"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
