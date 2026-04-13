@@ -48,7 +48,11 @@ Plans:
   1. A generative waveform is visible behind the UI without obscuring any interactive elements
   2. The waveform pattern is reproducible — same seed produces the same visual across page loads
   3. The animation is ambient enough that users can focus on the download workflow without distraction
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 02-01-PLAN.md — Install p5.js, create useP5 hook + waveform sketch, build WaveformBackground component, wire into App (ART-01, ART-02, ART-03)
+
 **UI hint**: yes
 
 ### Phase 3: Interactions & Polish
@@ -71,8 +75,8 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Monolith | 0/2 | Planned | - |
-| 2. Atmospheric Art | 0/TBD | Not started | - |
+| 1. Core Monolith | 2/2 | Complete | - |
+| 2. Atmospheric Art | 0/1 | Planned | - |
 | 3. Interactions & Polish | 0/TBD | Not started | - |
 
 ### Phase 4: Add Google Ads to the bottom of the site
