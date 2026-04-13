@@ -56,12 +56,13 @@ body {
 
 .btn-accent:hover:not(:disabled) {
   background: var(--accent-hover);
-  box-shadow: var(--shadow-button);
+  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.3);
   transform: translateY(-1px);
 }
 
 .btn-accent:active:not(:disabled) {
   background: var(--accent-active);
+  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.15);
   transform: translateY(0);
 }
 
@@ -172,16 +173,16 @@ body {
 
 /* ─── Progress bar ─── */
 .progress-track {
-  height: 4px;
+  height: 6px;
   background: var(--progress-track);
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   background: var(--accent);
-  border-radius: 4px;
+  border-radius: 6px;
   transition: width 0.3s ease;
   box-shadow: var(--progress-glow);
 }
@@ -340,9 +341,15 @@ body {
 }
 .mantine-Button-root[data-variant="filled"]:hover {
   background-color: var(--accent-hover) !important;
+  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.3) !important;
 }
 .mantine-Button-root[data-variant="filled"]:active {
   background-color: var(--accent-active) !important;
+  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.15) !important;
+}
+
+.mantine-Loader-root {
+  stroke: var(--accent) !important;
 }
 
 .mantine-Progress-bar {
