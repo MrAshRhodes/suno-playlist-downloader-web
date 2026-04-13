@@ -13,13 +13,13 @@
 
 ### Cards & Surfaces
 
-- [ ] **CARD-01**: All content sections use 24px radius cards with Monolith depth (soft shadows light, inner glow dark)
-- [ ] **CARD-02**: Cards have distinct surface elevation from background in both modes
+- [x] **CARD-01**: All content sections use 24px radius cards with Monolith depth (soft shadows light, inner glow dark)
+- [x] **CARD-02**: Cards have distinct surface elevation from background in both modes
 
 ### Typography
 
-- [ ] **TYPO-01**: App uses Inter/system font with proper hierarchy (semi-bold 18-24pt headers, 14pt body, tight letter-spacing)
-- [ ] **TYPO-02**: Hero/title elements use bold weight with visual prominence
+- [x] **TYPO-01**: App uses Inter/system font with proper hierarchy (semi-bold 18-24pt headers, 14pt body, tight letter-spacing)
+- [x] **TYPO-02**: Hero/title elements use bold weight with visual prominence
 
 ### Atmospheric Art
 
@@ -70,10 +70,10 @@
 | THME-01 | Phase 1 | Complete |
 | THME-02 | Phase 1 | Complete |
 | THME-03 | Phase 1 | Complete |
-| CARD-01 | Phase 1 | Pending |
-| CARD-02 | Phase 1 | Pending |
-| TYPO-01 | Phase 1 | Pending |
-| TYPO-02 | Phase 1 | Pending |
+| CARD-01 | Phase 1 | Complete |
+| CARD-02 | Phase 1 | Complete |
+| TYPO-01 | Phase 1 | Complete |
+| TYPO-02 | Phase 1 | Complete |
 | ART-01 | Phase 2 | Pending |
 | ART-02 | Phase 2 | Pending |
 | ART-03 | Phase 2 | Pending |
