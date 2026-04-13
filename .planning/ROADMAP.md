@@ -51,7 +51,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 02-01-PLAN.md — Install p5.js, create useP5 hook + waveform sketch, build WaveformBackground component, wire into App (ART-01, ART-02, ART-03)
+- [x] 02-01-PLAN.md — Install p5.js, create useP5 hook + waveform sketch, build WaveformBackground component, wire into App (ART-01, ART-02, ART-03)
 
 **UI hint**: yes
 
@@ -76,7 +76,7 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Monolith | 2/2 | Complete | - |
-| 2. Atmospheric Art | 0/1 | Planned | - |
+| 2. Atmospheric Art | 1/1 | Complete | - |
 | 3. Interactions & Polish | 0/TBD | Not started | - |
 
 ### Phase 4: Add Google Ads to the bottom of the site
@@ -88,3 +88,23 @@ Phases execute in numeric order: 1 → 2 → 3
 
 Plans:
 - [ ] TBD (run /gsd-plan-phase 4 to break down)
+
+### Phase 5: Download Support Popup
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 5 to break down)
+
+### Phase 6: Premium title banner and modern step cards
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 5
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 6 to break down)
