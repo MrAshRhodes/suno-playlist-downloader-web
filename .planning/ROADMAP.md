@@ -73,7 +73,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
-- [ ] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
+- [x] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
 **UI hint**: yes
 
 ## Progress
