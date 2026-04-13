@@ -1,7 +1,6 @@
 /* Base styling */
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -26,60 +25,52 @@ body {
 
 /* ─── Dark mode (default / primary) ─── */
 :root.dark-mode {
-  --bg-primary: #0d0d12;
-  --bg-secondary: #16161e;
-  --bg-card: rgba(255, 255, 255, 0.04);
-  --bg-card-hover: rgba(255, 255, 255, 0.07);
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #111111;
+  --bg-card: #1A1A1A;
+  --bg-card-hover: #222222;
   --bg-input: rgba(255, 255, 255, 0.06);
-  --text-primary: #e8e8ed;
-  --text-secondary: #8b8b9e;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3B3B3;
   --text-muted: rgba(255, 255, 255, 0.4);
-  --accent: #4a90ff;
-  --accent-hover: #5c9dff;
-  --accent-glow: rgba(74, 144, 255, 0.25);
+  --accent: #3B4A6B;
+  --accent-hover: #4E5F80;
+  --accent-active: #2F3D58;
+  --accent-glow: rgba(59, 74, 107, 0.25);
   --border-color: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-button: 0 2px 12px rgba(74, 144, 255, 0.3);
-  --shadow-button-hover: 0 4px 20px rgba(74, 144, 255, 0.4);
-  --glass-blur: blur(20px);
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-card: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-button: 0 2px 8px rgba(59, 74, 107, 0.3);
   --banner-bg: rgba(255, 183, 77, 0.08);
   --banner-border: rgba(255, 183, 77, 0.2);
   --banner-text: #ffb74d;
   --progress-track: rgba(255, 255, 255, 0.06);
-  --progress-glow: 0 0 12px rgba(74, 144, 255, 0.5);
   --scrollbar-thumb: rgba(255, 255, 255, 0.15);
   --scrollbar-hover: rgba(255, 255, 255, 0.25);
 }
 
 /* ─── Light mode ─── */
 :root.light-mode {
-  --bg-primary: #f0f0f5;
-  --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --bg-card-hover: rgba(255, 255, 255, 0.95);
-  --bg-input: rgba(0, 0, 0, 0.03);
-  --text-primary: #1a1a2e;
-  --text-secondary: #6b6b80;
-  --text-muted: rgba(0, 0, 0, 0.35);
-  --accent: #0071e3;
-  --accent-hover: #0077ed;
-  --accent-glow: rgba(0, 113, 227, 0.15);
+  --bg-primary: #F2EFE9;
+  --bg-secondary: #EAE6DF;
+  --bg-card: #E8E4DB;
+  --bg-card-hover: #DDD9D0;
+  --bg-input: rgba(0, 0, 0, 0.04);
+  --text-primary: #332F2E;
+  --text-secondary: #8C867E;
+  --text-muted: rgba(51, 47, 46, 0.45);
+  --accent: #3B4A6B;
+  --accent-hover: #4E5F80;
+  --accent-active: #2F3D58;
+  --accent-glow: rgba(59, 74, 107, 0.15);
   --border-color: rgba(0, 0, 0, 0.08);
   --border-subtle: rgba(0, 0, 0, 0.04);
-  --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
-  --shadow-button: 0 2px 8px rgba(0, 113, 227, 0.2);
-  --shadow-button-hover: 0 4px 16px rgba(0, 113, 227, 0.3);
-  --glass-blur: blur(20px);
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+  --shadow-button: 0 2px 8px rgba(59, 74, 107, 0.2);
   --banner-bg: rgba(255, 152, 0, 0.08);
   --banner-border: rgba(255, 152, 0, 0.25);
   --banner-text: #e65100;
   --progress-track: rgba(0, 0, 0, 0.06);
-  --progress-glow: 0 0 8px rgba(0, 113, 227, 0.3);
   --scrollbar-thumb: rgba(0, 0, 0, 0.15);
   --scrollbar-hover: rgba(0, 0, 0, 0.25);
 }
