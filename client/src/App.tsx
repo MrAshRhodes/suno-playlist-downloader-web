@@ -231,8 +231,8 @@ function App() {
 
             <header className="app-header">
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div className="app-logo">
-                        <img src="/assets/logo.png" width={38} height={38} alt="Suno Downloader" />
+                    <div className="app-logo-fallback">
+                        <IconVinyl size={22} color="#ffffff" stroke={1.5} />
                     </div>
                     <h4 className="app-title">Suno Playlist Downloader</h4>
                 </div>
