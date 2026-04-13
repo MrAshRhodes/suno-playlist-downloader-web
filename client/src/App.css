@@ -212,13 +212,29 @@ body {
   opacity: 0.75;
 }
 
+/* ─── Waveform background layer ─── */
+.waveform-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.waveform-background canvas {
+  display: block;
+}
+
 /* ─── Layout wrapper ─── */
 .app-wrapper {
   padding: 24px 28px;
   max-width: 1100px;
   margin: 0 auto;
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background-color: transparent;
   color: var(--text-primary);
   transition: background-color 0.4s ease, color 0.3s ease;
 }

@@ -49,6 +49,7 @@ import SimpleSettingsModal from "./components/SimpleSettingsModal";
 import TestModal from "./components/TestModal";
 import DirectSettingsButton from "./components/DirectSettingsButton";
 import StatusIcon from "./components/StatusIcon";
+import WaveformBackground from './components/WaveformBackground';
 import filenamify from "filenamify";
 import scrollIntoView from "scroll-into-view-if-needed";
 
@@ -220,7 +221,9 @@ function App() {
     }, [theme]);
 
     return (
-        <div className="app-wrapper">
+        <>
+          <WaveformBackground seed={42} />
+          <div className="app-wrapper">
             {/* Support Server Costs banner */}
             <div className="support-banner">
                 <IconCoffee size={16} color="var(--banner-text)" />
@@ -359,6 +362,7 @@ function App() {
                 </div>
             </footer>
         </div>
+        </>
     );
 }
 
