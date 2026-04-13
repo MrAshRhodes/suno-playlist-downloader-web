@@ -7,9 +7,9 @@
 
 ### Theme
 
-- [ ] **THME-01**: Dark mode uses Monolith Rich Black palette (#0A0A0A bg, #1A1A1A cards, #FFFFFF text, #3B4A6B accent)
-- [ ] **THME-02**: Light mode uses Monolith Warm Ivory palette (#F2EFE9 bg, #E8E4DB cards, #332F2E text, #3B4A6B accent)
-- [ ] **THME-03**: Theme toggle transitions smoothly between modes with no flash of unstyled content
+- [x] **THME-01**: Dark mode uses Monolith Rich Black palette (#0A0A0A bg, #1A1A1A cards, #FFFFFF text, #3B4A6B accent)
+- [x] **THME-02**: Light mode uses Monolith Warm Ivory palette (#F2EFE9 bg, #E8E4DB cards, #332F2E text, #3B4A6B accent)
+- [x] **THME-03**: Theme toggle transitions smoothly between modes with no flash of unstyled content
 
 ### Cards & Surfaces
 
@@ -67,9 +67,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| THME-01 | Phase 1 | Pending |
-| THME-02 | Phase 1 | Pending |
-| THME-03 | Phase 1 | Pending |
+| THME-01 | Phase 1 | Complete |
+| THME-02 | Phase 1 | Complete |
+| THME-03 | Phase 1 | Complete |
 | CARD-01 | Phase 1 | Pending |
 | CARD-02 | Phase 1 | Pending |
 | TYPO-01 | Phase 1 | Pending |
