@@ -42,11 +42,6 @@ export function useDarkMode() {
       console.log('Applied light-mode class to document');
     }
     
-    // Force a full repaint
-    document.body.style.transition = 'none';
-    document.body.offsetHeight; // Trigger a reflow
-    document.body.style.transition = '';
-    
   }, [theme]);
 
   // Function to toggle theme

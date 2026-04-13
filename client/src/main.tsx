@@ -21,22 +21,7 @@ const theme = {
   colorScheme: initialColorScheme as 'light' | 'dark',
 };
 
-// Create a basic React component for the app to help with debugging
 const AppWrapper = () => {
-  console.log('AppWrapper rendering, theme:', initialColorScheme);
-  
-  // Force document body styles directly
-  React.useEffect(() => {
-    document.body.style.backgroundColor = initialColorScheme === 'dark' ? '#1a1a1a' : '#f5f5f7';
-    document.body.style.color = initialColorScheme === 'dark' ? '#f5f5f7' : '#1d1d1f';
-    document.body.style.margin = '0';
-    document.body.style.padding = '0';
-    document.body.style.display = 'block';
-    document.body.style.minHeight = '100vh';
-    
-    console.log('Body styles applied in AppWrapper');
-  }, []);
-  
   return <App />;
 };
 
