@@ -38,11 +38,11 @@ The app must continue to work exactly as it does now — every download flow, ev
 
 ### Active
 
-- [ ] Monolith dark mode: Rich Black #0A0A0A bg, Deep Gray #1A1A1A cards, white text, inner glow/subtle border depth
-- [ ] Monolith light mode: Warm Ivory #F2EFE9 bg, Muted Beige #E8E4DB cards, Dark Charcoal #332F2E text, soft drop shadows
-- [ ] Deep Blue accent #3B4A6B for buttons, active states, links (both modes)
-- [ ] 24px radius information cards with tactile depth (3D shadows light, glow dark)
-- [ ] Inter/system font with type hierarchy (semi-bold headers 18-24pt, tight letter-spacing, body 14pt)
+- [x] Monolith dark mode: Rich Black #0A0A0A bg, Deep Gray #1A1A1A cards, white text, inner glow/subtle border depth — Validated in Phase 1: Core Monolith
+- [x] Monolith light mode: Warm Ivory #F2EFE9 bg, Muted Beige #E8E4DB cards, Dark Charcoal #332F2E text, soft drop shadows — Validated in Phase 1: Core Monolith
+- [x] Deep Blue accent #3B4A6B for buttons, active states, links (both modes) — Validated in Phase 1: Core Monolith
+- [x] 24px radius information cards with tactile depth (3D shadows light, glow dark) — Validated in Phase 1: Core Monolith
+- [x] Inter/system font with type hierarchy (semi-bold headers 18-24pt, tight letter-spacing, body 14pt) — Validated in Phase 1: Core Monolith
 - [ ] p5.js atmospheric audio waveform background (music-themed, ambient, non-distracting)
 - [ ] Micro-animations and smooth state transitions
 - [ ] Polished table/song list with hover states and visual hierarchy
@@ -60,7 +60,7 @@ The app must continue to work exactly as it does now — every download flow, ev
 
 ## Context
 
-**Current state:** Basic glassmorphism dark-first design (commit 766c401). CSS variables in place. classList-based theme toggle working. Support banner restored. Functional but "basic looking" per user feedback.
+**Current state:** Phase 1 complete — Monolith palette, 24px depth cards, Inter typography hierarchy, accent consistency. Glass-morphism fully removed. Theme toggle smooth. Phase 2 (p5.js atmospheric waveform) next.
 
 **Target aesthetic:** Monolith design system (brutalist-minimalist):
 - Dark: Rich Black #0A0A0A, Deep Gray #1A1A1A, White text, Deep Blue #3B4A6B accent
