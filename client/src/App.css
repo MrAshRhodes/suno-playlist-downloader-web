@@ -5,19 +5,13 @@ body {
   color: var(--text-primary) !important;
 }
 
-/* ─── Glassmorphism card ─── */
-.glass-card {
+/* ─── Monolith card ─── */
+.monolith-card {
   background: var(--bg-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
   box-shadow: var(--shadow-card);
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.glass-card:hover {
-  background: var(--bg-card-hover);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* ─── Support banner ─── */
@@ -28,7 +22,7 @@ body {
   gap: 8px;
   padding: 10px 16px;
   margin-bottom: 24px;
-  border-radius: 10px;
+  border-radius: 24px;
   background: var(--banner-bg);
   border: 1px solid var(--banner-border);
   transition: background 0.3s ease, border-color 0.3s ease;
@@ -57,16 +51,17 @@ body {
   font-size: 14px;
   cursor: pointer;
   box-shadow: var(--shadow-button);
-  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .btn-accent:hover:not(:disabled) {
   background: var(--accent-hover);
-  box-shadow: var(--shadow-button-hover);
+  box-shadow: var(--shadow-button);
   transform: translateY(-1px);
 }
 
 .btn-accent:active:not(:disabled) {
+  background: var(--accent-active);
   transform: translateY(0);
 }
 
@@ -122,10 +117,10 @@ body {
 /* ─── Section headings ─── */
 .section-heading {
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   margin: 24px 0 12px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 /* ─── Table styles ─── */
@@ -237,21 +232,34 @@ body {
 }
 
 .app-logo {
-  background: linear-gradient(135deg, #4a90ff, #7c5cff);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-logo img {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+
+.app-logo-fallback {
+  background: var(--accent);
   border-radius: 11px;
   width: 38px;
   height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 12px rgba(74, 144, 255, 0.3);
 }
 
 .app-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 
@@ -262,11 +270,9 @@ body {
   gap: 12px;
   padding: 14px 18px;
   margin-bottom: 28px;
-  border-radius: 12px;
+  border-radius: 24px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .info-banner p {
@@ -308,4 +314,28 @@ body {
 
 .downloading {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ─── Mantine v6 accent color overrides ─── */
+.mantine-Button-root[data-variant="filled"] {
+  background-color: var(--accent) !important;
+}
+.mantine-Button-root[data-variant="filled"]:hover {
+  background-color: var(--accent-hover) !important;
+}
+.mantine-Button-root[data-variant="filled"]:active {
+  background-color: var(--accent-active) !important;
+}
+
+.mantine-Progress-bar {
+  background-color: var(--accent) !important;
+}
+
+.mantine-Badge-root[data-variant="filled"] {
+  background-color: var(--accent) !important;
+}
+
+.mantine-ActionIcon-root {
+  color: var(--text-secondary) !important;
+  transition: color 0.2s ease, background-color 0.2s ease !important;
 }
