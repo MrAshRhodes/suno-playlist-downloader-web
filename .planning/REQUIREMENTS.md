@@ -36,9 +36,9 @@
 
 ### Polish
 
-- [ ] **PLSH-01**: Support Server Costs banner styled to match Monolith theme
-- [ ] **PLSH-02**: All colors meet WCAG AA contrast ratios
-- [ ] **PLSH-03**: Scrollbar styled to match theme
+- [x] **PLSH-01**: Support Server Costs banner styled to match Monolith theme
+- [x] **PLSH-02**: All colors meet WCAG AA contrast ratios
+- [x] **PLSH-03**: Scrollbar styled to match theme
 
 ## Future Requirements
 
@@ -81,9 +81,9 @@
 | INTR-02 | Phase 3 | Complete |
 | INTR-03 | Phase 3 | Complete |
 | INTR-04 | Phase 3 | Complete |
-| PLSH-01 | Phase 3 | Pending |
-| PLSH-02 | Phase 3 | Pending |
-| PLSH-03 | Phase 3 | Pending |
+| PLSH-01 | Phase 3 | Complete |
+| PLSH-02 | Phase 3 | Complete |
+| PLSH-03 | Phase 3 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 17 total

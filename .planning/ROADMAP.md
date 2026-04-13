@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
-- [ ] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
+- [x] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
 
 Plans:
 - [x] 01-01-PLAN.md — Theme palette, Inter font, and transition fix (THME-01, THME-02, THME-03)
@@ -72,7 +72,7 @@ Plans:
 **Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
+- [x] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
 - [ ] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
 **UI hint**: yes
 
