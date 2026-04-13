@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
+- [x] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
 - [ ] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
 
 Plans:
@@ -69,7 +69,7 @@ Plans:
   3. Table rows highlight on hover with a subtle background shift, giving the list a tactile feel
   4. State changes (loading, downloading, complete) cross-fade rather than snap
   5. All color combinations pass WCAG AA contrast checks and the scrollbar matches the active theme
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Core Monolith | 2/2 | Complete | - |
 | 2. Atmospheric Art | 1/1 | Complete | - |
-| 3. Interactions & Polish | 0/2 | Not started | - |
+| 3. Interactions & Polish | 1/2 | In Progress|  |
 
 ### Phase 4: Add Google Ads to the bottom of the site
 

@@ -29,10 +29,10 @@
 
 ### Interactions
 
-- [ ] **INTR-01**: Buttons have hover/active states with accent glow effects
-- [ ] **INTR-02**: Progress bar has glow effect and smooth animation
-- [ ] **INTR-03**: Table rows have hover states with subtle background transition
-- [ ] **INTR-04**: State changes (loading, downloading) animate smoothly
+- [x] **INTR-01**: Buttons have hover/active states with accent glow effects
+- [x] **INTR-02**: Progress bar has glow effect and smooth animation
+- [x] **INTR-03**: Table rows have hover states with subtle background transition
+- [x] **INTR-04**: State changes (loading, downloading) animate smoothly
 
 ### Polish
 
@@ -77,10 +77,10 @@
 | ART-01 | Phase 2 | Pending |
 | ART-02 | Phase 2 | Pending |
 | ART-03 | Phase 2 | Pending |
-| INTR-01 | Phase 3 | Pending |
-| INTR-02 | Phase 3 | Pending |
-| INTR-03 | Phase 3 | Pending |
-| INTR-04 | Phase 3 | Pending |
+| INTR-01 | Phase 3 | Complete |
+| INTR-02 | Phase 3 | Complete |
+| INTR-03 | Phase 3 | Complete |
+| INTR-04 | Phase 3 | Complete |
 | PLSH-01 | Phase 3 | Pending |
 | PLSH-02 | Phase 3 | Pending |
 | PLSH-03 | Phase 3 | Pending |
