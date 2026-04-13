@@ -32,7 +32,7 @@ body {
   --bg-input: rgba(255, 255, 255, 0.06);
   --text-primary: #FFFFFF;
   --text-secondary: #B3B3B3;
-  --text-muted: rgba(255, 255, 255, 0.4);
+  --text-muted: rgba(255, 255, 255, 0.50);
   --accent: #3B4A6B;
   --accent-hover: #4E5F80;
   --accent-active: #2F3D58;
@@ -58,8 +58,8 @@ body {
   --bg-card-hover: #DDD9D0;
   --bg-input: rgba(0, 0, 0, 0.04);
   --text-primary: #332F2E;
-  --text-secondary: #8C867E;
-  --text-muted: rgba(51, 47, 46, 0.45);
+  --text-secondary: #6E6860;
+  --text-muted: rgba(51, 47, 46, 0.70);
   --accent: #3B4A6B;
   --accent-hover: #4E5F80;
   --accent-active: #2F3D58;
@@ -70,7 +70,7 @@ body {
   --shadow-button: 0 2px 8px rgba(59, 74, 107, 0.2);
   --banner-bg: rgba(255, 152, 0, 0.08);
   --banner-border: rgba(255, 152, 0, 0.25);
-  --banner-text: #e65100;
+  --banner-text: #bf360c;
   --progress-track: rgba(0, 0, 0, 0.06);
   --progress-glow: 0 0 8px rgba(59, 74, 107, 0.35);
   --scrollbar-thumb: rgba(0, 0, 0, 0.15);
