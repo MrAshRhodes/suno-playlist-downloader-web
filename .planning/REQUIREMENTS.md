@@ -40,6 +40,13 @@
 - [x] **PLSH-02**: All colors meet WCAG AA contrast ratios
 - [x] **PLSH-03**: Scrollbar styled to match theme
 
+### Ads & Monetization
+
+- [ ] **ADS-01**: Google AdSense Auto Ads script tag present in index.html head with async loading
+- [ ] **ADS-02**: Real publisher ID (ca-pub-XXXXX) hardcoded in script — no .env complexity
+- [ ] **ADS-03**: No manual ad units — Auto Ads only, Google controls placement
+- [ ] **ADS-04**: Graceful degradation when ad-blockers active — no broken layout, no detection messages
+
 ## Future Requirements
 
 ### Enhanced Art
@@ -84,12 +91,16 @@
 | PLSH-01 | Phase 3 | Complete |
 | PLSH-02 | Phase 3 | Complete |
 | PLSH-03 | Phase 3 | Complete |
+| ADS-01 | Phase 4 | Pending |
+| ADS-02 | Phase 4 | Pending |
+| ADS-03 | Phase 4 | Pending |
+| ADS-04 | Phase 4 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 17 total
-- Mapped to phases: 17
+- v2.0 requirements: 21 total
+- Mapped to phases: 21
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-12 after roadmap creation*
+*Last updated: 2026-04-13 after Phase 4 planning*

@@ -76,26 +76,15 @@ Plans:
 - [x] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
 **UI hint**: yes
 
-## Progress
-
-**Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Core Monolith | 2/2 | Complete | - |
-| 2. Atmospheric Art | 1/1 | Complete | - |
-| 3. Interactions & Polish | 1/2 | In Progress|  |
-
 ### Phase 4: Add Google Ads to the bottom of the site
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Add Google AdSense Auto Ads via a single script tag in index.html for site monetization — Google determines ad placement automatically
+**Requirements**: ADS-01, ADS-02, ADS-03, ADS-04
 **Depends on:** Phase 3
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 4 to break down)
+- [ ] 04-01-PLAN.md — Add AdSense Auto Ads async script to index.html with publisher ID (ADS-01, ADS-02, ADS-03, ADS-04)
 
 ### Phase 5: Download Support Popup
 
