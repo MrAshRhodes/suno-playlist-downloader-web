@@ -16,9 +16,16 @@ Three phases deliver the Monolith design system onto a fully working app. Phase 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Core Monolith** - Palette, cards, and typography — the complete visual transformation
-- [ ] **Phase 2: Atmospheric Art** - p5.js ambient waveform background
-- [ ] **Phase 3: Interactions & Polish** - Micro-animations, hover states, and finishing touches
+- [x] **Phase 1: Core Monolith** - Palette, cards, and typography — the complete visual transformation
+- [x] **Phase 2: Atmospheric Art** - p5.js ambient waveform background
+- [x] **Phase 3: Interactions & Polish** - Micro-animations, hover states, and finishing touches
+- [ ] **Phase 4: Google Ads** - AdSense Auto Ads for monetization
+- [ ] **Phase 5: Download Support Popup** - buymeacoffee.com/focused link on ZIP download
+- [x] **Phase 6: Premium Title Banner & Step Cards** - Hero banner image and monolith-card step sections
+- [ ] **Phase 6.1: Match Site Styling to Banner** - Harmonize color palette, cards, buttons with neon design language (INSERTED)
+- [x] **Phase 7: Donation Modal** - Gratitude-first donation modal with generated banner
+- [ ] **Phase 8: Dependabot Security** - Resolve dependabot alerts via GitHub CLI
+- [ ] **Phase 9: SEO & Domain** - SEO improvements and domain name suggestions
 
 ## Phase Details
 
@@ -32,11 +39,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Toggling theme causes no flash — cross-fade is smooth with no unstyled frames
   4. All content sections sit inside 24px radius cards that visually lift from the page (inner glow dark, soft drop shadow light)
   5. Headers render at 18-24pt semi-bold, body at 14pt, using Inter or system font stack
-**Plans:** 2 plans
-
-Plans:
-- [x] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
-- [x] 03-02-PLAN.md — WCAG AA contrast fixes, banner text fix, Firefox scrollbar fallback (PLSH-01, PLSH-02, PLSH-03)
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md — Theme palette, Inter font, and transition fix (THME-01, THME-02, THME-03)
@@ -69,7 +72,7 @@ Plans:
   3. Table rows highlight on hover with a subtle background shift, giving the list a tactile feel
   4. State changes (loading, downloading, complete) cross-fade rather than snap
   5. All color combinations pass WCAG AA contrast checks and the scrollbar matches the active theme
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 03-01-PLAN.md — Button glow, progress bar glow/height, state animations, Mantine Loader fix (INTR-01, INTR-02, INTR-03, INTR-04)
@@ -84,7 +87,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — Add AdSense Auto Ads async script to index.html with publisher ID (ADS-01, ADS-02, ADS-03, ADS-04)
+- [x] 04-01-PLAN.md — Add AdSense Auto Ads async script to index.html with publisher ID (ADS-01, ADS-02, ADS-03, ADS-04)
 
 ### Phase 5: Download Support Popup
 
@@ -105,6 +108,18 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — Hero banner image with title overlay + step card wrappers with numbered headings (D-01, D-02, D-03, D-04, D-05, D-06)
+
+### Phase 06.1: Match site styling to the new modern vector/neon hero banner - update color palette, card styles, buttons, and overall aesthetic to harmonize with the dark navy/purple/blue neon design language (INSERTED)
+
+**Goal:** Harmonize the full app color palette, card borders, buttons, and accent system with the neon navy/purple/cyan hero banner — CSS variable value swap with dual accent system (purple for actions, cyan for progress/status)
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09, D-10, D-11, D-12, D-13
+**Depends on:** Phase 6
+**Plans:** 1 plan
+
+Plans:
+- [ ] 06.1-01-PLAN.md — Update CSS variable palette (both themes) and wire dual accent system (D-01 through D-13)
+
+**UI hint**: yes
 
 ### Phase 7: Support donation modal with generated banner
 
