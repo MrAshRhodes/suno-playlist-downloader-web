@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-04-14T09:03:38.397Z"
-last_activity: 2026-04-14 -- Phase 6 planning complete
+status: verifying
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-04-14T09:18:12.375Z"
+last_activity: 2026-04-14
 progress:
-  total_phases: 9
-  completed_phases: 5
+  total_phases: 10
+  completed_phases: 6
   total_plans: 10
-  completed_plans: 8
-  percent: 80
+  completed_plans: 9
+  percent: 90
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-12)
 
 **Core value:** Visual modernization only — every download flow, setting, and API call unchanged
-**Current focus:** Phase 07 — support-donation-modal-with-generated-banner
+**Current focus:** Phase 06 — premium-title-banner-and-modern-step-cards
 
 ## Current Position
 
-Phase: 06
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-04-14 -- Phase 6 planning complete
+Phase: 06 (premium-title-banner-and-modern-step-cards) — EXECUTING
+Plan: 1 of 1
+Status: Phase complete — ready for verification
+Last activity: 2026-04-14
 
 Progress: [██████████] 100%
 
@@ -59,6 +59,7 @@ Progress: [██████████] 100%
 | Phase 01 P02 | 3min | 3 tasks | 3 files |
 | Phase 03 P01 | 5 | 2 tasks | 3 files |
 | Phase 07 P01 | 5min | 2 tasks | 2 files |
+| Phase 06 P01 | 10 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ Progress: [██████████] 100%
 - [Phase 03]: Firefox scrollbar-color/scrollbar-width added before webkit block, reusing --scrollbar-thumb variable
 - [Phase 07]: Used ImageMagick gradient for donation banner -- nanobanana MCP unavailable in executor tool set
 - [Phase 07]: DonationModal uses body/header styles keys (not content) -- verified from SimpleSettingsModal.tsx Mantine v6 pattern
+- [Phase 06]: Hero text hardcoded white (not var(--text-primary)) — renders over dark image in both themes
+- [Phase 06]: Step numbers use solid var(--accent) background, no gradients per D-04
+- [Phase 06]: ThemeToggle moved into hero-actions (absolute top-right inside hero banner)
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ Progress: [██████████] 100%
 
 ## Session Continuity
 
-Last session: 2026-04-14T08:04:55.558Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-04-14T09:18:12.371Z
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None
