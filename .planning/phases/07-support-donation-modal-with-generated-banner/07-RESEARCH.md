@@ -37,6 +37,8 @@ The only novel dependency is the nanobanana MCP for image generation, which is a
 
 **Primary recommendation:** Build a standalone `DonationModal.tsx` using Mantine's `Modal` component (not `modals.open()` API), controlled via `useState` from App.tsx. This keeps the counter logic co-located with the download handlers that increment it.
 
+**Note on trigger points:** CONTEXT.md specifics mention "individual song download click" as a trigger point, but the codebase has no individual song download handler — only playlist ZIP download exists (WebApi.ts line 55: "Individual song download function removed - ZIP download only"). The modal triggers on `downloadPlaylist()` only.
+
 ---
 
 ## Standard Stack
@@ -244,11 +246,11 @@ If the first generation reads as too corporate or cold, fall back to `nanobanana
 **How to avoid:** Use the `styles` prop on `Modal` to explicitly set background and color using CSS variables:
 ```typescript
 styles={{
-  content: { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' },
+  body: { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' },
   header: { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' },
 }}
 ```
-This pattern is already proven in `SimpleSettingsModal.tsx`.
+**IMPORTANT:** The correct key for the modal body area is `body`, NOT `content`. Verified from SimpleSettingsModal.tsx (lines 83-90). Using `content` will have no effect — the modal background will not match the theme.
 **Warning signs:** Modal appears with wrong background color or white text on white in light mode.
 
 ### Pitfall 3: localStorage Key Collision
@@ -283,6 +285,7 @@ const checkAndShowDonationModal = () => {
 ### Modal with Theme-Aware Styles
 ```typescript
 // Source: SimpleSettingsModal.tsx styles prop pattern
+// IMPORTANT: Use `body` key, NOT `content`. Verified from SimpleSettingsModal.tsx.
 <Modal
   opened={opened}
   onClose={onClose}
@@ -290,7 +293,7 @@ const checkAndShowDonationModal = () => {
   size="md"
   withCloseButton
   styles={{
-    content: { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' },
+    body: { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' },
     header: { backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)' },
   }}
 >
@@ -377,18 +380,11 @@ No meaningful attack surface — this is a client-side modal linking to an exter
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | `Modal` component from `@mantine/core` v6 accepts `styles.content` and `styles.header` keys | Architecture Patterns | Modal background won't match theme — fallback to `style` prop on children |
+| A1 | `Modal` component from `@mantine/core` v6 accepts `styles.body` and `styles.header` keys | Architecture Patterns | Modal background won't match theme — fallback to `style` prop on children |
 
 All other claims verified directly against codebase files.
 
-**If this table is empty:** Only one assumed claim, low risk — proven pattern exists in SimpleSettingsModal.tsx for `styles.header` and `styles.body` (not `content`). Verify: Mantine v6 uses `body` not `content` for the modal body area.
-
-**Correction from codebase verification:**
-SimpleSettingsModal.tsx line 83-90 uses:
-```
-styles={{ header: { ... }, body: { ... } }}
-```
-So the correct keys are `header` and `body`, not `content`. The code example above should use `body` not `content`. [VERIFIED: SimpleSettingsModal.tsx]
+**Verified:** SimpleSettingsModal.tsx (lines 83-90) uses `styles={{ header: { ... }, body: { ... } }}`. The correct keys are `header` and `body`, NOT `content`. [VERIFIED: SimpleSettingsModal.tsx]
 
 ---
 
