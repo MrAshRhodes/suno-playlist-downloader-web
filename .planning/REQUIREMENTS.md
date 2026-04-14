@@ -50,9 +50,9 @@
 ### Donation Modal
 
 - [ ] **DON-01**: Modal triggers on 1st download and every 5th download after (1, 5, 10, 15...) via localStorage counter
-- [ ] **DON-02**: Modal uses gratitude-first tone — "Thanks for using Suno Downloader!" heading, soft support ask
-- [ ] **DON-03**: Banner image generated via nanobanana MCP — cozy coffee + music mashup, warm tones, inviting not corporate
-- [ ] **DON-04**: Centered overlay modal with banner image top, gratitude text middle, Buy Me a Coffee CTA button bottom
+- [x] **DON-02**: Modal uses gratitude-first tone — "Thanks for using Suno Downloader!" heading, soft support ask
+- [x] **DON-03**: Banner image generated via nanobanana MCP — cozy coffee + music mashup, warm tones, inviting not corporate
+- [x] **DON-04**: Centered overlay modal with banner image top, gratitude text middle, Buy Me a Coffee CTA button bottom
 - [ ] **DON-05**: Existing top support banner remains alongside modal — both serve different purposes
 - [ ] **DON-06**: localStorage download counter with no permanent opt-out — modal re-appears per trigger formula
 
@@ -105,9 +105,9 @@
 | ADS-03 | Phase 4 | Pending |
 | ADS-04 | Phase 4 | Pending |
 | DON-01 | Phase 7 | Pending |
-| DON-02 | Phase 7 | Pending |
-| DON-03 | Phase 7 | Pending |
-| DON-04 | Phase 7 | Pending |
+| DON-02 | Phase 7 | Complete |
+| DON-03 | Phase 7 | Complete |
+| DON-04 | Phase 7 | Complete |
 | DON-05 | Phase 7 | Pending |
 | DON-06 | Phase 7 | Pending |
 
