@@ -98,13 +98,13 @@ Plans:
 
 ### Phase 6: Premium title banner and modern step cards
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Replace the plain header with a generated hero banner image and wrap all 3 step sections in monolith-card containers with solid-surface numbered step indicators
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06
 **Depends on:** Phase 5
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 6 to break down)
+- [ ] 06-01-PLAN.md — Hero banner image with title overlay + step card wrappers with numbered headings (D-01, D-02, D-03, D-04, D-05, D-06)
 
 ### Phase 7: Support donation modal with generated banner
 
@@ -116,3 +116,13 @@ Plans:
 Plans:
 - [x] 07-01-PLAN.md — Generate banner image asset via nanobanana MCP and build DonationModal component (DON-02, DON-03, DON-04)
 - [x] 07-02-PLAN.md — Wire download counter and modal trigger logic into App.tsx (DON-01, DON-05, DON-06)
+
+### Phase 8: Using the GitHub CLI, check dependabot alerts and resolve security issues
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 7
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 8 to break down)
