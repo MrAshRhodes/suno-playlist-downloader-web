@@ -140,6 +140,18 @@ try {
       const staticPath = fs.statSync(distPath).isDirectory() ? distPath : path.dirname(distPath);
       app.use(express.static(staticPath));
       
+      // Serve SEO/ad static files explicitly before SPA catch-all
+      for (const file of ['ads.txt', 'robots.txt', 'sitemap.xml']) {
+        app.get(`/${file}`, (req, res) => {
+          const filePath = path.join(staticPath, file);
+          if (fs.existsSync(filePath)) {
+            res.type(file.endsWith('.xml') ? 'application/xml' : 'text/plain').sendFile(filePath);
+          } else {
+            res.status(404).send(`${file} not found`);
+          }
+        });
+      }
+
       // For all other routes, serve the index.html
       app.get('*', (req, res) => {
         const indexFile = fs.statSync(distPath).isDirectory() 
