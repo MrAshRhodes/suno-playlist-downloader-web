@@ -18,6 +18,7 @@ import { showError, showSuccess } from "./services/Utils";
 import Logger from "./services/Logger";
 import StatusIcon from "./components/StatusIcon";
 import scrollIntoView from "scroll-into-view-if-needed";
+import DonationModal from './components/DonationModal';
 
 function App() {
     const { theme, toggleTheme } = useDarkMode();
@@ -26,6 +27,8 @@ function App() {
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadPercentage, setDownloadPercentage] = useState(0);
     const [sessionId] = useState(uuidv4());
+
+    const [donationModalOpen, setDonationModalOpen] = useState(false);
 
     const songTable = useRef<HTMLTableElement>(null);
 
@@ -66,7 +69,17 @@ function App() {
             });
     };
 
+    const checkAndShowDonationModal = () => {
+        const current = parseInt(localStorage.getItem('suno-download-count') || '0');
+        const next = current + 1;
+        localStorage.setItem('suno-download-count', String(next));
+        if (next === 1 || next % 5 === 0) {
+            setDonationModalOpen(true);
+        }
+    };
+
     const downloadPlaylist = async () => {
+        checkAndShowDonationModal();
         setDownloadPercentage(0);
         setIsDownloading(true);
 
@@ -262,6 +275,11 @@ function App() {
                     </a>
                 </footer>
             </div>
+
+            <DonationModal
+                opened={donationModalOpen}
+                onClose={() => setDonationModalOpen(false)}
+            />
         </>
     );
 }
