@@ -4,9 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   IconCoffee,
   IconDownload,
-  IconVinyl,
-  IconInfoCircle,
 } from "@tabler/icons-react";
+
+import heroBannerImg from './assets/hero-banner.png';
 
 import { useDarkMode } from './hooks/useDarkMode';
 import ThemeToggle from './components/ThemeToggle';
@@ -159,23 +159,20 @@ function App() {
                     </a>
                 </div>
 
-                {/* Header */}
-                <header className="app-header">
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div className="app-logo">
-                            <div className="app-logo-fallback">
-                                <IconVinyl size={22} color="#ffffff" stroke={1.5} />
-                            </div>
-                        </div>
-                        <h1 className="app-title">Suno Playlist Downloader</h1>
-                    </div>
+                {/* Hero banner — per D-01, D-02, D-05 (support-banner stays above, untouched) */}
+                <div className="hero-banner">
+                  <img src={heroBannerImg} alt="" className="hero-banner-img" aria-hidden="true" />
+                  <div className="hero-overlay" />
+                  <div className="hero-content">
+                    <h1 className="app-title">Suno Playlist Downloader</h1>
+                    <p className="hero-subtitle">
+                      Download music from your Suno playlists directly to your device.
+                      Files will be saved to your browser's default download location.
+                    </p>
+                  </div>
+                  <div className="hero-actions">
                     <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-                </header>
-
-                {/* Info banner */}
-                <div className="info-banner">
-                    <IconInfoCircle size={24} style={{ color: 'var(--accent)', flexShrink: 0 }} />
-                    <p>Download music from your Suno playlists directly to your device. Files will be saved to your browser's default download location.</p>
+                  </div>
                 </div>
 
                 {/* Step 1: Paste link */}
