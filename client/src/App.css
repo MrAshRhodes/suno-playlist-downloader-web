@@ -56,13 +56,13 @@ body {
 
 .btn-accent:hover:not(:disabled) {
   background: var(--accent-hover);
-  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.3);
+  box-shadow: var(--shadow-button), 0 0 12px rgba(123, 94, 167, 0.30);
   transform: translateY(-1px);
 }
 
 .btn-accent:active:not(:disabled) {
   background: var(--accent-active);
-  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.15);
+  box-shadow: var(--shadow-button), 0 0 12px rgba(123, 94, 167, 0.15);
   transform: translateY(0);
 }
 
@@ -181,7 +181,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: var(--accent-secondary);
   border-radius: 6px;
   transition: width 0.3s ease;
   box-shadow: var(--progress-glow);
@@ -393,19 +393,19 @@ body {
 }
 .mantine-Button-root[data-variant="filled"]:hover {
   background-color: var(--accent-hover) !important;
-  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.3) !important;
+  box-shadow: var(--shadow-button), 0 0 12px rgba(123, 94, 167, 0.30) !important;
 }
 .mantine-Button-root[data-variant="filled"]:active {
   background-color: var(--accent-active) !important;
-  box-shadow: var(--shadow-button), 0 0 12px rgba(59, 74, 107, 0.15) !important;
+  box-shadow: var(--shadow-button), 0 0 12px rgba(123, 94, 167, 0.15) !important;
 }
 
 .mantine-Loader-root {
-  stroke: var(--accent) !important;
+  stroke: var(--accent-secondary) !important;
 }
 
 .mantine-Progress-bar {
-  background-color: var(--accent) !important;
+  background-color: var(--accent-secondary) !important;
 }
 
 .mantine-Badge-root[data-variant="filled"] {
