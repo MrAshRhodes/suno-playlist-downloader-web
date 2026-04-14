@@ -79,11 +79,11 @@ function App() {
     };
 
     const downloadPlaylist = async () => {
+        if (!playlistData || !playlistClips) return;
+
         checkAndShowDonationModal();
         setDownloadPercentage(0);
         setIsDownloading(true);
-
-        if (!playlistData || !playlistClips) return;
 
         setPlaylistClips((prevClips) =>
             prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Processing }))
