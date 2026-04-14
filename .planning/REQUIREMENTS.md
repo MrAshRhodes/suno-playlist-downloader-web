@@ -47,6 +47,15 @@
 - [ ] **ADS-03**: No manual ad units — Auto Ads only, Google controls placement
 - [ ] **ADS-04**: Graceful degradation when ad-blockers active — no broken layout, no detection messages
 
+### Donation Modal
+
+- [ ] **DON-01**: Modal triggers on 1st download and every 5th download after (1, 5, 10, 15...) via localStorage counter
+- [ ] **DON-02**: Modal uses gratitude-first tone — "Thanks for using Suno Downloader!" heading, soft support ask
+- [ ] **DON-03**: Banner image generated via nanobanana MCP — cozy coffee + music mashup, warm tones, inviting not corporate
+- [ ] **DON-04**: Centered overlay modal with banner image top, gratitude text middle, Buy Me a Coffee CTA button bottom
+- [ ] **DON-05**: Existing top support banner remains alongside modal — both serve different purposes
+- [ ] **DON-06**: localStorage download counter with no permanent opt-out — modal re-appears per trigger formula
+
 ## Future Requirements
 
 ### Enhanced Art
@@ -95,12 +104,18 @@
 | ADS-02 | Phase 4 | Pending |
 | ADS-03 | Phase 4 | Pending |
 | ADS-04 | Phase 4 | Pending |
+| DON-01 | Phase 7 | Pending |
+| DON-02 | Phase 7 | Pending |
+| DON-03 | Phase 7 | Pending |
+| DON-04 | Phase 7 | Pending |
+| DON-05 | Phase 7 | Pending |
+| DON-06 | Phase 7 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 21 total
-- Mapped to phases: 21
+- v2.0 requirements: 27 total
+- Mapped to phases: 27
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-13 after Phase 4 planning*
+*Last updated: 2026-04-14 after Phase 7 planning*

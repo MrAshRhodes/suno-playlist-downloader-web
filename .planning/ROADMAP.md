@@ -6,7 +6,7 @@ Three phases deliver the Monolith design system onto a fully working app. Phase 
 
 ## Milestones
 
-- 🚧 **v2.0 Monolith UI** - Phases 1-3 (in progress)
+- **v2.0 Monolith UI** - Phases 1-3 (in progress)
 
 ## Phases
 
@@ -108,10 +108,11 @@ Plans:
 
 ### Phase 7: Support donation modal with generated banner
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** A gratitude-first donation modal with generated coffee+music banner image appears at strategic download moments, encouraging users to support via Buy Me a Coffee
+**Requirements**: DON-01, DON-02, DON-03, DON-04, DON-05, DON-06
 **Depends on:** Phase 6
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 7 to break down)
+- [ ] 07-01-PLAN.md — Generate banner image asset via nanobanana MCP and build DonationModal component (DON-02, DON-03, DON-04)
+- [ ] 07-02-PLAN.md — Wire download counter and modal trigger logic into App.tsx (DON-01, DON-05, DON-06)
