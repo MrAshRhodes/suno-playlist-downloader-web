@@ -137,10 +137,10 @@ Plans:
 **Goal:** Resolve all open Dependabot security alerts by removing unused vulnerable packages, upgrading vite 4.x to 6.x, running npm audit fix across both root and client, and closing all alerts via GitHub CLI
 **Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07
 **Depends on:** Phase 7
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 08-01-PLAN.md — Remove unused multer, npm audit fix on root server deps (D-01, D-02, D-04, D-05)
+- [x] 08-01-PLAN.md — Remove unused multer, npm audit fix on root server deps (D-01, D-02, D-04, D-05)
 - [ ] 08-02-PLAN.md — Upgrade vite to 6.x, fix client audit, rebuild public/, close all GitHub alerts (D-01, D-02, D-03, D-04, D-05, D-06, D-07)
 
 ### Phase 9: SEO improvements and domain name suggestions to increase traffic usage and donations
