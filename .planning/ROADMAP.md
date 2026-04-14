@@ -132,15 +132,16 @@ Plans:
 - [x] 07-01-PLAN.md — Generate banner image asset via nanobanana MCP and build DonationModal component (DON-02, DON-03, DON-04)
 - [x] 07-02-PLAN.md — Wire download counter and modal trigger logic into App.tsx (DON-01, DON-05, DON-06)
 
-### Phase 8: Using the GitHub CLI, check dependabot alerts and resolve security issues
+### Phase 8: Dependabot Security
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Resolve all open Dependabot security alerts by removing unused vulnerable packages, upgrading vite 4.x to 6.x, running npm audit fix across both root and client, and closing all alerts via GitHub CLI
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07
 **Depends on:** Phase 7
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 8 to break down)
+- [ ] 08-01-PLAN.md — Remove unused multer, npm audit fix on root server deps (D-01, D-02, D-04, D-05)
+- [ ] 08-02-PLAN.md — Upgrade vite to 6.x, fix client audit, rebuild public/, close all GitHub alerts (D-01, D-02, D-03, D-04, D-05, D-06, D-07)
 
 ### Phase 9: SEO improvements and domain name suggestions to increase traffic usage and donations
 
