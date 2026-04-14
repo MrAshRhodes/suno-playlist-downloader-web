@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://suno-playlist-downloader.replit.app/sitemap.xml
+Sitemap: https://sunozip.com/sitemap.xml

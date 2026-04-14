@@ -4,7 +4,7 @@ A web-based application for downloading playlists from Suno. This is a conversio
 
 ## Live Demo
 
-Try the live hosted version: [https://suno-playlist-downloader.replit.app/](https://suno-playlist-downloader.replit.app/)
+Try the live hosted version: [https://sunozip.com/](https://sunozip.com/)
 
 ## Support the Project
 
