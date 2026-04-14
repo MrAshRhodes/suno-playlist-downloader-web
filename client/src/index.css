@@ -25,54 +25,58 @@ body {
 
 /* ─── Dark mode (default / primary) ─── */
 :root.dark-mode {
-  --bg-primary: #0A0A0A;
-  --bg-secondary: #111111;
-  --bg-card: #1A1A1A;
-  --bg-card-hover: #222222;
+  --bg-primary: #0B0D1A;
+  --bg-secondary: #0E1020;
+  --bg-card: #141828;
+  --bg-card-hover: #1C2035;
   --bg-input: rgba(255, 255, 255, 0.06);
   --text-primary: #FFFFFF;
   --text-secondary: #B3B3B3;
   --text-muted: rgba(255, 255, 255, 0.50);
-  --accent: #3B4A6B;
-  --accent-hover: #4E5F80;
-  --accent-active: #2F3D58;
-  --accent-glow: rgba(59, 74, 107, 0.25);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.04);
+  --accent: #7B5EA7;
+  --accent-hover: #8E71BA;
+  --accent-active: #6A4F91;
+  --accent-glow: rgba(123, 94, 167, 0.25);
+  --accent-secondary: #00C8FF;
+  --accent-secondary-glow: rgba(0, 200, 255, 0.20);
+  --border-color: rgba(123, 94, 167, 0.15);
+  --border-subtle: rgba(123, 94, 167, 0.08);
   --shadow-card: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.4);
-  --shadow-button: 0 2px 8px rgba(59, 74, 107, 0.3);
+  --shadow-button: 0 2px 8px rgba(123, 94, 167, 0.30);
   --banner-bg: rgba(255, 183, 77, 0.08);
   --banner-border: rgba(255, 183, 77, 0.2);
   --banner-text: #ffb74d;
   --progress-track: rgba(255, 255, 255, 0.06);
-  --progress-glow: 0 0 8px rgba(59, 74, 107, 0.5);
-  --scrollbar-thumb: rgba(255, 255, 255, 0.15);
-  --scrollbar-hover: rgba(255, 255, 255, 0.25);
+  --progress-glow: 0 0 8px rgba(0, 200, 255, 0.50);
+  --scrollbar-thumb: rgba(123, 94, 167, 0.25);
+  --scrollbar-hover: rgba(123, 94, 167, 0.40);
 }
 
 /* ─── Light mode ─── */
 :root.light-mode {
-  --bg-primary: #F2EFE9;
-  --bg-secondary: #EAE6DF;
-  --bg-card: #E8E4DB;
-  --bg-card-hover: #DDD9D0;
+  --bg-primary: #F0F2F8;
+  --bg-secondary: #E8EAF2;
+  --bg-card: #E4E7F0;
+  --bg-card-hover: #D8DCE8;
   --bg-input: rgba(0, 0, 0, 0.04);
-  --text-primary: #332F2E;
-  --text-secondary: #6E6860;
-  --text-muted: rgba(51, 47, 46, 0.70);
-  --accent: #3B4A6B;
-  --accent-hover: #4E5F80;
-  --accent-active: #2F3D58;
-  --accent-glow: rgba(59, 74, 107, 0.15);
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-subtle: rgba(0, 0, 0, 0.04);
+  --text-primary: #1A1A2E;
+  --text-secondary: #5A5A7A;
+  --text-muted: rgba(26, 26, 46, 0.60);
+  --accent: #6B4F96;
+  --accent-hover: #7D60A8;
+  --accent-active: #5A4080;
+  --accent-glow: rgba(107, 79, 150, 0.15);
+  --accent-secondary: #0099CC;
+  --accent-secondary-glow: rgba(0, 153, 204, 0.15);
+  --border-color: rgba(107, 79, 150, 0.12);
+  --border-subtle: rgba(107, 79, 150, 0.06);
   --shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
-  --shadow-button: 0 2px 8px rgba(59, 74, 107, 0.2);
+  --shadow-button: 0 2px 8px rgba(107, 79, 150, 0.20);
   --banner-bg: rgba(255, 152, 0, 0.08);
   --banner-border: rgba(255, 152, 0, 0.25);
   --banner-text: #bf360c;
   --progress-track: rgba(0, 0, 0, 0.06);
-  --progress-glow: 0 0 8px rgba(59, 74, 107, 0.35);
-  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
-  --scrollbar-hover: rgba(0, 0, 0, 0.25);
+  --progress-glow: 0 0 8px rgba(0, 153, 204, 0.40);
+  --scrollbar-thumb: rgba(107, 79, 150, 0.20);
+  --scrollbar-hover: rgba(107, 79, 150, 0.35);
 }
