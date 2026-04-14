@@ -143,12 +143,13 @@ Plans:
 - [x] 08-01-PLAN.md — Remove unused multer, npm audit fix on root server deps (D-01, D-02, D-04, D-05)
 - [x] 08-02-PLAN.md — Upgrade vite to 6.x, fix client audit, rebuild public/, close all GitHub alerts (D-01, D-02, D-03, D-04, D-05, D-06, D-07)
 
-### Phase 9: SEO improvements and domain name suggestions to increase traffic usage and donations
+### Phase 9: SEO & Domain
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Add comprehensive SEO infrastructure (meta tags, OG social cards, Twitter Cards, JSON-LD structured data, canonical URL, robots.txt, sitemap.xml) and research custom domain name candidates
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09, D-10, D-11
 **Depends on:** Phase 8
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 9 to break down)
+- [ ] 09-01-PLAN.md — SEO meta tags, OG/Twitter cards, JSON-LD, canonical, robots.txt, sitemap.xml, OG image pipeline (D-01, D-02, D-03, D-04, D-06, D-07, D-08, D-09, D-10, D-11)
+- [ ] 09-02-PLAN.md — Domain name research and availability check with ranked suggestions (D-05)
