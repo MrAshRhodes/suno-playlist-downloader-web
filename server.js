@@ -57,24 +57,11 @@ app.get('/api/debug', (req, res) => {
 // Serve static assets if in production
 // Check multiple possible dist locations for Replit environment
 const possiblePaths = [
-  path.join(__dirname, 'client/dist'),                // Default path
-  path.join(__dirname, '../client/dist'),             // One level up
-  '/home/runner/suno-playlist-downloader-web/client/dist',  // Replit path with repo name
-  '/home/runner/client/dist',                         // Replit alternative
+  path.join(__dirname, 'public'),                     // Pre-built static files (primary)
+  '/home/runner/workspace/public',                    // Replit workspace public directory
+  path.join(__dirname, 'client/dist'),                // Vite build output
   path.resolve(process.cwd(), 'client/dist'),         // Absolute path from current directory
   path.join(__dirname, 'dist'),                       // Directly in root
-  path.join(__dirname, 'public'),                     // Static files in public directory
-  process.cwd(),                                      // Current working directory root (for debugging)
-  '/home/runner',                                     // Replit root
-  '/home/runner/suno-playlist-downloader-web',        // Replit project root
-  path.join(__dirname, '../dist'),                    // One level up, dist folder
-  '/home/runner/app/client/dist',                     // Alternative Replit path
-  path.join(process.cwd(), '../client/dist'),         // One level up from cwd
-  // Additional Replit paths
-  '/home/runner/suno-playlist-downloader/client/dist',
-  '/home/runner/dist',
-  '/home/runner/app/dist',
-  '/home/runner/workspace/public'                     // Replit public directory
 ];
 
 // Log environment for debugging
