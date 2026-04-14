@@ -175,9 +175,13 @@ function App() {
                   </div>
                 </div>
 
-                {/* Step 1: Paste link */}
-                <h3 className="section-heading">1. Paste playlist link</h3>
-                <div style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
+                {/* Step 1: Paste link — per D-03, D-04 */}
+                <div className="step-card monolith-card">
+                  <div className="step-heading">
+                    <div className="step-number">1</div>
+                    <h3 className="section-heading" style={{ margin: 0 }}>Paste playlist link</h3>
+                  </div>
+                  <div style={{ display: "flex", gap: "10px" }}>
                     <input
                         type="text"
                         value={playlistUrl}
@@ -193,11 +197,16 @@ function App() {
                     >
                         Get playlist songs
                     </button>
+                  </div>
                 </div>
 
-                {/* Step 2: Review songs */}
-                <h3 className="section-heading">2. Review songs</h3>
-                <div className="monolith-card" style={{ marginBottom: "24px", padding: "0", maxHeight: "340px", overflowY: "auto" }}>
+                {/* Step 2: Review songs — per D-03, D-04 */}
+                <div className="step-card monolith-card">
+                  <div className="step-heading">
+                    <div className="step-number">2</div>
+                    <h3 className="section-heading" style={{ margin: 0 }}>Review songs</h3>
+                  </div>
+                  <div className="monolith-card song-table-card" style={{ padding: 0, maxHeight: "340px", overflowY: "auto" }}>
                     <table ref={songTable} className="song-table">
                         <thead>
                             <tr>
@@ -234,11 +243,16 @@ function App() {
                             ))}
                         </tbody>
                     </table>
+                  </div>
                 </div>
 
-                {/* Step 3: Download */}
-                <h3 className="section-heading">3. Download playlist</h3>
-                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "24px" }}>
+                {/* Step 3: Download — per D-03, D-04 */}
+                <div className="step-card monolith-card">
+                  <div className="step-heading">
+                    <div className="step-number">3</div>
+                    <h3 className="section-heading" style={{ margin: 0 }}>Download playlist</h3>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
                         onClick={downloadPlaylist}
                         disabled={isGettingPlaylist || isDownloading || !playlistData}
@@ -248,6 +262,7 @@ function App() {
                         <IconDownload size={18} />
                         Download as ZIP
                     </button>
+                  </div>
                 </div>
 
                 {/* Progress bar */}

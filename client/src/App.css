@@ -305,6 +305,44 @@ body {
   z-index: 2;
 }
 
+/* ─── Step cards ─── */
+.step-card {
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.step-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-heading .section-heading {
+  margin: 0;
+}
+
+/* Inner table card inside Step 2 — reduced radius, subtle border */
+.song-table-card {
+  border-radius: 16px;
+  border-color: var(--border-subtle);
+  margin-bottom: 0;
+}
+
 /* ─── Scrollbar ─── */
 /* Firefox scrollbar */
 * {
