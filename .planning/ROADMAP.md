@@ -114,10 +114,10 @@ Plans:
 **Goal:** Harmonize the full app color palette, card borders, buttons, and accent system with the neon navy/purple/cyan hero banner — CSS variable value swap with dual accent system (purple for actions, cyan for progress/status)
 **Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09, D-10, D-11, D-12, D-13
 **Depends on:** Phase 6
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 06.1-01-PLAN.md — Update CSS variable palette (both themes) and wire dual accent system (D-01 through D-13)
+- [x] 06.1-01-PLAN.md — Update CSS variable palette (both themes) and wire dual accent system (D-01 through D-13)
 
 **UI hint**: yes
 
