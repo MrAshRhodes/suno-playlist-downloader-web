@@ -1,7 +1,8 @@
 ---
 phase: 10
 slug: replace-adsense-with-adsterra-banner-and-media-net
-status: draft
+status: approved
+reviewed_at: 2026-04-27
 shadcn_initialized: false
 preset: none
 created: 2026-04-27
