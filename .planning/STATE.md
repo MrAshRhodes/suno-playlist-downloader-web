@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
-status: ready_to_execute
-stopped_at: Phase 10 planned — 6 plans / 4 waves
-last_updated: "2026-04-27T00:00:00.000Z"
+status: in_progress
+stopped_at: Completed 10-02-PLAN.md (Wave 1 — static config patches)
+last_updated: "2026-04-27T17:52:52.000Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 11
   completed_phases: 9
   total_plans: 21
-  completed_plans: 14
-  percent: 67
+  completed_plans: 15
+  percent: 71
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 ## Current Position
 
 Phase: 10
-Plan: 10-01 (next)
-Status: Ready to execute — 6 plans queued
+Plan: 10-03 (next — 10-01 deferred awaiting account registration)
+Status: In progress — 1/6 plans complete (10-02 done, 10-01 deferred to Wave 0 unblock)
 Last activity: 2026-04-27
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 71%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [██████████] 100%
 | Phase 08 P02 | 2min | 2 tasks | 5 files |
 | Phase 09 P01 | 2min | 2 tasks | 6 files |
 | Phase 09 P02 | 5min | 1 tasks | 1 files |
+| Phase 10 P02 | 3min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,10 @@ Progress: [██████████] 100%
 - [Phase 09]: Disallowed /api/ in robots.txt per threat model T-09-01 -- prevents crawler exposure of internal API routes
 - [Phase 09]: sunozip.com recommended as top domain -- perfect suno+zip keyword match, .com trust, 8 chars
 - [Phase 09]: Triple-check methodology for .app TLD availability: whois + RDAP + DNS NXDOMAIN
+- [Phase 10]: Use placeholder publisher IDs in ads.txt while plan 10-01 deferred — wave-0 directive overrides plan's strict regex verifier
+- [Phase 10]: Sovrn cert hash fafdf38b16bf6b2b is literal constant per RESEARCH §9.1 (not substituted)
+- [Phase 10]: Sitemap legal-page convention — changefreq=yearly, priority=0.3 for /privacy
+- [Phase 10]: REQUIREMENTS.md Coverage incremented 27 → 36 with 9 ADM-* backfill rows
 
 ### Pending Todos
 
@@ -122,6 +127,6 @@ Progress: [██████████] 100%
 
 ## Session Continuity
 
-Last session: 2026-04-14T14:04:28.397Z
-Stopped at: Completed 09-02-PLAN.md
+Last session: 2026-04-27T17:52:52.000Z
+Stopped at: Completed 10-02-PLAN.md (Wave 1 — static config + REQUIREMENTS backfill)
 Resume file: None
