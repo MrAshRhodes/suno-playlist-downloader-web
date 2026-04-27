@@ -26,6 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Donation Modal** - Gratitude-first donation modal with generated banner
 - [ ] **Phase 8: Dependabot Security** - Resolve dependabot alerts via GitHub CLI
 - [ ] **Phase 9: SEO & Domain** - SEO improvements and domain name suggestions
+- [ ] **Phase 10: Adsterra Monetisation** - Replace blocked AdSense with Adsterra banner + parallel Media.net submission
 
 ## Phase Details
 
@@ -153,3 +154,32 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md — SEO meta tags, OG/Twitter cards, JSON-LD, canonical, robots.txt, sitemap.xml, OG image pipeline (D-01, D-02, D-03, D-04, D-06, D-07, D-08, D-09, D-10, D-11)
 - [x] 09-02-PLAN.md — Domain name research and availability check with ranked suggestions (D-05)
+
+### Phase 10: Adsterra Monetisation (banner-only) + Media.net submission
+
+**Goal:** Live revenue-earning ad slot on sunozip.com within 1 day of merge — Adsterra banner-only integration approved and rendering via a CLS-safe `AdSlot` React component, ads.txt updated to a transitional dual-entry (AdSense + Adsterra), Media.net application submitted as higher-rep secondary, dormant AdSense snippet retained for future reapply, ad styling matches the dark neon aesthetic with FTC-compliant "Advertisement" label
+**Requirements**: ADM-01, ADM-02, ADM-03, ADM-04, ADM-05, ADM-06, ADM-07, ADM-08, ADM-09
+**Depends on:** Phase 9 (sunozip.com live, ads.txt route exists)
+**Plans:** 6 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — Wave 0: User-action gate (Adsterra/Sovrn/Iubenda accounts, Media.net submission, .env populated) (ADM-01, ADM-07)
+- [ ] 10-02-PLAN.md — Wave 1: public/ads.txt + sitemap.xml + robots.txt audit + REQUIREMENTS.md backfill (ADM-03, ADM-06, ADM-08)
+- [ ] 10-03-PLAN.md — Wave 1: AdSlot.tsx + Privacy.tsx + .env.example new files (ADM-02, ADM-06)
+- [ ] 10-04-PLAN.md — Wave 1: Sovrn signal head-script dual-file sync in client/index.html + public/index.html (ADM-04, ADM-08)
+- [ ] 10-05-PLAN.md — Wave 2: App.tsx integration — imports, path conditional, AdSlot+label+footer link (ADM-05, ADM-06, ADM-09)
+- [ ] 10-06-PLAN.md — Wave 3: Build, deploy, curl/Lighthouse verification, manual UAT (ADM-01..09)
+
+**Reference:** `.planning/research/ad-networks-vs-adsense.md` — §6 AdSlot.tsx, §9 copy-paste snippets (ads.txt, index.html, App.tsx patch, .env.example), §10 AdSense reapply checklist, §13 open questions for planner.
+
+**Requirements detail:**
+- ADM-01: Adsterra publisher account approved with popunder/direct-link/social-bar formats DISABLED in dashboard
+- ADM-02: `<AdSlot>` React component (Mantine v6 + CSS-vars + min-height reservation) rendering banner without layout shift (CLS <0.1)
+- ADM-03: `public/ads.txt` updated as transitional dual-entry containing both AdSense and Adsterra publisher records, served at https://sunozip.com/ads.txt
+- ADM-04: Adsterra script tag wired (in `public/index.html` or component) with no CSP/CORS regressions on Replit/Cloud Run
+- ADM-05: First banner placement at bottom of page, dark-mode friendly, "Advertisement" label visible per FTC
+- ADM-06: Privacy policy page added (required for Media.net + future AdSense reapply); robots.txt + sitemap.xml updated
+- ADM-07: Media.net publisher application submitted (logged with date and ticket ID)
+- ADM-08: Sovrn Commerce outbound-link rewriter integrated (one script, orthogonal to display ads)
+- ADM-09: All download flows, settings, and API calls function identically — no functional regressions
+
