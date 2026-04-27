@@ -19,6 +19,8 @@ import Logger from "./services/Logger";
 import StatusIcon from "./components/StatusIcon";
 import scrollIntoView from "scroll-into-view-if-needed";
 import DonationModal from './components/DonationModal';
+import AdSlot from './components/AdSlot';
+import Privacy from './pages/Privacy';
 
 function App() {
     const { theme, toggleTheme } = useDarkMode();
@@ -145,6 +147,13 @@ function App() {
     useEffect(() => {
         document.documentElement.className = theme === 'dark' ? 'dark-mode' : 'light-mode';
     }, [theme]);
+
+    // Phase 10 ADM-06: path-based route — render Privacy page when URL is /privacy.
+    // No router needed for two routes (per CONTEXT.md locked decision; saves ~50KB dep).
+    // Must run AFTER all hooks (rules-of-hooks) and BEFORE the main return.
+    if (typeof window !== 'undefined' && window.location.pathname === '/privacy') {
+        return <Privacy />;
+    }
 
     return (
         <>
@@ -277,14 +286,42 @@ function App() {
                     </div>
                 )}
 
-                {/* Footer */}
+                {/* Phase 10 ADM-05: Advertisement label (overrides Phase 4 D-13 — FTC/EU disclosure) */}
+                <div
+                    style={{
+                        textAlign: 'center',
+                        fontSize: 11,
+                        fontWeight: 400,
+                        color: 'var(--text-muted)',
+                        marginTop: 32,
+                        marginBottom: -16,
+                        letterSpacing: '0.06em',
+                        width: 728,
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        lineHeight: 1,
+                    }}
+                >
+                    Advertisement
+                </div>
+                {/* Phase 10 ADM-02, ADM-05: Adsterra banner — replaces failed AdSense Auto Ads */}
+                <AdSlot
+                    adKey={import.meta.env.VITE_ADSTERRA_UNIT_KEY ?? ''}
+                    width={728}
+                    height={90}
+                />
+
+                {/* Footer (modified — Phase 10 ADM-06: Privacy Policy link added) */}
                 <footer className="app-footer">
                     <span>
                         Based on <a href="https://github.com/DrummerSi/suno-downloader" target="_blank" rel="noopener noreferrer">DrummerSi's</a> original app
                     </span>
-                    <a href="https://ko-fi.com/drummer_si" target="_blank" rel="noopener noreferrer">
-                        Support Original Author
-                    </a>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <a href="/privacy">Privacy Policy</a>
+                        <a href="https://ko-fi.com/drummer_si" target="_blank" rel="noopener noreferrer">
+                            Support Original Author
+                        </a>
+                    </div>
                 </footer>
             </div>
 
