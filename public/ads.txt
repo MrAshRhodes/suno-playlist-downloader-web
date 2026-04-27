@@ -1,1 +1,11 @@
+# Google AdSense — kept inert pending reapply (currently rejected, harmless)
 google.com, pub-2601322490070593, DIRECT, f08c47fec0942fa0
+
+# Adsterra (Phase 10 primary display network) — values from Adsterra Account → ads.txt
+# DEFERRED: real publisher ID + tag hash to be substituted in plan 10-01 when account registered
+adsterra.com, YOUR_ADSTERRA_PUB_ID, DIRECT, YOUR_ADSTERRA_TAG_HASH
+
+# Sovrn Commerce (Phase 10 affiliate-link rewriter — both lijit.com + sovrn.com required per Sovrn KB)
+# DEFERRED: real publisher ID to be substituted in plan 10-01 when account registered
+lijit.com, YOUR_SOVRN_PUB_ID, DIRECT, fafdf38b16bf6b2b
+sovrn.com, YOUR_SOVRN_PUB_ID, DIRECT, fafdf38b16bf6b2b
