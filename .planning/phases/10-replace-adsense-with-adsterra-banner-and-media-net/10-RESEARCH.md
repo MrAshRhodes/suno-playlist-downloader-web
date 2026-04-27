@@ -1065,27 +1065,33 @@ Sitemap: https://sunozip.com/sitemap.xml
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+> All four questions resolved 2026-04-27 during planner revision pass. Each resolution captured inline below.
 
 1. **Will Sovrn approve a brand-new domain (sunozip.com, ~13 days old at submission) for Commerce?**
    - What we know: Sovrn Commerce has "no traffic minimum" and "approval in days" per research §3.5.
    - What's unclear: Whether they have an undocumented domain-age requirement.
    - Recommendation: Submit anyway. If rejected on domain age, the AdSense + Adsterra entries in ads.txt still work; just remove the Sovrn lines. ADM-08 deferred to a follow-up phase.
+   - **RESOLVED:** Submit; if Sovrn rejects on domain age, plan 02 ads.txt drops to 3 lines (Google + Adsterra DIRECT + AdSense inert) and plan 04 omits the Sovrn signal head script. Plans 02 + 04 verify blocks now tolerate both branches. ADM-08 marked `deferred` (not `closed`) in 10-06-SUMMARY.md if the deferred branch is taken; phase 10 still ships.
 
 2. **Is "Privacy Policy" the correct footer link text, or should it be "Privacy & Cookies"?**
    - What we know: Sunozip.com does not yet have a cookie consent banner. Iubenda's free privacy policy covers data collection, not cookie consent.
    - What's unclear: Should the link foreshadow future cookie consent, or stay narrowly scoped now?
    - Recommendation: Use "Privacy Policy" now. When cookie consent is added (deferred), update to "Privacy & Cookies" or add a separate `/cookies` link.
+   - **RESOLVED:** "Privacy Policy" — the literal text shipped in plan 05 patch 3 (`<a href="/privacy">Privacy Policy</a>`). Cookie consent is a deferred idea; rename when/if added.
 
 3. **Should the `MEDIA-NET-SUBMISSION.md` artifact also track the Sovrn application separately?**
    - What we know: ADM-07 is specifically about Media.net.
    - What's unclear: Where Sovrn's application status lives.
    - Recommendation: Keep `MEDIA-NET-SUBMISSION.md` Media.net-specific (per ADM-07). Add a sibling `SOVRN-SUBMISSION.md` if Sovrn's application is non-trivial; or fold both into a single `EXTERNAL-APPLICATIONS-LOG.md` if the planner prefers consolidation.
+   - **RESOLVED:** Keep `MEDIA-NET-SUBMISSION.md` scoped to Media.net (ADM-07). Sovrn status is captured inline in 10-01-SUMMARY.md (approval date or `deferred — Adsterra-only`). No sibling submission-log artifact this phase.
 
 4. **Should the AdSlot fail loudly (console.warn) when `VITE_ADSTERRA_UNIT_KEY` is empty, or fail silently?**
    - What we know: Empty key currently silently renders an empty placeholder (per the `if (!adKey) return;` guard in Pattern 1).
    - What's unclear: Whether contributors running locally without an Adsterra account benefit from a console warning.
    - Recommendation: Add a `console.warn('[AdSlot] VITE_ADSTERRA_UNIT_KEY not set — banner will not render');` once per mount when key is empty. Helps debugging without breaking dev.
+   - **RESOLVED — silent failure (overrides the recommendation above).** AdSlot fails silently when `adKey` is empty: no `console.warn`, just an empty wrapper with reserved layout. Rationale: aligns with Phase 4 D-09 graceful-degradation pattern + research §7 "Don't Hand-Roll" (advertiser-script presence is non-essential — UI must not surface ad-tooling state to end users). Contributors running locally without Adsterra credentials get a perfectly usable app; the empty wrapper is self-explanatory in DevTools (visible 728x90 div with the `aria-label="Advertisement"` attribute) without polluting the console for production users. Plan 03 task 1 JSDoc and AdSlot.tsx inline comment must reflect this resolution explicitly.
 
 ---
 
