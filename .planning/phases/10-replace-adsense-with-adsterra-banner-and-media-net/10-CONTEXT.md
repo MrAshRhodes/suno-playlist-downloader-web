@@ -52,41 +52,45 @@ Replace the rejected AdSense integration with a live, revenue-earning Adsterra b
 - "Advertisement" label rendered in 11px `var(--text-muted)`, centered, immediately above the AdSlot wrapper. This overrides the Phase 4 D-13 "no label" decision because Adsterra EU traffic policy + FTC require disclosure.
 - Single ad unit only until 5K sessions/month — fill rate under 70% at low traffic punishes multi-slot layouts. (Research §6 "Key constraint")
 
-### `ads.txt` (LOCKED from ADM-03 + research §9.1)
-- Single source of truth: `client/public/ads.txt` (Vite-canonical). Vite copies it into the build output; `deploy.sh` propagates to `public/`.
-- Audit before edit: `find . -name ads.txt -not -path "*/node_modules/*"` — must return exactly one path. If a duplicate exists in repo `public/`, delete it before editing. (Research Pitfall 1)
-- Contents: AdSense entry (kept inert), Adsterra DIRECT entry, Sovrn DIRECT entry. Comments allowed and encouraged for human readability.
+### `ads.txt` (LOCKED from ADM-03 + research §9.1 + Phase 10 RESEARCH §A1)
+- Single source of truth: `public/ads.txt` (repo root `public/`, NOT `client/public/`). Verified by `find . -name ads.txt` returning exactly one path: `./public/ads.txt`. Phase 9 commit 336b11b + `server.js` lines 100–110 add explicit route handlers (`app.get('/ads.txt', ...)`) that resolve from `public/ads.txt` directly. CONTEXT.md initial draft was wrong — corrected per research validation.
+- Edit `public/ads.txt` directly. No Vite propagation involved for this file (the explicit Express route serves it).
+- Audit before edit: `find . -name ads.txt -not -path "*/node_modules/*"` — must return exactly one path (`./public/ads.txt`). If a duplicate exists, delete it before editing. (Research Pitfall 1)
+- Contents: AdSense entry (kept inert), Adsterra DIRECT entry, Sovrn `lijit.com` DIRECT entry, Sovrn `sovrn.com` DIRECT entry (Sovrn KB requires both lines). Comments allowed and encouraged for human readability.
 - Verify served at `https://sunozip.com/ads.txt` after deploy. Adsterra polls hourly.
 
-### Script injection sites (LOCKED from research §6 source-of-truth rule + §9.2)
+### Script injection sites (LOCKED from research §6 source-of-truth rule + §9.2 + Phase 10 RESEARCH §A3)
 - Edit `client/index.html` first (Vite source).
 - Sync identical head changes into `public/index.html` (deploy survives `deploy.sh cp -r client/dist/* public/`).
-- Three new script tags in `<head>`:
+- Head script tags:
   1. AdSense (kept inert — already present, no change required).
-  2. Adsterra invoke: `<script type="text/javascript" src="//www.highperformanceformat.com/YOUR_ADSTERRA_UNIT_KEY/invoke.js" async></script>`.
-  3. Sovrn Commerce: `<script async src="//ad.lijit.com/www/sovrn_signal/sovrn_signal.js?iid=YOUR_SOVRN_SITE_ID"></script>`.
+  2. Sovrn Commerce signal: `<script async src="//ad.lijit.com/www/sovrn_signal/sovrn_signal.js?iid=YOUR_SOVRN_SITE_ID"></script>` — global outbound-link rewriter, head-level is correct.
+- **Adsterra invoke does NOT go in `<head>`.** `atOptions` is a per-unit global; head injection runs before any per-component config exists, breaking the integration. Inject Adsterra invoke ONLY inside `AdSlot.tsx`'s `useEffect` (per research §6 component pattern). Phase 10 RESEARCH §A3 verified this against canonical research and JoshWP integration guide.
+- Iubenda widget script is mounted ONLY on the `/privacy` route, not head — keeps cookies/tracking off the main download flow.
 
 ### Environment variables (LOCKED from research §9.5)
 - `client/.env` (gitignored): `VITE_ADSTERRA_UNIT_KEY=...`, `VITE_SOVRN_SITE_ID=...`, `VITE_ADSTERRA_PUB_ID=...`, `VITE_SOVRN_PUB_ID=...`, `VITE_ADSTERRA_TAG_HASH=...`.
 - `client/.env.example` (committed): same keys with placeholder values + comments pointing to dashboard locations.
 - Vite exposes `VITE_*` to the client bundle. Adsterra unit keys are public anyway (visible in network tab). This is tidiness, not security.
 
-### Privacy policy page (LOCKED from ADM-06 + research §10)
+### Privacy policy page (LOCKED from ADM-06 + research §10 + Phase 10 RESEARCH §A2)
 - Generate via Iubenda free tier (≤1K pageviews tier — adequate for current traffic).
-- Route at `/privacy`. Implementation choices:
-  - **Preferred:** new React route component `client/src/pages/Privacy.tsx` rendered at `/privacy` via React Router or simple conditional in App.tsx (project does not currently use a router — simplest is a dedicated `<Route>` or a manual `if (window.location.pathname === '/privacy')` branch). **Claude's Discretion** below covers this.
-  - Iubenda offers an embedded JS widget OR a hosted URL. Use the embedded widget pattern so the page is part of sunozip.com (improves SEO + counts toward AdSense reapply page count).
-- Add `/privacy` to `client/public/sitemap.xml` (created Phase 9). Add a footer link.
-- Robots.txt: confirm `/privacy` is not disallowed (audit `client/public/robots.txt`). No changes expected unless prior wildcard blocks it.
+- Route at `/privacy`. **Implementation: path-based conditional render in `App.tsx`** (`if (window.location.pathname === '/privacy') return <Privacy />`). Phase 10 RESEARCH verified `react-router-dom` is absent from `client/package.json` and zero matches in `client/src/`. Path-conditional saves ~50KB dependency and matches the project's "no functional changes" framing.
+- New file: `client/src/pages/Privacy.tsx` — renders the Iubenda embedded widget script + a Mantine container styled to match the Monolith dark theme.
+- Iubenda standard embedding pattern (mount script + `<a class="iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe">` link OR direct `<iframe>` for instant SEO indexing — RESEARCH recommends the embed div + script for SEO).
+- Add a "Privacy Policy" footer link in `App.tsx` pointing to `/privacy`.
 
-### Sitemap + robots.txt updates (LOCKED from ADM-06)
-- `client/public/sitemap.xml` — append `<url>` entry for `https://sunozip.com/privacy`.
-- `client/public/robots.txt` — verify `/privacy` is allowed; no other changes needed.
+### Sitemap + robots.txt updates (LOCKED from ADM-06 + Phase 10 RESEARCH §A1)
+- Sitemap path: verify whether the canonical sitemap lives at `public/sitemap.xml` (mirrors `public/ads.txt` route pattern) or `client/public/sitemap.xml`. Phase 9 created it; check `server.js` route handlers around lines 100–110 for the served path. Edit the canonical file only.
+- Append `<url>` entry for `https://sunozip.com/privacy` with `<lastmod>` set to deploy date.
+- Robots.txt path: same audit pattern — find the canonical file and verify `/privacy` is not disallowed. No changes expected unless a wildcard blocks it.
 
-### Sovrn Commerce wiring (LOCKED from ADM-08 + research §3.5, §9.2)
-- Install single script tag in head (alongside Adsterra invoke).
-- ads.txt entry: `lijit.com, YOUR_SOVRN_PUB_ID, DIRECT, fafdf38b16bf6b2b`.
-- No code changes required beyond the script tag — Sovrn auto-rewrites outbound merchant links.
+### Sovrn Commerce wiring (LOCKED from ADM-08 + research §3.5, §9.2 + Phase 10 RESEARCH validation)
+- Install single Sovrn signal script tag in `<head>` (alongside the dormant AdSense snippet — Adsterra invoke does NOT live in head; see AdSlot decision).
+- ads.txt entries: TWO lines required per Sovrn KB —
+  - `lijit.com, YOUR_SOVRN_PUB_ID, DIRECT, fafdf38b16bf6b2b`
+  - `sovrn.com, YOUR_SOVRN_PUB_ID, DIRECT, fafdf38b16bf6b2b`
+- No application code changes required beyond the head script tag — Sovrn auto-rewrites outbound merchant links.
 - Privacy policy page MUST exist before activating Sovrn (their ToS requires it). Plan task ordering reflects this.
 
 ### Media.net submission (LOCKED from ADM-07)
@@ -178,7 +182,7 @@ Replace the rejected AdSense integration with a live, revenue-earning Adsterra b
 
 - AdSlot signature exactly per research §6 — width, height, adKey, optional className.
 - 728x90 banner format. 300x250 mobile variant deferred.
-- ads.txt single-source-of-truth at `client/public/ads.txt`.
+- ads.txt single-source-of-truth at `public/ads.txt` (verified by Phase 10 RESEARCH §A1 — explicit Express route in server.js).
 - AdSense snippet preserved inert in head — comment-tagged for clarity.
 - "Advertisement" label: 11px, `var(--text-muted)`, centered, directly above the slot.
 - Iubenda free tier for privacy policy. Embedded widget on `/privacy` React route.
