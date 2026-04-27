@@ -62,11 +62,11 @@
 - [x] **ADM-02**: `<AdSlot>` React component (Mantine v6 + CSS-vars + min-height reservation) rendering banner without layout shift (CLS <0.1)
 - [ ] **ADM-03**: `public/ads.txt` updated as transitional dual-entry containing AdSense, Adsterra, and Sovrn publisher records, served at https://sunozip.com/ads.txt
 - [ ] **ADM-04**: Adsterra script tag wired with no CSP/CORS regressions on Replit/Cloud Run
-- [ ] **ADM-05**: First banner placement above footer, dark-mode friendly, "Advertisement" label visible per FTC
-- [ ] **ADM-06**: Privacy policy page added at /privacy (Iubenda standard embedding); robots.txt + sitemap.xml updated
+- [x] **ADM-05**: First banner placement above footer, dark-mode friendly, "Advertisement" label visible per FTC
+- [x] **ADM-06**: Privacy policy page added at /privacy (Iubenda standard embedding); robots.txt + sitemap.xml updated
 - [ ] **ADM-07**: Media.net publisher application submitted (logged with date and ticket ID)
 - [ ] **ADM-08**: Sovrn Commerce outbound-link rewriter integrated (one head script, ads.txt entries)
-- [ ] **ADM-09**: All download flows, settings, and API calls function identically — no functional regressions
+- [x] **ADM-09**: All download flows, settings, and API calls function identically — no functional regressions
 
 ## Future Requirements
 
@@ -126,11 +126,11 @@
 | ADM-02 | Phase 10 | Complete |
 | ADM-03 | Phase 10 | Pending |
 | ADM-04 | Phase 10 | Pending |
-| ADM-05 | Phase 10 | Pending |
-| ADM-06 | Phase 10 | Pending |
+| ADM-05 | Phase 10 | Complete |
+| ADM-06 | Phase 10 | Complete |
 | ADM-07 | Phase 10 | Pending |
 | ADM-08 | Phase 10 | Pending |
-| ADM-09 | Phase 10 | Pending |
+| ADM-09 | Phase 10 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 36 total

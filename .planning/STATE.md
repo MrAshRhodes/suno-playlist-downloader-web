@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 10-04-PLAN.md (Wave 1 — DEFERRED branch; Sovrn head injection skipped pending Wave 0)
-last_updated: "2026-04-27T18:05:00.000Z"
+stopped_at: Completed 10-05-PLAN.md (Wave 2 — App.tsx integration: AdSlot + Privacy route + footer link)
+last_updated: "2026-04-27T18:30:00.000Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 11
   completed_phases: 9
   total_plans: 21
-  completed_plans: 17
-  percent: 81
+  completed_plans: 18
+  percent: 86
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 ## Current Position
 
 Phase: 10
-Plan: 10-05 (next — 10-01 still deferred awaiting account registration)
-Status: In progress — 3/6 plans complete (10-02, 10-03, 10-04 done; 10-04 via DEFERRED branch; 10-01 still deferred to Wave 0 unblock)
+Plan: 10-06 (next — 10-01 still deferred awaiting account registration)
+Status: In progress — 4/6 plans complete (10-02, 10-03, 10-04, 10-05 done; 10-04 via DEFERRED branch; 10-01 still deferred to Wave 0 unblock)
 Last activity: 2026-04-27
 
-Progress: [████████░░] 81%
+Progress: [████████▌░] 86%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [████████░░] 81%
 | Phase 10 P02 | 3min | 3 tasks | 3 files |
 | Phase 10 P03 | 3min | 3 tasks | 3 files |
 | Phase 10 P04 | 1min | 1 tasks | 1 files | (DEFERRED branch — Sovrn head injection skipped, only SUMMARY created)
+| Phase 10 P05 | 3min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,9 @@ Progress: [████████░░] 81%
 - [Phase 10]: New client/src/pages/ directory created for route-level components — App.tsx will use path-conditional render in plan 10-05 (no react-router-dom dep)
 - [Phase 10]: Plan 10-04 executed DEFERRED branch — client/.env absent, Sovrn head injection skipped to avoid emitting a malformed `?iid={...}` URL on every page load. ADM-08 stays unchecked. Re-run 10-04 after plan 10-01 substitutes real VITE_SOVRN_SITE_ID.
 - [Phase 10]: server.js Helmet/CSP audit confirmed zero matches — when Sovrn re-runs, no CSP regression risk for `ad.lijit.com` or `highperformanceformat.com`
+- [Phase 10]: Path-based conditional render in App.tsx chosen over react-router-dom — saves ~50KB dep, two routes only, full reload on /privacy preferred for fresh Iubenda widget context
+- [Phase 10]: Advertisement label uses width: 728 + auto margins to center over 728px slot (not parent 1100px wrapper); marginBottom: -16 tightens vertical rhythm against AdSlot's margin: '32px auto'
+- [Phase 10]: AdSlot empty-key fallback via ?? '' in App.tsx — TypeScript-safe; AdSlot's internal `if (!adKey) return` guard handles silent no-op
 
 ### Pending Todos
 
@@ -136,6 +140,6 @@ Progress: [████████░░] 81%
 
 ## Session Continuity
 
-Last session: 2026-04-27T18:05:00.000Z
-Stopped at: Completed 10-04-PLAN.md (Wave 1 — DEFERRED branch; Sovrn head injection skipped pending Wave 0 re-run)
+Last session: 2026-04-27T18:30:00.000Z
+Stopped at: Completed 10-05-PLAN.md (Wave 2 — App.tsx integration: AdSlot + Privacy route + footer link)
 Resume file: None
