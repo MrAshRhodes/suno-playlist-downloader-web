@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 10-03-PLAN.md (Wave 1 — AdSlot.tsx + Privacy.tsx + .env.example)
-last_updated: "2026-04-27T17:59:03.000Z"
+stopped_at: Completed 10-04-PLAN.md (Wave 1 — DEFERRED branch; Sovrn head injection skipped pending Wave 0)
+last_updated: "2026-04-27T18:05:00.000Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 11
   completed_phases: 9
   total_plans: 21
-  completed_plans: 16
-  percent: 76
+  completed_plans: 17
+  percent: 81
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 ## Current Position
 
 Phase: 10
-Plan: 10-04 (next — 10-01 still deferred awaiting account registration)
-Status: In progress — 2/6 plans complete (10-02, 10-03 done; 10-01 deferred to Wave 0 unblock)
+Plan: 10-05 (next — 10-01 still deferred awaiting account registration)
+Status: In progress — 3/6 plans complete (10-02, 10-03, 10-04 done; 10-04 via DEFERRED branch; 10-01 still deferred to Wave 0 unblock)
 Last activity: 2026-04-27
 
-Progress: [████████░░] 76%
+Progress: [████████░░] 81%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [████████░░] 76%
 | Phase 09 P02 | 5min | 1 tasks | 1 files |
 | Phase 10 P02 | 3min | 3 tasks | 3 files |
 | Phase 10 P03 | 3min | 3 tasks | 3 files |
+| Phase 10 P04 | 1min | 1 tasks | 1 files | (DEFERRED branch — Sovrn head injection skipped, only SUMMARY created)
 
 ## Accumulated Context
 
@@ -112,6 +113,8 @@ Progress: [████████░░] 76%
 - [Phase 10]: Component-scoped third-party script injection (Adsterra invoke.js into AdSlot ref, Iubenda script appended to document.body inside Privacy useEffect) — keeps cookies/tracking off home flow
 - [Phase 10]: Adsterra wrapper is plain <div> not Mantine <Card> — Card elevated bg fights iframe transparency
 - [Phase 10]: New client/src/pages/ directory created for route-level components — App.tsx will use path-conditional render in plan 10-05 (no react-router-dom dep)
+- [Phase 10]: Plan 10-04 executed DEFERRED branch — client/.env absent, Sovrn head injection skipped to avoid emitting a malformed `?iid={...}` URL on every page load. ADM-08 stays unchecked. Re-run 10-04 after plan 10-01 substitutes real VITE_SOVRN_SITE_ID.
+- [Phase 10]: server.js Helmet/CSP audit confirmed zero matches — when Sovrn re-runs, no CSP regression risk for `ad.lijit.com` or `highperformanceformat.com`
 
 ### Pending Todos
 
@@ -133,6 +136,6 @@ Progress: [████████░░] 76%
 
 ## Session Continuity
 
-Last session: 2026-04-27T17:59:03.000Z
-Stopped at: Completed 10-03-PLAN.md (Wave 1 — AdSlot.tsx + Privacy.tsx + .env.example)
+Last session: 2026-04-27T18:05:00.000Z
+Stopped at: Completed 10-04-PLAN.md (Wave 1 — DEFERRED branch; Sovrn head injection skipped pending Wave 0 re-run)
 Resume file: None
