@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 10-02-PLAN.md (Wave 1 — static config patches)
-last_updated: "2026-04-27T17:52:52.000Z"
+stopped_at: Completed 10-03-PLAN.md (Wave 1 — AdSlot.tsx + Privacy.tsx + .env.example)
+last_updated: "2026-04-27T17:59:03.000Z"
 last_activity: 2026-04-27
 progress:
   total_phases: 11
   completed_phases: 9
   total_plans: 21
-  completed_plans: 15
-  percent: 71
+  completed_plans: 16
+  percent: 76
 ---
 
 # Project State
@@ -26,17 +26,17 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 ## Current Position
 
 Phase: 10
-Plan: 10-03 (next — 10-01 deferred awaiting account registration)
-Status: In progress — 1/6 plans complete (10-02 done, 10-01 deferred to Wave 0 unblock)
+Plan: 10-04 (next — 10-01 still deferred awaiting account registration)
+Status: In progress — 2/6 plans complete (10-02, 10-03 done; 10-01 deferred to Wave 0 unblock)
 Last activity: 2026-04-27
 
-Progress: [███████░░░] 71%
+Progress: [████████░░] 76%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -69,6 +69,7 @@ Progress: [███████░░░] 71%
 | Phase 09 P01 | 2min | 2 tasks | 6 files |
 | Phase 09 P02 | 5min | 1 tasks | 1 files |
 | Phase 10 P02 | 3min | 3 tasks | 3 files |
+| Phase 10 P03 | 3min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,11 @@ Progress: [███████░░░] 71%
 - [Phase 10]: Sovrn cert hash fafdf38b16bf6b2b is literal constant per RESEARCH §9.1 (not substituted)
 - [Phase 10]: Sitemap legal-page convention — changefreq=yearly, priority=0.3 for /privacy
 - [Phase 10]: REQUIREMENTS.md Coverage incremented 27 → 36 with 9 ADM-* backfill rows
+- [Phase 10]: AdSlot empty-key path = silent no-op (no console.warn) — Q4 resolved overrides RESEARCH §13 per Phase 4 D-09 graceful degradation
+- [Phase 10]: Privacy.tsx ships with literal {IUBENDA_POLICY_ID} placeholder + TODO comment — Wave 0 deferred; pre-deploy gate (10-06) blocks substitution
+- [Phase 10]: Component-scoped third-party script injection (Adsterra invoke.js into AdSlot ref, Iubenda script appended to document.body inside Privacy useEffect) — keeps cookies/tracking off home flow
+- [Phase 10]: Adsterra wrapper is plain <div> not Mantine <Card> — Card elevated bg fights iframe transparency
+- [Phase 10]: New client/src/pages/ directory created for route-level components — App.tsx will use path-conditional render in plan 10-05 (no react-router-dom dep)
 
 ### Pending Todos
 
@@ -127,6 +133,6 @@ Progress: [███████░░░] 71%
 
 ## Session Continuity
 
-Last session: 2026-04-27T17:52:52.000Z
-Stopped at: Completed 10-02-PLAN.md (Wave 1 — static config + REQUIREMENTS backfill)
+Last session: 2026-04-27T17:59:03.000Z
+Stopped at: Completed 10-03-PLAN.md (Wave 1 — AdSlot.tsx + Privacy.tsx + .env.example)
 Resume file: None

@@ -59,7 +59,7 @@
 ### Ad Monetisation
 
 - [ ] **ADM-01**: Adsterra publisher account approved with popunder/direct-link/social-bar formats DISABLED in dashboard
-- [ ] **ADM-02**: `<AdSlot>` React component (Mantine v6 + CSS-vars + min-height reservation) rendering banner without layout shift (CLS <0.1)
+- [x] **ADM-02**: `<AdSlot>` React component (Mantine v6 + CSS-vars + min-height reservation) rendering banner without layout shift (CLS <0.1)
 - [ ] **ADM-03**: `public/ads.txt` updated as transitional dual-entry containing AdSense, Adsterra, and Sovrn publisher records, served at https://sunozip.com/ads.txt
 - [ ] **ADM-04**: Adsterra script tag wired with no CSP/CORS regressions on Replit/Cloud Run
 - [ ] **ADM-05**: First banner placement above footer, dark-mode friendly, "Advertisement" label visible per FTC
@@ -123,7 +123,7 @@
 | DON-05 | Phase 7 | Pending |
 | DON-06 | Phase 7 | Pending |
 | ADM-01 | Phase 10 | Pending |
-| ADM-02 | Phase 10 | Pending |
+| ADM-02 | Phase 10 | Complete |
 | ADM-03 | Phase 10 | Pending |
 | ADM-04 | Phase 10 | Pending |
 | ADM-05 | Phase 10 | Pending |

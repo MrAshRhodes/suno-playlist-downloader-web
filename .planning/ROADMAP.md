@@ -160,12 +160,12 @@ Plans:
 **Goal:** Live revenue-earning ad slot on sunozip.com within 1 day of merge — Adsterra banner-only integration approved and rendering via a CLS-safe `AdSlot` React component, ads.txt updated to a transitional dual-entry (AdSense + Adsterra), Media.net application submitted as higher-rep secondary, dormant AdSense snippet retained for future reapply, ad styling matches the dark neon aesthetic with FTC-compliant "Advertisement" label
 **Requirements**: ADM-01, ADM-02, ADM-03, ADM-04, ADM-05, ADM-06, ADM-07, ADM-08, ADM-09
 **Depends on:** Phase 9 (sunozip.com live, ads.txt route exists)
-**Plans:** 1/6 plans complete
+**Plans:** 2/6 plans complete
 
 Plans:
 - [ ] 10-01-PLAN.md — Wave 0: User-action gate (Adsterra/Sovrn/Iubenda accounts, Media.net submission, .env populated) (ADM-01, ADM-07)
 - [x] 10-02-PLAN.md — Wave 1: public/ads.txt + sitemap.xml + robots.txt audit + REQUIREMENTS.md backfill (ADM-03, ADM-06, ADM-08)
-- [ ] 10-03-PLAN.md — Wave 1: AdSlot.tsx + Privacy.tsx + .env.example new files (ADM-02, ADM-06)
+- [x] 10-03-PLAN.md — Wave 1: AdSlot.tsx + Privacy.tsx + .env.example new files (ADM-02, ADM-06)
 - [ ] 10-04-PLAN.md — Wave 1: Sovrn signal head-script dual-file sync in client/index.html + public/index.html (ADM-04, ADM-08)
 - [ ] 10-05-PLAN.md — Wave 2: App.tsx integration — imports, path conditional, AdSlot+label+footer link (ADM-05, ADM-06, ADM-09)
 - [ ] 10-06-PLAN.md — Wave 3: Build, deploy, curl/Lighthouse verification, manual UAT (ADM-01..09)
