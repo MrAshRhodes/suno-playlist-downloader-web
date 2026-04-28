@@ -26,7 +26,7 @@ pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
   start = ["typescript-language-server", "--stdio"]
 
 [deployment]
-build = ["chmod +x build.sh", "./build.sh"]
+build = ["bash", "-c", "chmod +x build.sh && ./build.sh"]
 run = ["node", "server.js"]
 deploymentTarget = "cloudrun"
 
