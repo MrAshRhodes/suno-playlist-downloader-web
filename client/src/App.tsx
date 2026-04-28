@@ -20,7 +20,6 @@ import StatusIcon from "./components/StatusIcon";
 import scrollIntoView from "scroll-into-view-if-needed";
 import DonationModal from './components/DonationModal';
 import AdSlot from './components/AdSlot';
-import Privacy from './pages/Privacy';
 
 function App() {
     const { theme, toggleTheme } = useDarkMode();
@@ -147,13 +146,6 @@ function App() {
     useEffect(() => {
         document.documentElement.className = theme === 'dark' ? 'dark-mode' : 'light-mode';
     }, [theme]);
-
-    // Phase 10 ADM-06: path-based route — render Privacy page when URL is /privacy.
-    // No router needed for two routes (per CONTEXT.md locked decision; saves ~50KB dep).
-    // Must run AFTER all hooks (rules-of-hooks) and BEFORE the main return.
-    if (typeof window !== 'undefined' && window.location.pathname === '/privacy') {
-        return <Privacy />;
-    }
 
     return (
         <>
@@ -311,17 +303,14 @@ function App() {
                     height={90}
                 />
 
-                {/* Footer (modified — Phase 10 ADM-06: Privacy Policy link added) */}
+                {/* Footer */}
                 <footer className="app-footer">
                     <span>
                         Based on <a href="https://github.com/DrummerSi/suno-downloader" target="_blank" rel="noopener noreferrer">DrummerSi's</a> original app
                     </span>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                        <a href="/privacy">Privacy Policy</a>
-                        <a href="https://ko-fi.com/drummer_si" target="_blank" rel="noopener noreferrer">
-                            Support Original Author
-                        </a>
-                    </div>
+                    <a href="https://ko-fi.com/drummer_si" target="_blank" rel="noopener noreferrer">
+                        Support Original Author
+                    </a>
                 </footer>
             </div>
 
