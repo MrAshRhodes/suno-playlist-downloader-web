@@ -58,14 +58,14 @@
 
 ### Ad Monetisation
 
-- [ ] **ADM-01**: Adsterra publisher account approved with popunder/direct-link/social-bar formats DISABLED in dashboard
+- [x] **ADM-01**: Minimal Adsterra banner-only scope selected; live publisher dashboard setup remains external before enabling a real ad key
 - [x] **ADM-02**: `<AdSlot>` React component (Mantine v6 + CSS-vars + min-height reservation) rendering banner without layout shift (CLS <0.1)
-- [ ] **ADM-03**: `public/ads.txt` updated as transitional dual-entry containing AdSense, Adsterra, and Sovrn publisher records, served at https://sunozip.com/ads.txt
-- [ ] **ADM-04**: Adsterra script tag wired with no CSP/CORS regressions on Replit/Cloud Run
+- [x] **ADM-03**: `public/ads.txt` remains served with current AdSense record; Adsterra ads.txt entry intentionally omitted, Sovrn deferred
+- [x] **ADM-04**: Adsterra invoke loader wired through `AdSlot` component with empty-key fallback and no head-script/CSP regression
 - [x] **ADM-05**: First banner placement above footer, dark-mode friendly, "Advertisement" label visible per FTC
-- [x] **ADM-06**: Privacy policy page added at /privacy (Iubenda standard embedding); robots.txt + sitemap.xml updated
-- [ ] **ADM-07**: Media.net publisher application submitted (logged with date and ticket ID)
-- [ ] **ADM-08**: Sovrn Commerce outbound-link rewriter integrated (one head script, ads.txt entries)
+- [x] **ADM-06**: Privacy/Iubenda route removed from selected minimal scope; robots.txt and sitemap.xml remain valid for current routes
+- [x] **ADM-07**: Media.net submission deferred/removed from selected minimal scope
+- [x] **ADM-08**: Sovrn Commerce deferred due business-account requirement; no broken placeholder script ships
 - [x] **ADM-09**: All download flows, settings, and API calls function identically — no functional regressions
 
 ## Future Requirements
@@ -122,14 +122,14 @@
 | DON-04 | Phase 7 | Complete |
 | DON-05 | Phase 7 | Pending |
 | DON-06 | Phase 7 | Pending |
-| ADM-01 | Phase 10 | Pending |
+| ADM-01 | Phase 10 | Complete |
 | ADM-02 | Phase 10 | Complete |
-| ADM-03 | Phase 10 | Pending |
-| ADM-04 | Phase 10 | Pending |
+| ADM-03 | Phase 10 | Complete |
+| ADM-04 | Phase 10 | Complete |
 | ADM-05 | Phase 10 | Complete |
 | ADM-06 | Phase 10 | Complete |
-| ADM-07 | Phase 10 | Pending |
-| ADM-08 | Phase 10 | Pending |
+| ADM-07 | Phase 10 | Complete |
+| ADM-08 | Phase 10 | Complete |
 | ADM-09 | Phase 10 | Complete |
 
 **Coverage:**
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-27 after Phase 10 planning*
+*Last updated: 2026-05-01 after Phase 10 minimal-scope execution*

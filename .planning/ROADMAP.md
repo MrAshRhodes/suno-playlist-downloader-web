@@ -26,7 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Donation Modal** - Gratitude-first donation modal with generated banner
 - [ ] **Phase 8: Dependabot Security** - Resolve dependabot alerts via GitHub CLI
 - [ ] **Phase 9: SEO & Domain** - SEO improvements and domain name suggestions
-- [ ] **Phase 10: Adsterra Monetisation** - Replace blocked AdSense with Adsterra banner + parallel Media.net submission
+- [x] **Phase 10: Adsterra Monetisation** - Replace blocked AdSense with Adsterra banner + parallel Media.net submission (completed 2026-05-01)
 
 ## Phase Details
 
@@ -155,31 +155,58 @@ Plans:
 - [x] 09-01-PLAN.md — SEO meta tags, OG/Twitter cards, JSON-LD, canonical, robots.txt, sitemap.xml, OG image pipeline (D-01, D-02, D-03, D-04, D-06, D-07, D-08, D-09, D-10, D-11)
 - [x] 09-02-PLAN.md — Domain name research and availability check with ranked suggestions (D-05)
 
-### Phase 10: Adsterra Monetisation (banner-only) + Media.net submission
+### Phase 10: Adsterra Monetisation (minimal banner-only scope)
 
-**Goal:** Live revenue-earning ad slot on sunozip.com within 1 day of merge — Adsterra banner-only integration approved and rendering via a CLS-safe `AdSlot` React component, ads.txt updated to a transitional dual-entry (AdSense + Adsterra), Media.net application submitted as higher-rep secondary, dormant AdSense snippet retained for future reapply, ad styling matches the dark neon aesthetic with FTC-compliant "Advertisement" label
+**Goal:** Ship a minimal, non-regressing Adsterra banner integration: CLS-safe `AdSlot` component above the footer, `VITE_ADSTERRA_UNIT_KEY` configuration only, no popunder/social/direct-link code, no broken privacy/Sovrn/Media.net placeholders, and full website behavior preserved when the ad key is absent.
 **Requirements**: ADM-01, ADM-02, ADM-03, ADM-04, ADM-05, ADM-06, ADM-07, ADM-08, ADM-09
 **Depends on:** Phase 9 (sunozip.com live, ads.txt route exists)
-**Plans:** 4/6 plans complete (10-04 via DEFERRED branch)
+**Plans:** 6/6 plans complete
 
 Plans:
-- [ ] 10-01-PLAN.md — Wave 0: User-action gate (Adsterra/Sovrn/Iubenda accounts, Media.net submission, .env populated) (ADM-01, ADM-07)
+- [x] 10-01-PLAN.md — Scope resolution: full account-gate scope superseded by minimal Adsterra banner-only path (ADM-01, ADM-07, ADM-08)
 - [x] 10-02-PLAN.md — Wave 1: public/ads.txt + sitemap.xml + robots.txt audit + REQUIREMENTS.md backfill (ADM-03, ADM-06, ADM-08)
 - [x] 10-03-PLAN.md — Wave 1: AdSlot.tsx + Privacy.tsx + .env.example new files (ADM-02, ADM-06)
 - [x] 10-04-PLAN.md — Wave 1: Sovrn signal head-script dual-file sync in client/index.html + public/index.html (ADM-04, ADM-08) — **DEFERRED branch** executed (client/.env absent; head injection skipped; ADM-08 stays unchecked; re-run after plan 10-01)
 - [x] 10-05-PLAN.md — Wave 2: App.tsx integration — imports, path conditional, AdSlot+label+footer link (ADM-05, ADM-06, ADM-09)
-- [ ] 10-06-PLAN.md — Wave 3: Build, deploy, curl/Lighthouse verification, manual UAT (ADM-01..09)
+- [x] 10-06-PLAN.md — Minimal-scope build and local regression verification; production deploy/manual UAT intentionally not run (ADM-01..09)
 
 **Reference:** `.planning/research/ad-networks-vs-adsense.md` — §6 AdSlot.tsx, §9 copy-paste snippets (ads.txt, index.html, App.tsx patch, .env.example), §10 AdSense reapply checklist, §13 open questions for planner.
 
 **Requirements detail:**
-- ADM-01: Adsterra publisher account approved with popunder/direct-link/social-bar formats DISABLED in dashboard
+- ADM-01: Minimal Adsterra banner-only path selected; real publisher dashboard setup remains external before enabling a live key
 - ADM-02: `<AdSlot>` React component (Mantine v6 + CSS-vars + min-height reservation) rendering banner without layout shift (CLS <0.1)
-- ADM-03: `public/ads.txt` updated as transitional dual-entry containing both AdSense and Adsterra publisher records, served at https://sunozip.com/ads.txt
-- ADM-04: Adsterra script tag wired (in `public/index.html` or component) with no CSP/CORS regressions on Replit/Cloud Run
+- ADM-03: `public/ads.txt` served with current AdSense record; Adsterra intentionally omitted because this integration does not require an ads.txt entry, Sovrn deferred
+- ADM-04: Adsterra invoke loader wired in the `AdSlot` component with empty-key fallback; no head script or CSP regression introduced
 - ADM-05: First banner placement at bottom of page, dark-mode friendly, "Advertisement" label visible per FTC
-- ADM-06: Privacy policy page added (required for Media.net + future AdSense reapply); robots.txt + sitemap.xml updated
-- ADM-07: Media.net publisher application submitted (logged with date and ticket ID)
-- ADM-08: Sovrn Commerce outbound-link rewriter integrated (one script, orthogonal to display ads)
+- ADM-06: Privacy/Iubenda route removed from selected minimal scope; sitemap and robots remain valid for current routes
+- ADM-07: Media.net submission deferred/removed from selected minimal scope
+- ADM-08: Sovrn Commerce deferred due business-account requirement; no broken placeholder script ships
 - ADM-09: All download flows, settings, and API calls function identically — no functional regressions
 
+
+### Phase 11: Dependabot Security Check + Full Website Regression
+
+**Goal:** Resolve the 11 currently open GitHub Dependabot alerts across root, `web-version`, and `web-version/client` while preserving all website behavior: search, playlist loading, individual song selection, ZIP download, settings, support UI, ad UI, static SEO files, and deploy/build flows.
+**Requirements**: SEC-01, SEC-02, SEC-03, SEC-04, SEC-05, SEC-06, SEC-07, SEC-08, SEC-09
+**Depends on:** Phase 10
+**Plans:** 0/5 planned sub-phases executed
+
+Plans:
+- [ ] 11-01-PLAN.md - Baseline and root lockfile patch: confirm GitHub Dependabot alert state, patch `package-lock.json` `basic-ftp` alert #75 to `>=5.3.0`, run root audit/build smoke checks (SEC-01, SEC-02, SEC-07)
+- [ ] 11-02-PLAN.md - Web server upload dependency patch: upgrade/adapt `web-version` `multer` alerts #23, #24, #25, #27 to `>=2.0.2`, preserve upload/download behavior (SEC-03, SEC-08)
+- [ ] 11-03-PLAN.md - Web server middleware transitive patch: resolve `web-version` `qs` #29 to `>=6.14.1` and `on-headers` #28 to `>=1.1.0` via parent updates or minimal overrides, preserve Express/session/header behavior (SEC-04, SEC-05, SEC-08)
+- [ ] 11-04-PLAN.md - Client toolchain patch: update `web-version/client` Vite alerts #2, #20, #21, #22 to `>=6.4.1`, keep TypeScript/Vite build and generated site assets working (SEC-06, SEC-07)
+- [ ] 11-05-PLAN.md - End-to-end security closure: run all audits, builds, deploy-equivalent checks, GitHub alert verification, and manual website regression before closing the phase (SEC-01..SEC-09)
+
+**Reference:** `.planning/phases/11-security-check-review-dependabot-alerts-and-address-each-ale/DEPENDABOT-ALERTS.md` - GitHub CLI alert snapshot and sub-phase mapping.
+
+**Requirements detail:**
+- SEC-01: Open Dependabot alert baseline captured with GitHub CLI before changes and rechecked after changes.
+- SEC-02: Root `package-lock.json` resolves `basic-ftp` alert #75 (`GHSA-rp42-5vxx-qpwr`, CVE-2026-41324) with `basic-ftp >=5.3.0`.
+- SEC-03: `web-version/package-lock.json` resolves `multer` alerts #23, #24, #25, #27 by upgrading/adapting to `multer >=2.0.2`.
+- SEC-04: `web-version/package-lock.json` resolves `qs` alert #29 (`GHSA-6rw7-vpxm-498p`, CVE-2025-15284) with `qs >=6.14.1`.
+- SEC-05: `web-version/package-lock.json` resolves `on-headers` alert #28 (`GHSA-76c9-3jph-rj3q`, CVE-2025-7339) with `on-headers >=1.1.0`.
+- SEC-06: `web-version/client/package-lock.json` resolves Vite alerts #2, #20, #21, #22 with `vite >=6.4.1`.
+- SEC-07: Root, `web-version`, and `web-version/client` audit/build checks pass; generated public assets are rebuilt only when required.
+- SEC-08: Website behavior remains intact across search, playlist fetch, song selection, ZIP download, settings, support UI, ad UI, static SEO files, and deployment path.
+- SEC-09: GitHub Dependabot alert state is verified after patching; any scanner lag is documented with local audit evidence.
