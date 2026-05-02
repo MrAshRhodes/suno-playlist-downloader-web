@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Monolith UI
-status: executing
+status: verifying
 stopped_at: Phase 11 planning complete — 5 plans ready
-last_updated: "2026-05-02T12:04:02.736Z"
+last_updated: "2026-05-02T12:16:40.265Z"
 last_activity: 2026-05-02
 progress:
   total_phases: 13
-  completed_phases: 11
+  completed_phases: 12
   total_plans: 27
-  completed_plans: 25
-  percent: 93
+  completed_plans: 26
+  percent: 96
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 
 Phase: 11 (Dependabot Security Check + Full Website Regression) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-05-02
 
-Progress: [█████████░] 93%
+Progress: [██████████] 96%
 
 ## Performance Metrics
 
@@ -76,6 +76,7 @@ Progress: [█████████░] 93%
 | Phase 11 P01 | 5min | 3 tasks | 2 files |
 | Phase 11 P02 | 3min | 2 tasks | 3 files |
 | Phase 11 P03 | 5min | 3 tasks | 2 files |
+| Phase 11 P05 | 25min | 6 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -126,6 +127,8 @@ Progress: [█████████░] 93%
 - [Phase ?]: npm audit fix resolved basic-ftp without overrides — lockfile-only change satisfies SEC-02
 - [Phase ?]: multer-unused-web-version: Confirmed zero usage via grep — removed instead of upgraded, closes alerts #23,#24,#25,#27
 - [Phase ?]: Phase 11-03: npm overrides for qs (>=6.14.1) and on-headers (>=1.1.0) — no parent bumps per D-01, resolves SEC-04 and SEC-05
+- [Phase 11]: uuid v14 ships own types — @types/uuid removed from both client trees — uuid v14 includes TypeScript types; @types/uuid conflicts
+- [Phase 11]: deploy.sh bypassed during security closure to prevent unauthorized git push — deploy.sh ends with git push; manual copy used instead
 
 ### Pending Todos
 
@@ -148,6 +151,6 @@ Progress: [█████████░] 93%
 
 ## Session Continuity
 
-Last session: 2026-05-02T12:03:58.687Z
+Last session: 2026-05-02T12:16:24.001Z
 Stopped at: Phase 11 planning complete — 5 plans ready
 Resume file: None
