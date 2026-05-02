@@ -193,12 +193,12 @@ Plans:
 **Goal:** Resolve the 11 currently open GitHub Dependabot alerts across root, `web-version`, and `web-version/client` while preserving all website behavior: search, playlist loading, individual song selection, ZIP download, settings, support UI, ad UI, static SEO files, and deploy/build flows.
 **Requirements**: SEC-01, SEC-02, SEC-03, SEC-04, SEC-05, SEC-06, SEC-07, SEC-08, SEC-09
 **Depends on:** Phase 10
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 - [x] 11-01-PLAN.md - Baseline and root lockfile patch: confirm GitHub Dependabot alert state, patch `package-lock.json` `basic-ftp` alert #75 to `>=5.3.0`, run root audit/build smoke checks (SEC-01, SEC-02, SEC-07)
 - [x] 11-02-PLAN.md - Web server upload dependency patch: upgrade/adapt `web-version` `multer` alerts #23, #24, #25, #27 to `>=2.0.2`, preserve upload/download behavior (SEC-03, SEC-08)
-- [ ] 11-03-PLAN.md - Web server middleware transitive patch: resolve `web-version` `qs` #29 to `>=6.14.1` and `on-headers` #28 to `>=1.1.0` via parent updates or minimal overrides, preserve Express/session/header behavior (SEC-04, SEC-05, SEC-08)
+- [x] 11-03-PLAN.md - Web server middleware transitive patch: resolve `web-version` `qs` #29 to `>=6.14.1` and `on-headers` #28 to `>=1.1.0` via parent updates or minimal overrides, preserve Express/session/header behavior (SEC-04, SEC-05, SEC-08)
 - [x] 11-04-PLAN.md - Client toolchain patch: update `web-version/client` Vite alerts #2, #20, #21, #22 to `>=6.4.1`, keep TypeScript/Vite build and generated site assets working (SEC-06, SEC-07)
 - [ ] 11-05-PLAN.md - End-to-end security closure: run all audits, builds, deploy-equivalent checks, GitHub alert verification, and manual website regression before closing the phase (SEC-01..SEC-09)
 
