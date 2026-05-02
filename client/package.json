@@ -30,7 +30,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^6.0.1",
-    "postcss": "^8.4.24",
+    "postcss": "^8.5.13",
     "postcss-preset-mantine": "^1.8.0",
     "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.0.4",
