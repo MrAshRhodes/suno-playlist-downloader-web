@@ -1,0 +1,149 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:35.459Z",
+    "version": 2,
+    "canonical_source": ".planning/intel/apis.json"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/debug",
+      "file": "server.js",
+      "params": [],
+      "purpose": "server health/debug JSON"
+    },
+    {
+      "method": "POST",
+      "path": "/api/playlist/fetch",
+      "file": "routes/playlist.js",
+      "params": [
+        "body.url"
+      ],
+      "purpose": "parse playlist URL or ID and return simplified track data"
+    },
+    {
+      "method": "GET",
+      "path": "/api/playlist/:id",
+      "file": "routes/playlist.js",
+      "params": [
+        "id",
+        "page"
+      ],
+      "purpose": "proxy one Suno playlist page"
+    },
+    {
+      "method": "GET",
+      "path": "/api/playlist/:id/all",
+      "file": "routes/playlist.js",
+      "params": [
+        "id"
+      ],
+      "purpose": "aggregate all pages of a Suno playlist"
+    },
+    {
+      "method": "GET",
+      "path": "/api/playlist/user/:username/songs",
+      "file": "routes/playlist.js",
+      "params": [
+        "username"
+      ],
+      "purpose": "experimental Suno profile song extraction"
+    },
+    {
+      "method": "POST",
+      "path": "/api/download/playlist",
+      "file": "routes/download.js",
+      "params": [
+        "body.playlist",
+        "body.clips",
+        "body.embedImage"
+      ],
+      "purpose": "download clips, write optional ID3 images, stream ZIP"
+    },
+    {
+      "method": "GET",
+      "path": "/api/download/progress/:sessionId",
+      "file": "routes/download.js",
+      "params": [
+        "sessionId"
+      ],
+      "purpose": "SSE registration for download progress callbacks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/settings",
+      "file": "routes/settings.js",
+      "params": [],
+      "purpose": "read session download settings"
+    },
+    {
+      "method": "POST",
+      "path": "/api/settings",
+      "file": "routes/settings.js",
+      "params": [
+        "body.name_templates",
+        "body.overwrite_files",
+        "body.embed_images"
+      ],
+      "purpose": "update session download settings"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/settings",
+      "file": "routes/settings.js",
+      "params": [],
+      "purpose": "reset session download settings"
+    },
+    {
+      "method": "GET",
+      "path": "/ads.txt",
+      "file": "server.js",
+      "params": [],
+      "purpose": "serve static ad metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/robots.txt",
+      "file": "server.js",
+      "params": [],
+      "purpose": "serve static robots metadata"
+    },
+    {
+      "method": "GET",
+      "path": "/sitemap.xml",
+      "file": "server.js",
+      "params": [],
+      "purpose": "serve static sitemap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/download/song",
+      "file": "web-version/routes/download.js",
+      "params": [
+        "audioUrl",
+        "imageUrl",
+        "title",
+        "trackNumber",
+        "embedImage"
+      ],
+      "purpose": "legacy single-song download endpoint in web-version"
+    }
+  ],
+  "mounts": [
+    {
+      "prefix": "/api/playlist",
+      "router_file": "routes/playlist.js",
+      "mounted_by": "server.js"
+    },
+    {
+      "prefix": "/api/download",
+      "router_file": "routes/download.js",
+      "mounted_by": "server.js"
+    },
+    {
+      "prefix": "/api/settings",
+      "router_file": "routes/settings.js",
+      "mounted_by": "server.js"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "hashes": {
+    "files.json": "0936ca1ed2fd0008292c78ad5f6224f66dd84dea014cf5362b252bd45df40ff9",
+    "apis.json": "0525a59473b4083bd7aa249d12e180fad971ae05e70d309388ad20e31d9a65eb",
+    "deps.json": "175e98f8c7e9f9856103e4592a59c6b252b1076a30ec3a8c798d519847f67136",
+    "arch.md": "ce3ef62957c3a2840bf27aae72d86df53f71f24a36859b979b56967efeb38177",
+    "stack.json": "7cd6e68f4eb6cbfdb054e864cdc904f0df6065d615f5be0239ee16c27e9e93af"
+  },
+  "timestamp": "2026-05-02T10:30:53.954Z",
+  "version": 1
+}

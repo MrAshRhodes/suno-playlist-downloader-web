@@ -1,0 +1,111 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:35.848Z",
+    "version": 2,
+    "canonical_source": ".planning/intel/arch.md"
+  },
+  "decisions": [
+    {
+      "id": "express-esm-backend",
+      "decision": "Use an ESM Express server as the runtime entry point.",
+      "evidence": [
+        "package.json",
+        "server.js"
+      ],
+      "consequences": [
+        "Routes are default-exported Express routers.",
+        "Runtime path resolution uses fileURLToPath(import.meta.url)."
+      ]
+    },
+    {
+      "id": "backend-proxies-suno",
+      "decision": "Call Suno APIs from Express route handlers instead of directly from the browser.",
+      "evidence": [
+        "routes/playlist.js",
+        "client/src/services/Suno.ts"
+      ],
+      "consequences": [
+        "The client calls /api/playlist endpoints.",
+        "Server-side code handles pagination and profile scraping behavior."
+      ]
+    },
+    {
+      "id": "zip-only-active-download",
+      "decision": "The active root download flow serves complete playlists as ZIP files.",
+      "evidence": [
+        "routes/download.js",
+        "client/src/services/WebApi.ts",
+        "client/src/App.tsx"
+      ],
+      "consequences": [
+        "Root routes/download.js comments identify individual song routes as removed.",
+        "web-version/routes/download.js still contains legacy single-song support."
+      ]
+    },
+    {
+      "id": "session-and-local-storage-settings",
+      "decision": "Persist settings in browser localStorage and synchronize them to Express sessions.",
+      "evidence": [
+        "client/src/services/SettingsManager.ts",
+        "routes/settings.js"
+      ],
+      "consequences": [
+        "Settings survive browser refreshes through localStorage.",
+        "Server-side settings are per-session and resettable via DELETE /api/settings."
+      ]
+    },
+    {
+      "id": "public-assets-first-deployment",
+      "decision": "Prefer checked-in prebuilt public assets before building or serving client/dist.",
+      "evidence": [
+        "server.js",
+        "build.sh",
+        "public/index.html",
+        ".replit"
+      ],
+      "consequences": [
+        "Replit deployments can run without a successful client build.",
+        "server.js scans multiple possible static asset locations."
+      ]
+    },
+    {
+      "id": "vite-proxy-dev-api",
+      "decision": "Use Vite for the client and proxy /api to the Express server during development.",
+      "evidence": [
+        "client/vite.config.ts",
+        "client/package.json"
+      ],
+      "consequences": [
+        "Frontend dev server runs on port 5000.",
+        "Backend API remains on port 3000."
+      ]
+    },
+    {
+      "id": "adsterra-single-slot",
+      "decision": "Render a single Adsterra banner through a client-side script component.",
+      "evidence": [
+        "client/src/components/AdSlot.tsx",
+        "client/.env.example",
+        "client/src/App.tsx"
+      ],
+      "consequences": [
+        "The banner key is read from VITE_ADSTERRA_UNIT_KEY.",
+        "AdSlot reserves fixed layout height and assumes one mounted instance."
+      ]
+    },
+    {
+      "id": "preserve-web-version-copy",
+      "decision": "Keep web-version as a duplicate/legacy implementation alongside the active root app.",
+      "evidence": [
+        "web-version/server.js",
+        "web-version/routes/download.js",
+        "web-version/client/src/App.tsx",
+        "web-version/package.json"
+      ],
+      "consequences": [
+        "Some endpoints and client dependencies differ between root and web-version.",
+        "Codebase intelligence must distinguish root active files from web-version files."
+      ]
+    }
+  ]
+}

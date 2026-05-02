@@ -1,0 +1,59 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:34.796Z",
+    "version": 2
+  },
+  "languages": [
+    "JavaScript",
+    "TypeScript",
+    "CSS",
+    "HTML",
+    "Shell"
+  ],
+  "frameworks": [
+    "Express",
+    "React",
+    "Mantine",
+    "Vite",
+    "p5.js"
+  ],
+  "tools": [
+    "npm scripts",
+    "Node.js",
+    "Replit",
+    "nodemon",
+    "concurrently",
+    "Server-Sent Events",
+    "Adsterra banner script"
+  ],
+  "build_system": "npm scripts with Vite client build and public/ deployment assets",
+  "test_framework": "none configured",
+  "package_manager": "npm",
+  "content_formats": [
+    "Markdown (README, Replit setup, GSD planning docs)",
+    "JSON (package manifests, Replit config, entities)",
+    "HTML (Vite templates and prebuilt public index)",
+    "CSS (global styles and app styles)",
+    "Shell (build and deployment scripts)",
+    "PNG assets",
+    "Text/XML (ads.txt, robots.txt, sitemap.xml)"
+  ],
+  "component_counts": {
+    "routes/*.js": 3,
+    "utils/*.js": 1,
+    "client/src/components/*.tsx": 13,
+    "client/src/services/*.ts": 5,
+    "client/src/hooks/*.ts": 2,
+    "web-version/routes/*.js": 3,
+    "web-version/client/src/components/*.tsx": 10
+  },
+  "evidence": [
+    "package.json",
+    "client/package.json",
+    "server.js",
+    "client/src/main.tsx",
+    "client/vite.config.ts",
+    ".replit",
+    "build.sh"
+  ]
+}

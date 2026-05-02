@@ -1,0 +1,144 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:35.590Z",
+    "version": 2,
+    "canonical_source": ".planning/intel/deps.json"
+  },
+  "nodes": {
+    "backend-runtime": {
+      "files": [
+        "server.js",
+        "routes/playlist.js",
+        "routes/download.js",
+        "routes/settings.js",
+        "utils/fileManager.js"
+      ],
+      "dependencies": [
+        "express",
+        "cors",
+        "dotenv",
+        "express-session",
+        "morgan",
+        "node-fetch",
+        "puppeteer",
+        "adm-zip",
+        "node-id3",
+        "filenamify"
+      ]
+    },
+    "frontend-runtime": {
+      "files": [
+        "client/src/main.tsx",
+        "client/src/App.tsx",
+        "client/src/components/*.tsx",
+        "client/src/hooks/*.ts",
+        "client/src/services/*.ts",
+        "client/src/sketches/waveformSketch.ts"
+      ],
+      "dependencies": [
+        "react",
+        "react-dom",
+        "@mantine/core",
+        "@mantine/modals",
+        "@mantine/notifications",
+        "@tabler/icons-react",
+        "uuid",
+        "p5",
+        "scroll-into-view-if-needed"
+      ]
+    },
+    "build-tooling": {
+      "files": [
+        "package.json",
+        "client/package.json",
+        "client/vite.config.ts",
+        "build.sh",
+        "deploy.sh"
+      ],
+      "dependencies": [
+        "vite",
+        "@vitejs/plugin-react",
+        "typescript",
+        "postcss",
+        "postcss-preset-mantine",
+        "postcss-simple-vars",
+        "nodemon",
+        "concurrently"
+      ]
+    },
+    "legacy-web-version": {
+      "files": [
+        "web-version/server.js",
+        "web-version/routes/*.js",
+        "web-version/client/src/App.tsx",
+        "web-version/client/src/services/WebApi.ts"
+      ],
+      "dependencies": [
+        "express",
+        "node-fetch",
+        "adm-zip",
+        "node-id3",
+        "multer",
+        "filenamify",
+        "p-limit"
+      ]
+    }
+  },
+  "edges": [
+    {
+      "from": "client/src/App.tsx",
+      "to": "client/src/services/Suno.ts",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/App.tsx",
+      "to": "client/src/services/WebApi.ts",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/services/Suno.ts",
+      "to": "routes/playlist.js",
+      "kind": "http /api/playlist"
+    },
+    {
+      "from": "client/src/services/WebApi.ts",
+      "to": "routes/download.js",
+      "kind": "http /api/download"
+    },
+    {
+      "from": "client/src/services/SettingsManager.ts",
+      "to": "routes/settings.js",
+      "kind": "http /api/settings"
+    },
+    {
+      "from": "server.js",
+      "to": "routes/playlist.js",
+      "kind": "mounts /api/playlist"
+    },
+    {
+      "from": "server.js",
+      "to": "routes/download.js",
+      "kind": "mounts /api/download"
+    },
+    {
+      "from": "server.js",
+      "to": "routes/settings.js",
+      "kind": "mounts /api/settings"
+    },
+    {
+      "from": "routes/download.js",
+      "to": "utils/fileManager.js",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/components/WaveformBackground.tsx",
+      "to": "client/src/hooks/useP5.ts",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/components/WaveformBackground.tsx",
+      "to": "client/src/sketches/waveformSketch.ts",
+      "kind": "imports"
+    }
+  ]
+}

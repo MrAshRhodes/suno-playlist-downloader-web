@@ -1,0 +1,138 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:35.068Z",
+    "version": 2
+  },
+  "entries": {
+    "GET /api/debug": {
+      "method": "GET",
+      "path": "/api/debug",
+      "params": [],
+      "file": "server.js",
+      "description": "Health/debug endpoint returning a JSON message and ISO timestamp."
+    },
+    "GET /ads.txt": {
+      "method": "GET",
+      "path": "/ads.txt",
+      "params": [],
+      "file": "server.js",
+      "description": "Serves prebuilt advertising disclosure file from the selected static directory."
+    },
+    "GET /robots.txt": {
+      "method": "GET",
+      "path": "/robots.txt",
+      "params": [],
+      "file": "server.js",
+      "description": "Serves crawler instructions from the selected static directory."
+    },
+    "GET /sitemap.xml": {
+      "method": "GET",
+      "path": "/sitemap.xml",
+      "params": [],
+      "file": "server.js",
+      "description": "Serves XML sitemap from the selected static directory."
+    },
+    "GET *": {
+      "method": "GET",
+      "path": "*",
+      "params": [],
+      "file": "server.js",
+      "description": "SPA fallback that sends the selected index.html for non-API routes when static assets are available."
+    },
+    "POST /api/playlist/fetch": {
+      "method": "POST",
+      "path": "/api/playlist/fetch",
+      "params": [
+        "body.url"
+      ],
+      "file": "routes/playlist.js",
+      "description": "Extracts a Suno playlist ID from a submitted URL or ID and returns simplified playlist track data."
+    },
+    "GET /api/playlist/:id": {
+      "method": "GET",
+      "path": "/api/playlist/:id",
+      "params": [
+        "id",
+        "page"
+      ],
+      "file": "routes/playlist.js",
+      "description": "Proxies a paginated Suno playlist request to studio-api.prod.suno.com."
+    },
+    "GET /api/playlist/:id/all": {
+      "method": "GET",
+      "path": "/api/playlist/:id/all",
+      "params": [
+        "id"
+      ],
+      "file": "routes/playlist.js",
+      "description": "Fetches all pages of a Suno playlist and returns normalized playlist and clip arrays."
+    },
+    "GET /api/playlist/user/:username/songs": {
+      "method": "GET",
+      "path": "/api/playlist/user/:username/songs",
+      "params": [
+        "username"
+      ],
+      "file": "routes/playlist.js",
+      "description": "Experimental username lookup that scrapes a Suno profile, attempts API pagination, and can fall back to Puppeteer scrolling."
+    },
+    "POST /api/download/playlist": {
+      "method": "POST",
+      "path": "/api/download/playlist",
+      "params": [
+        "body.playlist",
+        "body.clips",
+        "body.embedImage"
+      ],
+      "file": "routes/download.js",
+      "description": "Downloads clip audio, optionally embeds cover art into MP3 tags, packages tracks into a ZIP, streams it to the browser, and schedules temp cleanup."
+    },
+    "GET /api/download/progress/:sessionId": {
+      "method": "GET",
+      "path": "/api/download/progress/:sessionId",
+      "params": [
+        "sessionId"
+      ],
+      "file": "routes/download.js",
+      "description": "Server-Sent Events endpoint that registers a client in global.downloadTrackers and sends an initial connected event."
+    },
+    "GET /api/settings": {
+      "method": "GET",
+      "path": "/api/settings",
+      "params": [],
+      "file": "routes/settings.js",
+      "description": "Returns session settings, initializing defaults when none exist."
+    },
+    "POST /api/settings": {
+      "method": "POST",
+      "path": "/api/settings",
+      "params": [
+        "body.name_templates",
+        "body.overwrite_files",
+        "body.embed_images"
+      ],
+      "file": "routes/settings.js",
+      "description": "Updates session-backed download settings with provided fields."
+    },
+    "DELETE /api/settings": {
+      "method": "DELETE",
+      "path": "/api/settings",
+      "params": [],
+      "file": "routes/settings.js",
+      "description": "Resets session settings to default download preferences."
+    },
+    "GET /api/download/song (web-version)": {
+      "method": "GET",
+      "path": "/api/download/song",
+      "params": [
+        "audioUrl",
+        "imageUrl",
+        "title",
+        "trackNumber",
+        "embedImage"
+      ],
+      "file": "web-version/routes/download.js",
+      "description": "Legacy web-version endpoint for single-song MP3 download with optional cover embedding."
+    }
+  }
+}

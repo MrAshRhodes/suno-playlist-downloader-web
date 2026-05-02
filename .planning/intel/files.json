@@ -1,0 +1,461 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:34.938Z",
+    "version": 2
+  },
+  "entries": {
+    "package.json": {
+      "exports": [],
+      "imports": [],
+      "type": "config"
+    },
+    "client/package.json": {
+      "exports": [],
+      "imports": [],
+      "type": "config"
+    },
+    "client/vite.config.ts": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "vite",
+        "@vitejs/plugin-react"
+      ],
+      "type": "config"
+    },
+    "build.sh": {
+      "exports": [],
+      "imports": [],
+      "type": "script"
+    },
+    "deploy.sh": {
+      "exports": [],
+      "imports": [],
+      "type": "script"
+    },
+    "server.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express",
+        "cors",
+        "dotenv",
+        "express-session",
+        "morgan",
+        "path",
+        "fs",
+        "url",
+        "child_process",
+        "./routes/playlist.js",
+        "./routes/download.js",
+        "./routes/settings.js"
+      ],
+      "type": "entry-point"
+    },
+    "routes/playlist.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express",
+        "node-fetch",
+        "puppeteer"
+      ],
+      "type": "module"
+    },
+    "routes/download.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express",
+        "node-fetch",
+        "node-id3",
+        "adm-zip",
+        "filenamify",
+        "fs",
+        "path",
+        "url",
+        "../utils/fileManager.js"
+      ],
+      "type": "module"
+    },
+    "routes/settings.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express"
+      ],
+      "type": "module"
+    },
+    "utils/fileManager.js": {
+      "exports": [
+        "createTempDirectory",
+        "cleanupTempDirectory",
+        "schedulePeriodicCleanup",
+        "writeFile",
+        "fileExists"
+      ],
+      "imports": [
+        "fs",
+        "path",
+        "url",
+        "crypto"
+      ],
+      "type": "module"
+    },
+    "client/src/main.tsx": {
+      "exports": [],
+      "imports": [
+        "react",
+        "react-dom/client",
+        "./App",
+        "@mantine/core",
+        "@mantine/notifications",
+        "@mantine/modals",
+        "./index.css"
+      ],
+      "type": "entry-point"
+    },
+    "client/src/App.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "uuid",
+        "@tabler/icons-react",
+        "./assets/hero-banner.png",
+        "./hooks/useDarkMode",
+        "./components/ThemeToggle",
+        "./components/WaveformBackground",
+        "./services/Suno",
+        "./services/WebApi",
+        "./services/Utils",
+        "./services/Logger",
+        "./components/StatusIcon",
+        "scroll-into-view-if-needed",
+        "./components/DonationModal",
+        "./components/AdSlot"
+      ],
+      "type": "module"
+    },
+    "client/src/services/Suno.ts": {
+      "exports": [
+        "IPlaylistClipStatus",
+        "IPlaylist",
+        "IPlaylistClip",
+        "default"
+      ],
+      "imports": [],
+      "type": "module"
+    },
+    "client/src/services/WebApi.ts": {
+      "exports": [
+        "addImageToMp3",
+        "ensureDir",
+        "writeFile",
+        "existsFile",
+        "downloadPlaylist",
+        "setupProgressMonitor"
+      ],
+      "imports": [],
+      "type": "module"
+    },
+    "client/src/services/SettingsManager.ts": {
+      "exports": [
+        "defaultSettings",
+        "initializeSettingsManager",
+        "getSettingsManager"
+      ],
+      "imports": [],
+      "type": "module"
+    },
+    "client/src/services/Logger.ts": {
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "type": "module"
+    },
+    "client/src/services/Utils.ts": {
+      "exports": [
+        "showError",
+        "showSuccess",
+        "delay",
+        "getRandomBetween",
+        "formatFileSize",
+        "throttle"
+      ],
+      "imports": [],
+      "type": "module"
+    },
+    "client/src/hooks/useDarkMode.ts": {
+      "exports": [
+        "useDarkMode"
+      ],
+      "imports": [
+        "react"
+      ],
+      "type": "module"
+    },
+    "client/src/hooks/useP5.ts": {
+      "exports": [
+        "useP5"
+      ],
+      "imports": [
+        "react",
+        "p5"
+      ],
+      "type": "module"
+    },
+    "client/src/sketches/waveformSketch.ts": {
+      "exports": [
+        "createWaveformSketch"
+      ],
+      "imports": [
+        "p5"
+      ],
+      "type": "module"
+    },
+    "client/src/components/AdSlot.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/DonationModal.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "@mantine/core",
+        "@tabler/icons-react",
+        "../assets/donation-banner.png"
+      ],
+      "type": "module"
+    },
+    "client/src/components/StatusIcon.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "@mantine/core",
+        "@tabler/icons-react",
+        "../services/Suno"
+      ],
+      "type": "module"
+    },
+    "client/src/components/ThemeToggle.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "@mantine/core",
+        "@tabler/icons-react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/WaveformBackground.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "../hooks/useP5",
+        "../sketches/waveformSketch"
+      ],
+      "type": "module"
+    },
+    "client/src/components/BasicModal.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "@mantine/core",
+        "@tabler/icons-react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/ContextModal.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "@mantine/modals",
+        "@mantine/core",
+        "@tabler/icons-react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/DirectSettingsButton.tsx": {
+      "exports": [
+        "DirectSettingsButton"
+      ],
+      "imports": [
+        "react",
+        "@mantine/core",
+        "@tabler/icons-react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/OptionsModal.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "@mantine/core",
+        "@tabler/icons-react",
+        "../services/SettingsManager"
+      ],
+      "type": "module"
+    },
+    "client/src/components/SimpleSettingsModal.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "@mantine/core",
+        "@tabler/icons-react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/Footer.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "@mantine/core",
+        "react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/SectionHeading.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "@mantine/core",
+        "react"
+      ],
+      "type": "module"
+    },
+    "client/src/components/TestModal.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "@mantine/core"
+      ],
+      "type": "module"
+    },
+    "client/src/index.css": {
+      "exports": [],
+      "imports": [],
+      "type": "style"
+    },
+    "client/src/App.css": {
+      "exports": [],
+      "imports": [],
+      "type": "style"
+    },
+    "client/index.html": {
+      "exports": [],
+      "imports": [],
+      "type": "template"
+    },
+    "public/index.html": {
+      "exports": [],
+      "imports": [],
+      "type": "template"
+    },
+    "web-version/server.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express",
+        "cors",
+        "dotenv",
+        "express-session",
+        "morgan",
+        "path",
+        "fs",
+        "url",
+        "./routes/playlist.js",
+        "./routes/download.js",
+        "./routes/settings.js"
+      ],
+      "type": "entry-point"
+    },
+    "web-version/routes/playlist.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express",
+        "node-fetch"
+      ],
+      "type": "module"
+    },
+    "web-version/routes/download.js": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "express",
+        "node-fetch",
+        "node-id3",
+        "adm-zip",
+        "filenamify",
+        "fs",
+        "path",
+        "url",
+        "../utils/fileManager.js"
+      ],
+      "type": "module"
+    },
+    "web-version/client/src/App.tsx": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "react",
+        "uuid",
+        "@mantine/core",
+        "@tabler/icons-react",
+        "./services/Suno",
+        "./services/WebApi",
+        "./services/SettingsManager",
+        "filenamify",
+        "p-limit",
+        "scroll-into-view-if-needed"
+      ],
+      "type": "module"
+    },
+    "web-version/client/src/services/WebApi.ts": {
+      "exports": [
+        "addImageToMp3",
+        "ensureDir",
+        "writeFile",
+        "existsFile",
+        "downloadSong",
+        "downloadPlaylist",
+        "setupProgressMonitor"
+      ],
+      "imports": [],
+      "type": "module"
+    }
+  }
+}

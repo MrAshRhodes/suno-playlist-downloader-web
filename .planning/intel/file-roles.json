@@ -1,0 +1,210 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:35.721Z",
+    "version": 2,
+    "canonical_source": ".planning/intel/files.json"
+  },
+  "entries": {
+    "server.js": {
+      "role": "Express application entry point and production static asset server",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "imports routes/playlist.js, routes/download.js, routes/settings.js",
+        "mounts /api/playlist, /api/download, /api/settings",
+        "checks public/ and client/dist before SPA fallback"
+      ]
+    },
+    "routes/playlist.js": {
+      "role": "Suno playlist and experimental username proxy route module",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "defines POST /fetch",
+        "defines GET /:id and GET /:id/all",
+        "defines GET /user/:username/songs",
+        "imports node-fetch and puppeteer"
+      ]
+    },
+    "routes/download.js": {
+      "role": "ZIP download and SSE progress route module",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "defines POST /playlist",
+        "defines GET /progress/:sessionId",
+        "imports adm-zip, node-id3, filenamify, and utils/fileManager.js"
+      ]
+    },
+    "routes/settings.js": {
+      "role": "Session-backed settings API",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "defines GET /",
+        "defines POST /",
+        "defines DELETE /"
+      ]
+    },
+    "utils/fileManager.js": {
+      "role": "Temporary directory lifecycle and file helper module",
+      "exports": [
+        "createTempDirectory",
+        "cleanupTempDirectory",
+        "schedulePeriodicCleanup",
+        "writeFile",
+        "fileExists"
+      ],
+      "evidence": [
+        "creates temp/session directories under temp/",
+        "runs periodic cleanup",
+        "used by routes/download.js"
+      ]
+    },
+    "client/src/main.tsx": {
+      "role": "React bootstrap and provider setup",
+      "exports": [],
+      "evidence": [
+        "mounts App into #root",
+        "wraps MantineProvider, Notifications, and ModalsProvider",
+        "applies initial dark-mode or light-mode document class"
+      ]
+    },
+    "client/src/App.tsx": {
+      "role": "Primary application UI and download workflow coordinator",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "calls Suno.getSongsFromPlayList",
+        "calls downloadPlaylistApi and setupProgressMonitor",
+        "renders WaveformBackground, DonationModal, AdSlot, StatusIcon, and ThemeToggle"
+      ]
+    },
+    "client/src/services/Suno.ts": {
+      "role": "Client playlist/user lookup API adapter",
+      "exports": [
+        "IPlaylistClipStatus",
+        "IPlaylist",
+        "IPlaylistClip",
+        "default"
+      ],
+      "evidence": [
+        "calls /api/playlist/:id/all",
+        "calls /api/playlist/user/:username/songs",
+        "normalizes responses into IPlaylist and IPlaylistClip arrays"
+      ]
+    },
+    "client/src/services/WebApi.ts": {
+      "role": "Client download and SSE API adapter",
+      "exports": [
+        "addImageToMp3",
+        "ensureDir",
+        "writeFile",
+        "existsFile",
+        "downloadPlaylist",
+        "setupProgressMonitor"
+      ],
+      "evidence": [
+        "posts to /api/download/playlist",
+        "creates browser blob download link",
+        "opens EventSource for /api/download/progress/:sessionId"
+      ]
+    },
+    "client/src/services/SettingsManager.ts": {
+      "role": "Browser-local settings manager with server sync",
+      "exports": [
+        "defaultSettings",
+        "initializeSettingsManager",
+        "getSettingsManager"
+      ],
+      "evidence": [
+        "loads and saves suno-downloader-settings in localStorage",
+        "syncs settings through /api/settings"
+      ]
+    },
+    "client/src/components/AdSlot.tsx": {
+      "role": "Adsterra banner script injector",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "sets window.atOptions",
+        "injects highperformanceformat.com invoke.js",
+        "reserves minHeight for layout stability"
+      ]
+    },
+    "client/src/components/WaveformBackground.tsx": {
+      "role": "p5.js background component",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "uses useP5",
+        "uses createWaveformSketch"
+      ]
+    },
+    "client/src/hooks/useDarkMode.ts": {
+      "role": "Theme persistence hook",
+      "exports": [
+        "useDarkMode"
+      ],
+      "evidence": [
+        "stores theme in localStorage",
+        "toggles dark-mode and light-mode classes"
+      ]
+    },
+    "client/src/hooks/useP5.ts": {
+      "role": "React lifecycle wrapper for p5 sketches",
+      "exports": [
+        "useP5"
+      ],
+      "evidence": [
+        "creates a p5 instance against a div ref",
+        "removes existing instances during cleanup"
+      ]
+    },
+    "client/src/sketches/waveformSketch.ts": {
+      "role": "Seeded waveform canvas renderer",
+      "exports": [
+        "createWaveformSketch"
+      ],
+      "evidence": [
+        "sets frameRate, noiseSeed, and randomSeed",
+        "draws layered waveforms and ambient glow",
+        "resizes canvas on window resize"
+      ]
+    },
+    "client/vite.config.ts": {
+      "role": "Vite dev/build configuration",
+      "exports": [
+        "default"
+      ],
+      "evidence": [
+        "uses @vitejs/plugin-react",
+        "proxies /api to localhost:3000",
+        "outputs build to client/dist"
+      ]
+    },
+    "public/index.html": {
+      "role": "Prebuilt deployment HTML served by server.js",
+      "exports": [],
+      "evidence": [
+        "server.js checks public/index.html before client/dist"
+      ]
+    },
+    "web-version/": {
+      "role": "Legacy duplicate web implementation",
+      "exports": [],
+      "evidence": [
+        "web-version/server.js mounts the same API prefixes",
+        "web-version/routes/download.js retains GET /api/download/song",
+        "web-version/client/src/App.tsx imports filenamify and p-limit"
+      ]
+    }
+  }
+}

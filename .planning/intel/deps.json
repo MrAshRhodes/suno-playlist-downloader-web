@@ -1,0 +1,291 @@
+{
+  "_meta": {
+    "updated_at": "2026-05-02T10:30:35.198Z",
+    "version": 2
+  },
+  "entries": {
+    "express": {
+      "version": "^4.19.2",
+      "type": "production",
+      "used_by": [
+        "npm start",
+        "server.js",
+        "routes/*.js",
+        "web-version/server.js"
+      ],
+      "invocation": "import"
+    },
+    "cors": {
+      "version": "^2.8.5",
+      "type": "production",
+      "used_by": [
+        "npm start",
+        "server.js",
+        "web-version/server.js"
+      ],
+      "invocation": "import"
+    },
+    "dotenv": {
+      "version": "^16.4.5",
+      "type": "production",
+      "used_by": [
+        "npm start",
+        "server.js"
+      ],
+      "invocation": "import"
+    },
+    "express-session": {
+      "version": "^1.18.0",
+      "type": "production",
+      "used_by": [
+        "npm start",
+        "server.js",
+        "routes/settings.js"
+      ],
+      "invocation": "import"
+    },
+    "morgan": {
+      "version": "^1.10.0",
+      "type": "production",
+      "used_by": [
+        "npm start",
+        "server.js"
+      ],
+      "invocation": "import"
+    },
+    "node-fetch": {
+      "version": "^3.3.2",
+      "type": "production",
+      "used_by": [
+        "routes/playlist.js",
+        "routes/download.js",
+        "web-version/routes/*.js"
+      ],
+      "invocation": "import"
+    },
+    "puppeteer": {
+      "version": "^24.9.0",
+      "type": "production",
+      "used_by": [
+        "routes/playlist.js"
+      ],
+      "invocation": "import"
+    },
+    "adm-zip": {
+      "version": "^0.5.10",
+      "type": "production",
+      "used_by": [
+        "routes/download.js",
+        "web-version/routes/download.js"
+      ],
+      "invocation": "import"
+    },
+    "node-id3": {
+      "version": "^0.2.6",
+      "type": "production",
+      "used_by": [
+        "routes/download.js",
+        "web-version/routes/download.js"
+      ],
+      "invocation": "import"
+    },
+    "filenamify": {
+      "version": "^6.0.0",
+      "type": "production",
+      "used_by": [
+        "routes/download.js",
+        "web-version/client/src/App.tsx",
+        "web-version/routes/download.js"
+      ],
+      "invocation": "import"
+    },
+    "multer": {
+      "version": "^1.4.5-lts.1",
+      "type": "production",
+      "used_by": [
+        "web-version/package.json"
+      ],
+      "invocation": "declared"
+    },
+    "react": {
+      "version": "^18.2.0",
+      "type": "production",
+      "used_by": [
+        "npm run client",
+        "npm run build",
+        "client/src/**/*.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "react-dom": {
+      "version": "^18.2.0",
+      "type": "production",
+      "used_by": [
+        "client/src/main.tsx",
+        "web-version/client/src/main.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "@mantine/core": {
+      "version": "^6.0.13",
+      "type": "production",
+      "used_by": [
+        "client/src/main.tsx",
+        "client/src/components/*.tsx",
+        "web-version/client/src/**/*.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "@mantine/modals": {
+      "version": "^6.0.13",
+      "type": "production",
+      "used_by": [
+        "client/src/main.tsx",
+        "client/src/components/ContextModal.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "@mantine/notifications": {
+      "version": "^6.0.13",
+      "type": "production",
+      "used_by": [
+        "client/src/main.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "@mantine/form": {
+      "version": "^6.0.13",
+      "type": "production",
+      "used_by": [
+        "client/package.json",
+        "web-version/client/package.json"
+      ],
+      "invocation": "declared"
+    },
+    "@mantine/hooks": {
+      "version": "^6.0.13",
+      "type": "production",
+      "used_by": [
+        "client/package.json",
+        "web-version/client/package.json"
+      ],
+      "invocation": "declared"
+    },
+    "@tabler/icons-react": {
+      "version": "^2.20.0",
+      "type": "production",
+      "used_by": [
+        "client/src/App.tsx",
+        "client/src/components/*.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "uuid": {
+      "version": "^9.0.0",
+      "type": "production",
+      "used_by": [
+        "client/src/App.tsx",
+        "web-version/client/src/App.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "p5": {
+      "version": "^1.11.13",
+      "type": "production",
+      "used_by": [
+        "client/src/hooks/useP5.ts",
+        "client/src/sketches/waveformSketch.ts"
+      ],
+      "invocation": "vite"
+    },
+    "p-limit": {
+      "version": "^4.0.0",
+      "type": "production",
+      "used_by": [
+        "web-version/client/src/App.tsx",
+        "client/package.json"
+      ],
+      "invocation": "vite"
+    },
+    "scroll-into-view-if-needed": {
+      "version": "^3.0.6",
+      "type": "production",
+      "used_by": [
+        "client/src/App.tsx",
+        "web-version/client/src/App.tsx"
+      ],
+      "invocation": "vite"
+    },
+    "vite": {
+      "version": "^8.0.8",
+      "type": "development",
+      "used_by": [
+        "npm run client",
+        "npm run client-build",
+        "client/vite.config.ts"
+      ],
+      "invocation": "npm run build"
+    },
+    "@vitejs/plugin-react": {
+      "version": "^6.0.1",
+      "type": "development",
+      "used_by": [
+        "client/vite.config.ts",
+        "web-version/client/vite.config.ts"
+      ],
+      "invocation": "vite config"
+    },
+    "typescript": {
+      "version": "^5.0.4",
+      "type": "development",
+      "used_by": [
+        "npm run build:ts",
+        "web-version/client package build"
+      ],
+      "invocation": "tsc"
+    },
+    "postcss": {
+      "version": "^8.4.24",
+      "type": "development",
+      "used_by": [
+        "client/package.json",
+        "web-version/client/package.json"
+      ],
+      "invocation": "vite"
+    },
+    "postcss-preset-mantine": {
+      "version": "^1.8.0",
+      "type": "development",
+      "used_by": [
+        "client/package.json",
+        "web-version/client/package.json"
+      ],
+      "invocation": "vite"
+    },
+    "postcss-simple-vars": {
+      "version": "^7.0.1",
+      "type": "development",
+      "used_by": [
+        "client/package.json",
+        "web-version/client/package.json"
+      ],
+      "invocation": "vite"
+    },
+    "concurrently": {
+      "version": "^8.2.2",
+      "type": "development",
+      "used_by": [
+        "npm run dev-full"
+      ],
+      "invocation": "npm script"
+    },
+    "nodemon": {
+      "version": "^3.1.0",
+      "type": "development",
+      "used_by": [
+        "npm run dev"
+      ],
+      "invocation": "npm script"
+    }
+  }
+}

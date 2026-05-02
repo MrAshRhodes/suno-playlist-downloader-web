@@ -1,112 +1,91 @@
-# Suno Playlist Downloader — Monolith UI
+# Suno Playlist Downloader
 
 ## What This Is
 
-A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. It's live on Replit and fully functional. This milestone rebuilds the UI using the Monolith design system — brutalist-minimalist, premium, authoritative — while preserving all existing functionality.
+A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. Live on Replit. v2.0 ships a premium dark-first UI (Monolith design system), p5.js atmospheric waveform, donation modal, AdSense + Adsterra monetization, full SEO infrastructure, and clean security posture across all dependency trees.
 
 ## Core Value
 
-The app must continue to work exactly as it does now — every download flow, every setting, every API call unchanged. Visual changes only.
+Downloads work reliably. Visual quality matches a premium product. Zero functional regressions from UI changes.
 
-## Current Milestone: v2.0 Monolith UI
+## Current State: v2.0 Monolith UI — SHIPPED 2026-05-02
 
-**Goal:** Rebuild the UI using the Monolith design system — brutalist-minimalist, premium, authoritative
-
-**Target features:**
-- Monolith dark mode (Rich Black #0A0A0A, Deep Gray #1A1A1A cards, inner glow depth)
-- Monolith light mode (Warm Ivory #F2EFE9, Muted Beige #E8E4DB cards, soft drop shadows)
-- Deep Blue accent #3B4A6B across both modes
-- 24px radius cards with tactile depth
-- Inter/system font type hierarchy
-- p5.js atmospheric audio waveform background
-- Micro-animations and state transitions
-- Polished components (table, inputs, buttons, progress)
+**Shipped this milestone:**
+- Monolith design system — Rich Black dark / Warm Ivory light, Deep Blue accent, 24px depth cards, Inter typography
+- p5.js atmospheric waveform background (seeded, reproducible, ambient)
+- Micro-animations, WCAG AA contrast, theme-aware scrollbar
+- Google AdSense Auto Ads + Adsterra CLS-safe banner component
+- Gratitude-first donation modal (Buy Me a Coffee, triggers on 1st + every 5th download)
+- Full SEO: OG/Twitter/JSON-LD, canonical, robots.txt, sitemap.xml, OG image pipeline
+- Domain research: sunozip.com ranked #1 candidate
+- 12 Dependabot alerts resolved (basic-ftp, multer removed, qs, on-headers, vite, uuid)
+- public/ rebuilt with patched toolchain
 
 ## Requirements
 
-### Validated
+### Validated — v2.0
 
-- ✓ Fetch playlist/profile songs from Suno URLs or @username — existing
-- ✓ Download entire playlist as ZIP with MP3s and embedded ID3 tags — existing
-- ✓ Light/dark theme toggle with system preference detection — existing
-- ✓ Settings management (name templates, overwrite, embed images) — existing
-- ✓ Progress tracking with per-song status updates during download — existing
-- ✓ Session-based temp file management with automatic cleanup — existing
-- ✓ Replit deployment with Node.js 20 — existing
-- ✓ CSS variable foundation with classList theme toggle — v1.0 commit 766c401
-- ✓ Support Server Costs banner at top — v1.0 commit 766c401
+- ✓ Monolith dark mode: Rich Black #0A0A0A, Deep Gray #1A1A1A cards, Deep Blue #3B4A6B accent — v2.0
+- ✓ Monolith light mode: Warm Ivory #F2EFE9, Muted Beige #E8E4DB cards — v2.0
+- ✓ Theme toggle: smooth cross-fade, no flash — v2.0
+- ✓ 24px radius cards with depth (inner glow dark, soft shadow light) — v2.0
+- ✓ Inter/system font hierarchy (semi-bold headers, 14pt body) — v2.0
+- ✓ p5.js waveform canvas, seeded randomness, ambient/non-distracting — v2.0
+- ✓ Button glow, progress bar glow, table hover, state animations — v2.0
+- ✓ WCAG AA contrast, themed scrollbar — v2.0
+- ✓ AdSense Auto Ads async script, publisher ID ca-pub-2601322490070593 — v2.0
+- ✓ Donation modal: gratitude-first, BMC CTA, triggers 1st + every 5th download — v2.0
+- ✓ Adsterra AdSlot banner component, CLS-safe, FTC label — v2.0
+- ✓ SEO meta/OG/Twitter/JSON-LD, canonical, robots.txt, sitemap.xml — v2.0
+- ✓ All Dependabot alerts resolved, npm audit clean at root — v2.0
+- ✓ All download flows, settings, API calls unchanged throughout — v2.0
 
-### Active
+### Pre-existing (carried from v1.0)
 
-- [x] Monolith dark mode: Rich Black #0A0A0A bg, Deep Gray #1A1A1A cards, white text, inner glow/subtle border depth — Validated in Phase 1: Core Monolith
-- [x] Monolith light mode: Warm Ivory #F2EFE9 bg, Muted Beige #E8E4DB cards, Dark Charcoal #332F2E text, soft drop shadows — Validated in Phase 1: Core Monolith
-- [x] Deep Blue accent #3B4A6B for buttons, active states, links (both modes) — Validated in Phase 1: Core Monolith
-- [x] 24px radius information cards with tactile depth (3D shadows light, glow dark) — Validated in Phase 1: Core Monolith
-- [x] Inter/system font with type hierarchy (semi-bold headers 18-24pt, tight letter-spacing, body 14pt) — Validated in Phase 1: Core Monolith
-- [ ] p5.js atmospheric audio waveform background (music-themed, ambient, non-distracting)
-- [ ] Micro-animations and smooth state transitions
-- [ ] Polished table/song list with hover states and visual hierarchy
-- [ ] Polished inputs, buttons, and progress bar with glow effects
-- [ ] WCAG AA contrast ratios verified
+- ✓ Fetch playlist/profile songs from Suno URLs or @username
+- ✓ Download entire playlist as ZIP with MP3s and embedded ID3 tags
+- ✓ Light/dark theme toggle with system preference detection
+- ✓ Settings management (name templates, overwrite, embed images)
+- ✓ Progress tracking with per-song status updates
+- ✓ Session-based temp file management with automatic cleanup
+- ✓ Replit deployment with Node.js 20
+
+### Active (next milestone candidates)
+
+- [ ] Download music by @username as well as playlist URL (backlog, api area)
+- [ ] Select individual songs from playlist before download (backlog, ui area)
+- [ ] Adsterra live publisher key wired (pending Adsterra account approval)
+- [ ] sunozip.com domain purchase and DNS configuration
 
 ### Out of Scope
 
-- Any backend/API changes — functionality is frozen
-- New features (search, filtering, audio preview, etc.) — this is visual only
-- Database or auth changes — no backend modifications
-- Migration to newer Mantine version — keep Mantine v6 for stability
-- Mobile app or desktop (Tauri) work — web only
-- Navigation sidebar — app is single-page, not multi-pane
+| Feature | Reason |
+|---------|--------|
+| Backend/API changes | Functionality is frozen |
+| Mantine v7 upgrade | Breaking changes, risk to functionality |
+| Mobile app / Tauri desktop | Web-only scope |
+| Audio preview playback | New feature, not in current scope |
+| Offline mode | Real-time download is core value |
 
-## Context
+## Key Decisions
 
-**Current state:** Phase 1 complete — Monolith palette, 24px depth cards, Inter typography hierarchy, accent consistency. Glass-morphism fully removed. Theme toggle smooth. Phase 2 (p5.js atmospheric waveform) next.
-
-**Target aesthetic:** Monolith design system (brutalist-minimalist):
-- Dark: Rich Black #0A0A0A, Deep Gray #1A1A1A, White text, Deep Blue #3B4A6B accent
-- Light: Warm Ivory #F2EFE9, Muted Beige #E8E4DB, Dark Charcoal #332F2E, same accent
-- Cards: 24px radius, soft shadows (light), inner glow (dark)
-- Typography: Inter/system, Extra Bold for hero elements, Semi-bold 18-24pt headers, 14pt body
-- Atmospheric effects: radial gradients behind key content
-
-**Design reference:** ~/Downloads/monolith_design_system_document.html
-
-**Stack:** React 18 + Mantine v6 + Vite 4 + TypeScript (client), Express + Node.js 20 (server, untouched)
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| Monolith design system | Brutalist-minimalist, premium feel, proven aesthetic | ✓ Shipped |
+| Mantine v6 frozen | Upgrade breaks too many components | ✓ Maintained |
+| Client-only UI changes | Preserve all server behavior | ✓ Zero functional regressions |
+| multer removed (not upgraded) | Confirmed unused — removal safer than upgrade | ✓ Shipped |
+| npm overrides for transitive deps | Avoid parent version bumps for qs/on-headers | ✓ Shipped |
+| web-version/ is separate pkg tree | Not the Replit deployment — root server.js is deployed | ✓ Clarified |
+| sunozip.com top domain candidate | 20/20 score: memorable, descriptive, .com available | Pending purchase |
+| Adsterra minimal banner scope | AdSense blocked; minimal = no popunder/social/direct-link risk | ✓ Shipped (key pending) |
 
 ## Constraints
 
 - **No functional changes**: Every download flow, API call, and setting must continue working identically
 - **Mantine v6**: Cannot upgrade — too many breaking changes, risk to functionality
 - **Replit deployment**: Must remain deployable on Replit with current build process
-- **Build process**: `build.sh` and Vite config must continue to work
-- **Client-only changes**: All modifications confined to `client/src/`
-
-## Key Decisions
-
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Monolith design system | Brutalist-minimalist, proven in weather app, premium feel | Active |
-| Both themes from Monolith spec | Warm Ivory light + Rich Black dark, consistent Deep Blue accent | Active |
-| Audio waveform for algorithmic art | Music-themed — fits playlist context | Active |
-| p5.js for generative art | Lightweight, seeded randomness, reproducible | Active |
-| Deliver visible results per phase | v1.0 lesson: invisible refactoring rejected, every phase must show progress | Active |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+- **Node.js 20**: Minimum runtime requirement
 
 ---
-*Last updated: 2026-04-14 — Phase 9 (SEO & Domain) complete: full SEO meta/OG/Twitter/JSON-LD, robots.txt, sitemap.xml, domain name research (sunozip.com top pick)*
+*Last updated: 2026-05-02 after v2.0 Monolith UI milestone — all 11 phases shipped*
