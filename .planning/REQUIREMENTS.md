@@ -49,12 +49,12 @@
 
 ### Donation Modal
 
-- [ ] **DON-01**: Modal triggers on 1st download and every 5th download after (1, 5, 10, 15...) via localStorage counter
+- [x] **DON-01**: Modal triggers on 1st download and every 5th download after (1, 5, 10, 15...) via localStorage counter
 - [x] **DON-02**: Modal uses gratitude-first tone — "Thanks for using Suno Downloader!" heading, soft support ask
 - [x] **DON-03**: Banner image generated via nanobanana MCP — cozy coffee + music mashup, warm tones, inviting not corporate
 - [x] **DON-04**: Centered overlay modal with banner image top, gratitude text middle, Buy Me a Coffee CTA button bottom
-- [ ] **DON-05**: Existing top support banner remains alongside modal — both serve different purposes
-- [ ] **DON-06**: localStorage download counter with no permanent opt-out — modal re-appears per trigger formula
+- [x] **DON-05**: Existing top support banner remains alongside modal — both serve different purposes
+- [x] **DON-06**: localStorage download counter with no permanent opt-out — modal re-appears per trigger formula
 
 ### Ad Monetisation
 
@@ -116,12 +116,12 @@
 | ADS-02 | Phase 4 | Pending |
 | ADS-03 | Phase 4 | Pending |
 | ADS-04 | Phase 4 | Pending |
-| DON-01 | Phase 7 | Pending |
+| DON-01 | Phase 7 | Complete |
 | DON-02 | Phase 7 | Complete |
 | DON-03 | Phase 7 | Complete |
 | DON-04 | Phase 7 | Complete |
-| DON-05 | Phase 7 | Pending |
-| DON-06 | Phase 7 | Pending |
+| DON-05 | Phase 7 | Complete |
+| DON-06 | Phase 7 | Complete |
 | ADM-01 | Phase 10 | Complete |
 | ADM-02 | Phase 10 | Complete |
 | ADM-03 | Phase 10 | Complete |
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-05-01 after Phase 10 minimal-scope execution*
+*Last updated: 2026-05-02 after Phase 5/7 popup status reconciliation*
