@@ -27,7 +27,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Dependabot Security** - Resolve dependabot alerts via GitHub CLI
 - [x] **Phase 9: SEO & Domain** - SEO improvements and domain name suggestions
 - [x] **Phase 10: Adsterra Monetisation** - Replace blocked AdSense with Adsterra banner + parallel Media.net submission (completed 2026-05-01)
-- [ ] **Phase 11: Dependabot Security Check + Full Website Regression** - Resolve current Dependabot alerts with full regression coverage (all fixes applied 2026-05-02; awaiting manual regression sign-off)
+- [x] **Phase 11: Dependabot Security Check + Full Website Regression** - Resolve current Dependabot alerts with full regression coverage (all fixes applied 2026-05-02; awaiting manual regression sign-off) (completed 2026-05-02)
 
 ## Phase Details
 
