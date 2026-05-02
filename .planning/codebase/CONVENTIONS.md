@@ -1,211 +1,297 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-04-11
+**Analysis Date:** 2026-05-02
 
 ## Naming Patterns
 
 **Files:**
-- Backend routes: lowercase with hyphens or `.js` extension. Example: `playlist.js`, `download.js`, `settings.js`
-- Frontend components: PascalCase with `.tsx` extension. Example: `SimpleSettingsModal.tsx`, `ThemeToggle.tsx`, `StatusIcon.tsx`
-- Service files: PascalCase with `.ts` extension. Example: `Suno.ts`, `Logger.ts`, `Utils.ts`, `SettingsManager.ts`
-- Utility files: lowercase with `.js` extension. Example: `fileManager.js`
+- React components: PascalCase `.tsx` — `SimpleSettingsModal.tsx`, `ThemeToggle.tsx`, `StatusIcon.tsx`, `WaveformBackground.tsx`
+- Service classes: PascalCase `.ts` — `Suno.ts`, `Logger.ts`, `Utils.ts`, `SettingsManager.ts`, `WebApi.ts`
+- Custom hooks: camelCase `.ts` with `use` prefix — `useDarkMode.ts`, `useP5.ts`
+- Sketch/canvas files: camelCase `.ts` — `waveformSketch.ts`
+- Backend routes: lowercase `.js` — `playlist.js`, `download.js`, `settings.js`
+- Backend utilities: camelCase `.js` — `fileManager.js`
 
-**Functions:**
-- camelCase for all function names. Examples: `getSongsFromPlayList()`, `downloadPlaylist()`, `formatSecondsToTime()`, `createTempDirectory()`
-- Static methods on classes use camelCase. Examples: `Suno.getSongsFromPlayList()`, `Logger.log()`
-- React hooks follow `use` prefix pattern: `useDarkMode()`
+**Functions / Methods:**
+- All function names: camelCase — `getSongsFromPlayList()`, `downloadPlaylist()`, `formatSecondsToTime()`, `createTempDirectory()`
+- Static class methods: camelCase — `Suno.getSongsFromPlayList()`, `Logger.log()`
+- React custom hooks: `use` prefix — `useDarkMode()`, `useP5()`
+- Event handlers: camelCase verb — `getPlaylist`, `downloadPlaylist`, `saveSettings`, `toggleTheme`
 
-**Variables:**
-- camelCase for all variables and state. Examples: `playlistUrl`, `isGettingPlaylist`, `downloadPercentage`, `sessionDir`, `embedImages`
-- State variables from React hooks: `const [variableName, setVariableName] = useState()`
-- Constants at module level: UPPERCASE_WITH_UNDERSCORES (when appropriate). Example: `TEMP_DIR`, `API_BASE`, `PORT`, `SESSION_SECRET`
-- Private class properties use underscore prefix when needed: `_userId` or just `userId` in modern TypeScript
+**Variables / State:**
+- All local variables and state: camelCase — `playlistUrl`, `isGettingPlaylist`, `downloadPercentage`, `sessionDir`, `embedImages`
+- React state pairs follow `[value, setValue]` — `const [opened, setOpened] = useState(false)`
+- Module-level constants: UPPER_SNAKE_CASE — `TEMP_DIR`, `API_BASE`, `PORT`, `SESSION_SECRET`
+- Private class properties: no underscore prefix (modern TypeScript `private` keyword) — `private settings`, `private initialized`
 
-**Types:**
-- Interfaces use `I` prefix for TypeScript interfaces. Examples: `IPlaylist`, `IPlaylistClip`, `IPlaylistClipStatus`
-- Enums use PascalCase. Example: `IPlaylistClipStatus` (enum with values: None, Processing, Skipped, Success, Error)
-- Generic types follow standard TypeScript conventions
+**Types / Interfaces / Enums:**
+- Exported domain interfaces: `I` prefix — `IPlaylist`, `IPlaylistClip`
+- Enums: PascalCase with `I` prefix for domain types — `IPlaylistClipStatus`
+- Internal interfaces (non-exported): PascalCase, no `I` prefix — `Settings`
+- Type aliases: PascalCase — `type Theme = 'light' | 'dark'`
+- Props interfaces: PascalCase + `Props` suffix — `StatusIconProps`, `SimpleSettingsProps`, `WaveformBackgroundProps`
+
+**CSS classes:**
+- kebab-case — `.monolith-card`, `.support-banner`, `.btn-accent`, `.waveform-background`
 
 ## Code Style
 
 **Formatting:**
-- No explicit formatter configured in project
-- Spacing: 2-space indentation (implied by existing code)
-- Line length: No strict limit observed, pragmatic approach taken
-- Semicolons: Used consistently throughout
+- No ESLint, Prettier, or Biome config detected in project
+- 2-space indentation throughout source files
+- Semicolons used consistently in TypeScript
+- Trailing commas present in multi-line arrays/objects
 
-**Linting:**
-- No ESLint configuration detected
-- No Prettier configuration detected
-- Code follows pragmatic JavaScript/TypeScript conventions without strict enforcement
+**TypeScript strictness:**
+- No `tsconfig.json` in `client/` — relies on Vite's built-in TypeScript handling with defaults
+- Generics used for typed state and returns: `useState<IPlaylist | null>(null)`, `Promise<[IPlaylist, IPlaylistClip[]]>`
+- `any` used pragmatically when key lookups require it: `(this.settings as any)[key]`
+- Non-null assertions used where DOM guarantee exists: `document.getElementById('root')!`
+- `React.FC<Props>` typing used for some components; plain function with typed param used elsewhere
 
 ## Import Organization
 
-**Order:**
-1. React imports and core dependencies
-2. UI component libraries (Mantine components, Tabler icons)
-3. Local services and utilities
-4. Hooks and custom components
-5. CSS/style imports
+**Order (from `client/src/App.tsx`):**
+1. CSS imports — `import "./App.css"`
+2. React core — `import { useState, useRef, useEffect } from "react"`
+3. Third-party packages — `import { v4 as uuidv4 } from 'uuid'`, Tabler icons, Mantine
+4. Asset imports — `import heroBannerImg from './assets/hero-banner.png'`
+5. Local hooks — `import { useDarkMode } from './hooks/useDarkMode'`
+6. Local components — `import ThemeToggle from './components/ThemeToggle'`
+7. Local services — `import Suno, { IPlaylist, IPlaylistClip, IPlaylistClipStatus } from "./services/Suno"`
 
-**Examples from codebase:**
+**Path style:**
+- No aliases — all imports use relative paths
+- Components reference services as `'../services/Suno'`
+- Backend uses ES module syntax: `import express from 'express'`
+
+## TypeScript Patterns
+
+**Exported domain interfaces (I prefix):**
 ```typescript
-// App.tsx pattern
-import "./App.css";
-import { useState, useRef, useEffect } from "react";
-import { v4 as uuidv4 } from 'uuid';
-import { ActionIcon, AppShell, Badge, ... } from "@mantine/core";
-import { IconBrandGithub, IconCoffee, ... } from "@tabler/icons-react";
-import { useDarkMode } from './hooks/useDarkMode';
-import ThemeToggle from './components/ThemeToggle';
-import Suno, { IPlaylist, IPlaylistClip, ... } from "./services/Suno";
-```
+export interface IPlaylist {
+    name: string
+    image: string
+}
 
-**Path Aliases:**
-- No aliases configured; relative imports used throughout
-- Client side imports use relative paths: `'./hooks/useDarkMode'`, `'./services/Suno'`, `'./components/ThemeToggle'`
-- Backend imports use ES modules: `import express from 'express'`, `import fetch from 'node-fetch'`
-
-## Error Handling
-
-**Patterns:**
-- Try/catch blocks used for async operations and error-prone code
-- Error messages logged to console with `console.error()`
-- User-facing errors passed through error callback functions like `showError(message)`
-- Error responses return HTTP status codes with JSON: `res.status(error_code).json({ error: 'message' })`
-- Validation errors return 400 status. Examples: `res.status(400).json({ error: 'Invalid playlist data' })`
-- Server errors return 500 status with descriptive messages
-- Fetch errors caught and rethrown with context
-
-**Examples from routes:**
-```javascript
-// routes/playlist.js pattern
-try {
-  // operation
-  if (!url) {
-    return res.status(400).json({ message: 'Playlist URL is required' });
-  }
-  // more code
-} catch (error) {
-  console.error('Playlist fetch error:', error);
-  res.status(500).json({ message: 'Failed to fetch playlist data' });
+export interface IPlaylistClip {
+    id: string
+    no: number
+    title: string
+    duration: number
+    tags: string
+    audio_url: string
+    image_url: string
+    status: IPlaylistClipStatus
 }
 ```
 
-## Logging
+**Props interfaces (no I prefix):**
+```typescript
+interface StatusIconProps {
+  status: IPlaylistClipStatus;
+}
+```
 
-**Framework:** Console and browser console methods (no dedicated logging library)
+**Numeric enums for status:**
+```typescript
+export enum IPlaylistClipStatus {
+    None,
+    Processing,
+    Skipped,
+    Success,
+    Error
+}
+```
 
-**Patterns:**
-- `console.log()` for informational messages
-- `console.error()` for errors with full error context
-- `console.debug()` for debug-level messages (fallback behavior)
-- Structured logging with context: `console.log('Message:', details)`
-- Timestamp-based logging in Logger service using `new Date().toISOString()`
-- Browser localStorage used as log storage: `localStorage.getItem('suno-downloader-logs')`
+**Static-only service classes:**
+```typescript
+class Suno {
+    static async getSongsFromPlayList(url: string): Promise<[IPlaylist, IPlaylistClip[]]> { ... }
+}
+export default Suno;
+```
 
-**Examples:**
-```javascript
-// server.js
-console.log('Current directory:', __dirname);
-console.log(`Server running on port ${PORT}`);
+**Private constructor + static factory:**
+```typescript
+class SettingsManager {
+    private constructor() { this.settings = { ...defaultSettings }; }
+    static async create(): Promise<SettingsManager> { ... }
+}
+```
 
-// routes/playlist.js
-console.log(`Starting browser automation to fetch all ${totalSongs} songs...`);
-console.log(`✅ Found client dist path:`, distPath);
+**Generic methods:**
+```typescript
+async getSetting<T>(key: string, defaultValue: T): Promise<T>
+async setSetting<T>(key: string, value: T, save = true)
+```
 
-// Client services
-const log = {
-  timestamp: new Date().toISOString(),
-  userId: this.userId,
-  data
+## CSS Approach
+
+**Three-layer system:**
+
+**1. CSS custom properties** — `client/src/index.css`:
+```css
+:root.dark-mode {
+  --bg-primary: #0B0D1A;
+  --bg-card: #141828;
+  --accent: #7B5EA7;
+  --text-primary: #FFFFFF;
+  --border-color: rgba(123, 94, 167, 0.15);
+}
+:root.light-mode {
+  --bg-primary: #F0F2F8;
+  --bg-card: #E4E7F0;
+  --accent: #7B5EA7;
+}
+```
+Theme switching via `document.documentElement.classList` — NOT Mantine's built-in colorScheme toggle.
+
+**2. Global CSS classes** — `client/src/App.css`:
+```css
+.monolith-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+}
+```
+All values reference CSS variables; no hardcoded colors in global classes.
+
+**3. Mantine v6 props + inline styles** — components:
+```tsx
+// Inline style for conditional one-off values
+<ActionIcon style={{
+  backgroundColor: theme === 'light' ? 'rgba(0,113,227,0.1)' : 'rgba(0,113,227,0.2)',
+  borderRadius: '8px'
+}}>
+
+// Mantine styles prop for pseudo-selectors
+styles={{ root: { '&:hover': { backgroundColor: '...' } } }}
+```
+
+**Theme propagation:**
+- `theme: 'light' | 'dark'` prop drilled to components that need conditional inline styles
+- `MantineProvider` receives `colorScheme` for Mantine component theming
+- `useDarkMode` hook is the single source of truth — syncs to localStorage and `document.documentElement.classList`
+
+**No CSS Modules** — no `.module.css` files; global classes only.
+
+## Error Handling
+
+**Component pattern — catch and call `showError`:**
+```typescript
+const getPlaylist = async () => {
+    setIsGettingPLaylist(true);
+    try {
+        const data = await Suno.getSongsFromPlayList(playlistUrl);
+        setPlaylistData(data[0]);
+        setPlaylistClips(data[1]);
+    } catch (err) {
+        console.log(err);
+        showError("Failed to fetch playlist data. Make sure you entered a valid link");
+    }
+    setIsGettingPLaylist(false);
 };
 ```
 
+**`showError` / `showSuccess`** (`client/src/services/Utils.ts`):
+- Currently calls `alert()` — documented in source as placeholder for Mantine notifications
+- Always called with a user-facing string, not a raw Error object
+
+**Service layer — log and rethrow:**
+```typescript
+} catch (error) {
+    console.error("Error fetching playlist:", error);
+    throw error;  // Component handles user-facing display
+}
+```
+
+**Server-side:**
+- `res.status(400).json({ error: 'message' })` for validation failures
+- `res.status(500).json({ error: 'message' })` for server errors
+- All route handlers wrapped in try/catch
+
+## Logging
+
+**Client console methods:**
+- `console.log()` — informational
+- `console.error()` — errors with full context
+- `console.debug()` — debug messages (e.g., silent server logging failure)
+
+**Logger service** (`client/src/services/Logger.ts`):
+- Static class; `log(data: any): Promise<boolean>`
+- Stores in `localStorage` under `'suno-downloader-logs'` (capped at 50 entries)
+- Entry format: `{ timestamp: ISO string, userId: string, data: any }`
+- Attempts server POST to `/api/log`, fails silently if unavailable
+- `getLogs()` and `clearLogs()` for retrieval/reset
+
+**Server:** Morgan middleware for HTTP; `console.log` / `console.error` for operational messages
+
 ## Comments
 
-**When to Comment:**
-- Functions with non-obvious behavior include JSDoc-style comments
-- Complex logic blocks explain intent
-- Workarounds and temporary solutions marked with explanation
-- Configuration parameters documented at module level
-- API endpoint behaviors documented above route handlers
-
-**JSDoc/TSDoc:**
-- Used above route handlers in backend. Pattern:
-```javascript
-/**
- * @route POST /api/playlist/fetch
- * @description Fetch playlist by URL
- * @access Public
- */
-router.post('/fetch', async (req, res) => { ... });
-```
-- Service classes document public static methods:
+**JSDoc on service functions:**
 ```typescript
 /**
- * Fetch songs from a playlist
- * @returns Promise with playlist data and clips array
+ * Gets a random number between min and max values
+ * @param min Minimum value
+ * @param max Maximum value
+ * @returns Random number in range
  */
-static async getSongsFromPlayList(url: string): Promise<[IPlaylist, IPlaylistClip[]]>
+export function getRandomBetween(min: number, max: number): number { ... }
 ```
-- Utility functions documented with parameter and return types
+
+**Brief JSDoc on components:**
+```typescript
+/**
+ * Status icon component that displays different icons based on the status
+ */
+function StatusIcon({ status }: StatusIconProps) { ... }
+```
+
+**Inline comments:** Used for proxy explanation, workaround documentation, and non-obvious conditionals.
 
 ## Function Design
 
-**Size:**
-- Functions range from 10-100+ lines depending on complexity
-- Some functions are more procedural (download.js routes handle request/response)
-- Service functions tend to be more focused (Suno.ts methods)
+**Components:** Functional only — no class components in `client/src/`
 
-**Parameters:**
-- Destructuring used for object parameters. Example: `const { url } = req.body`
-- Event handlers receive standard parameters: `(req, res)` for Express, `(e) => {}` for React events
-- Async functions return Promises with typed generics in TypeScript
+**Props destructuring in signature:**
+```typescript
+function StatusIcon({ status }: StatusIconProps) { ... }
+const WaveformBackground: React.FC<WaveformBackgroundProps> = ({ seed = 42 }) => { ... }
+```
 
-**Return Values:**
-- HTTP routes return response via `res.json()`, `res.status().json()`, etc.
-- Service methods return typed promises: `Promise<[IPlaylist, IPlaylistClip[]]>`
-- UI component functions return JSX
+**Default parameters:** `seed = 42`, `save = true`, `embedImage: boolean = true`
+
+**Async/await throughout** — no `.then()` chains in component code
+
+**Functional state updater for derived updates:**
+```typescript
+setPlaylistClips((prevClips) =>
+    prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Processing }))
+);
+```
 
 ## Module Design
 
 **Exports:**
-- Backend routes export as default: `export default router`
-- Service classes export as default: `export default Suno`, `export default Logger`
-- React components export as named function: `export default SimpleSettingsModal`
-- Utility functions export as named exports: `export const createTempDirectory = async ()`
+- React components: `export default ComponentName`
+- Service classes: `export default Suno`, `export default Logger`
+- Hooks: named — `export function useDarkMode()`
+- Utilities: named — `export function showError()`, `export function delay()`
+- Interfaces/enums: named alongside default — `export enum IPlaylistClipStatus`, `export interface IPlaylist`
+- Constants: named — `export const defaultSettings`
 
-**Barrel Files:**
-- No barrel files (index.ts with re-exports) detected
-- Components imported directly from their files
-- Services imported with full paths
+**No barrel files** — all imports reference the specific file path directly.
 
-## Special Patterns
+## API_BASE Pattern
 
-**API Base Configuration:**
-- Conditional API_BASE based on NODE_ENV:
+Repeated in every HTTP-calling service file:
 ```typescript
+// client/src/services/Suno.ts, WebApi.ts, SettingsManager.ts, Logger.ts
 const API_BASE = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3000/api';
 ```
 
-**State Management (React):**
-- useState hook for local component state
-- No Redux or context API observed
-- Props passed down directly to child components
-- Session/local storage used for persistence: `localStorage.getItem()`, `localStorage.setItem()`
-
-**Async Operations:**
-- Promise-based async/await throughout
-- Promise.all() for parallel operations: `await Promise.all(downloadPromises)`
-- Fetch API for HTTP requests with manual error handling
-
-**React Component Pattern:**
-- Functional components with hooks
-- useEffect for side effects and initialization
-- useRef for DOM references: `const songTable = useRef<HTMLTableElement>(null)`
-- Theme prop drilling for styling context
-
 ---
 
-*Convention analysis: 2026-04-11*
+*Convention analysis: 2026-05-02*

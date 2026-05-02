@@ -1,15 +1,13 @@
 {
   "_meta": {
-    "updated_at": "2026-05-02T10:30:35.721Z",
-    "version": 2,
+    "updated_at": "2026-05-02T12:00:00.000Z",
+    "version": 3,
     "canonical_source": ".planning/intel/files.json"
   },
   "entries": {
     "server.js": {
       "role": "Express application entry point and production static asset server",
-      "exports": [
-        "default"
-      ],
+      "exports": ["default"],
       "evidence": [
         "imports routes/playlist.js, routes/download.js, routes/settings.js",
         "mounts /api/playlist, /api/download, /api/settings",
@@ -18,9 +16,7 @@
     },
     "routes/playlist.js": {
       "role": "Suno playlist and experimental username proxy route module",
-      "exports": [
-        "default"
-      ],
+      "exports": ["default"],
       "evidence": [
         "defines POST /fetch",
         "defines GET /:id and GET /:id/all",
@@ -30,9 +26,7 @@
     },
     "routes/download.js": {
       "role": "ZIP download and SSE progress route module",
-      "exports": [
-        "default"
-      ],
+      "exports": ["default"],
       "evidence": [
         "defines POST /playlist",
         "defines GET /progress/:sessionId",
@@ -41,9 +35,7 @@
     },
     "routes/settings.js": {
       "role": "Session-backed settings API",
-      "exports": [
-        "default"
-      ],
+      "exports": ["default"],
       "evidence": [
         "defines GET /",
         "defines POST /",
@@ -52,13 +44,7 @@
     },
     "utils/fileManager.js": {
       "role": "Temporary directory lifecycle and file helper module",
-      "exports": [
-        "createTempDirectory",
-        "cleanupTempDirectory",
-        "schedulePeriodicCleanup",
-        "writeFile",
-        "fileExists"
-      ],
+      "exports": ["createTempDirectory", "cleanupTempDirectory", "schedulePeriodicCleanup", "writeFile", "fileExists"],
       "evidence": [
         "creates temp/session directories under temp/",
         "runs periodic cleanup",
@@ -76,23 +62,17 @@
     },
     "client/src/App.tsx": {
       "role": "Primary application UI and download workflow coordinator",
-      "exports": [
-        "default"
-      ],
+      "exports": ["default"],
       "evidence": [
         "calls Suno.getSongsFromPlayList",
         "calls downloadPlaylistApi and setupProgressMonitor",
-        "renders WaveformBackground, DonationModal, AdSlot, StatusIcon, and ThemeToggle"
+        "renders WaveformBackground, DonationModal, AdSlot, StatusIcon, and ThemeToggle",
+        "manages donationModalOpen state added in v2.0 Monolith UI"
       ]
     },
     "client/src/services/Suno.ts": {
       "role": "Client playlist/user lookup API adapter",
-      "exports": [
-        "IPlaylistClipStatus",
-        "IPlaylist",
-        "IPlaylistClip",
-        "default"
-      ],
+      "exports": ["IPlaylistClipStatus", "IPlaylist", "IPlaylistClip", "default"],
       "evidence": [
         "calls /api/playlist/:id/all",
         "calls /api/playlist/user/:username/songs",
@@ -101,14 +81,7 @@
     },
     "client/src/services/WebApi.ts": {
       "role": "Client download and SSE API adapter",
-      "exports": [
-        "addImageToMp3",
-        "ensureDir",
-        "writeFile",
-        "existsFile",
-        "downloadPlaylist",
-        "setupProgressMonitor"
-      ],
+      "exports": ["addImageToMp3", "ensureDir", "writeFile", "existsFile", "downloadPlaylist", "setupProgressMonitor"],
       "evidence": [
         "posts to /api/download/playlist",
         "creates browser blob download link",
@@ -117,92 +90,171 @@
     },
     "client/src/services/SettingsManager.ts": {
       "role": "Browser-local settings manager with server sync",
-      "exports": [
-        "defaultSettings",
-        "initializeSettingsManager",
-        "getSettingsManager"
-      ],
+      "exports": ["defaultSettings", "initializeSettingsManager", "getSettingsManager"],
       "evidence": [
         "loads and saves suno-downloader-settings in localStorage",
         "syncs settings through /api/settings"
       ]
     },
+    "client/src/services/Logger.ts": {
+      "role": "Structured client-side event logger backed by localStorage",
+      "exports": ["default"],
+      "evidence": ["stores logs in localStorage key suno-downloader-logs"]
+    },
+    "client/src/services/Utils.ts": {
+      "role": "UI notification helpers",
+      "exports": ["showError", "showSuccess"],
+      "evidence": ["wraps @mantine/notifications showNotification"]
+    },
+    "client/src/components/WaveformBackground.tsx": {
+      "role": "p5.js animated waveform background component (Monolith v2.0)",
+      "exports": ["default"],
+      "evidence": [
+        "uses useP5 hook",
+        "uses createWaveformSketch",
+        "renders aria-hidden div with class waveform-background"
+      ]
+    },
+    "client/src/components/DonationModal.tsx": {
+      "role": "Buy-me-a-coffee donation prompt modal (Monolith v2.0)",
+      "exports": ["default"],
+      "evidence": [
+        "Mantine Modal with CSS variable theming",
+        "links to buymeacoffee.com/focused",
+        "imports donation-banner.png asset"
+      ]
+    },
     "client/src/components/AdSlot.tsx": {
-      "role": "Adsterra banner script injector",
-      "exports": [
-        "default"
-      ],
+      "role": "Adsterra banner script injector with CLS-stable layout reservation",
+      "exports": ["default"],
       "evidence": [
         "sets window.atOptions",
         "injects highperformanceformat.com invoke.js",
-        "reserves minHeight for layout stability"
+        "reserves minHeight for layout stability",
+        "single-instance constraint documented inline"
       ]
     },
-    "client/src/components/WaveformBackground.tsx": {
-      "role": "p5.js background component",
-      "exports": [
-        "default"
-      ],
-      "evidence": [
-        "uses useP5",
-        "uses createWaveformSketch"
-      ]
+    "client/src/components/StatusIcon.tsx": {
+      "role": "Per-track download status indicator",
+      "exports": ["default"],
+      "evidence": ["renders icons based on IPlaylistClipStatus enum values"]
+    },
+    "client/src/components/ThemeToggle.tsx": {
+      "role": "Dark/light mode toggle button",
+      "exports": ["default"],
+      "evidence": ["calls toggleTheme from useDarkMode hook"]
+    },
+    "client/src/components/Footer.tsx": {
+      "role": "App footer with links",
+      "exports": ["default"],
+      "evidence": ["renders bottom-of-page footer bar"]
+    },
+    "client/src/components/SectionHeading.tsx": {
+      "role": "Styled section heading component",
+      "exports": ["default"],
+      "evidence": ["reusable heading with Mantine Text"]
+    },
+    "client/src/components/SimpleSettingsModal.tsx": {
+      "role": "Simplified settings modal (Mantine)",
+      "exports": ["default"],
+      "evidence": ["renders settings form fields via Mantine hooks"]
+    },
+    "client/src/components/OptionsModal.tsx": {
+      "role": "Advanced settings modal with form validation",
+      "exports": ["default"],
+      "evidence": ["uses @mantine/form for validation"]
+    },
+    "client/src/components/BasicModal.tsx": {
+      "role": "Generic confirmation modal wrapper",
+      "exports": ["default"],
+      "evidence": ["uses @mantine/modals context"]
+    },
+    "client/src/components/ContextModal.tsx": {
+      "role": "Mantine context modal definition",
+      "exports": ["default"],
+      "evidence": ["defines modal body for modals manager"]
+    },
+    "client/src/components/DirectSettingsButton.tsx": {
+      "role": "Inline settings access button",
+      "exports": ["default"],
+      "evidence": ["renders settings trigger without opening modal"]
+    },
+    "client/src/components/TestModal.tsx": {
+      "role": "Development/test modal stub",
+      "exports": ["default"],
+      "evidence": ["minimal modal for testing Mantine modal system"]
     },
     "client/src/hooks/useDarkMode.ts": {
       "role": "Theme persistence hook",
-      "exports": [
-        "useDarkMode"
-      ],
+      "exports": ["useDarkMode"],
       "evidence": [
         "stores theme in localStorage",
-        "toggles dark-mode and light-mode classes"
+        "toggles dark-mode and light-mode classes on document root"
       ]
     },
     "client/src/hooks/useP5.ts": {
       "role": "React lifecycle wrapper for p5 sketches",
-      "exports": [
-        "useP5"
-      ],
+      "exports": ["useP5"],
       "evidence": [
         "creates a p5 instance against a div ref",
-        "removes existing instances during cleanup"
+        "removes existing instances during cleanup",
+        "React Strict Mode safe"
       ]
     },
     "client/src/sketches/waveformSketch.ts": {
-      "role": "Seeded waveform canvas renderer",
-      "exports": [
-        "createWaveformSketch"
-      ],
+      "role": "Seeded 8-layer waveform canvas renderer with dark/light mode palettes",
+      "exports": ["createWaveformSketch"],
       "evidence": [
-        "sets frameRate, noiseSeed, and randomSeed",
-        "draws layered waveforms and ambient glow",
-        "resizes canvas on window resize"
+        "sets frameRate(30), noiseSeed, and randomSeed",
+        "draws 8 layered noise waveforms with color gradient",
+        "draws 3 ambient glow orbs",
+        "resizes canvas on windowResized",
+        "reads --bg-primary CSS variable for background color"
       ]
     },
     "client/vite.config.ts": {
       "role": "Vite dev/build configuration",
-      "exports": [
-        "default"
-      ],
+      "exports": ["default"],
       "evidence": [
         "uses @vitejs/plugin-react",
         "proxies /api to localhost:3000",
-        "outputs build to client/dist"
+        "outputs build to client/dist",
+        "dev server on port 5000 with host 0.0.0.0"
       ]
     },
     "public/index.html": {
-      "role": "Prebuilt deployment HTML served by server.js",
+      "role": "Prebuilt deployment HTML with full SEO meta (OG, Twitter Card, JSON-LD) and Google AdSense",
       "exports": [],
       "evidence": [
-        "server.js checks public/index.html before client/dist"
+        "server.js checks public/index.html before client/dist",
+        "OG/Twitter meta for sunozip.com",
+        "JSON-LD WebApplication schema",
+        "pagead2.googlesyndication.com AdSense script",
+        "Inter font from Google Fonts"
       ]
     },
+    "public/robots.txt": {
+      "role": "Crawler instructions for sunozip.com",
+      "exports": [],
+      "evidence": ["served explicitly by server.js before SPA fallback"]
+    },
+    "public/sitemap.xml": {
+      "role": "XML sitemap for sunozip.com",
+      "exports": [],
+      "evidence": ["served explicitly by server.js before SPA fallback"]
+    },
+    "public/ads.txt": {
+      "role": "Advertising disclosure / authorized sellers file",
+      "exports": [],
+      "evidence": ["served explicitly by server.js before SPA fallback"]
+    },
     "web-version/": {
-      "role": "Legacy duplicate web implementation",
+      "role": "Legacy duplicate web implementation (separate package tree, NOT the Replit deployment)",
       "exports": [],
       "evidence": [
         "web-version/server.js mounts the same API prefixes",
-        "web-version/routes/download.js retains GET /api/download/song",
+        "web-version/routes/download.js retains GET /api/download/song single-song endpoint",
+        "web-version/package.json has qs/on-headers security overrides",
         "web-version/client/src/App.tsx imports filenamify and p-limit"
       ]
     }

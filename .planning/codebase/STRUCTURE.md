@@ -1,268 +1,258 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-04-11
+**Analysis Date:** 2026-05-02
 
 ## Directory Layout
 
 ```
-suno-playlist-downloader/
-├── server.js                    # Express server entry point
-├── package.json                 # Root dependencies (Express, Puppeteer, etc)
-├── build.sh                     # Build script for Replit deployment
-├── Procfile                     # Heroku-style process file
-├── .replit                      # Replit environment config
-├── routes/                      # Backend API route handlers
-│   ├── playlist.js              # Playlist/user fetch endpoints
-│   ├── download.js              # ZIP download endpoint
-│   └── settings.js              # User settings endpoints
-├── utils/                       # Utility modules
-│   └── fileManager.js           # File operations and cleanup
-├── client/                      # React frontend application
-│   ├── src/                     # TypeScript/React source
-│   │   ├── App.tsx              # Main app component
-│   │   ├── main.tsx             # React entry point
-│   │   ├── App.css              # App styles
-│   │   ├── index.css            # Global styles
-│   │   ├── components/          # Reusable React components
-│   │   │   ├── ThemeToggle.tsx
-│   │   │   ├── SimpleSettingsModal.tsx
-│   │   │   ├── StatusIcon.tsx
-│   │   │   └── [other modals and components]
-│   │   ├── services/            # API & business logic
-│   │   │   ├── Suno.ts          # Playlist/user API client
-│   │   │   ├── WebApi.ts        # Download API client
-│   │   │   ├── SettingsManager.ts
-│   │   │   ├── Logger.ts
-│   │   │   └── Utils.ts
-│   │   ├── hooks/               # Custom React hooks
-│   │   │   └── useDarkMode.ts
-│   │   ├── icons/               # Icon assets (Tabler)
-│   │   └── vite-env.d.ts        # TypeScript ambient declarations
-│   ├── public/                  # Static assets (served as-is)
-│   │   └── assets/              # Images, fonts, etc
-│   ├── dist/                    # Built Vite bundle (generated)
-│   ├── node_modules/            # Client dependencies
-│   ├── package.json             # Client dependencies (React, Mantine, etc)
-│   ├── vite.config.ts           # Vite build config
-│   ├── index.html               # HTML entry point
-│   └── tsconfig.json            # TypeScript config (implicit)
-├── web-version/                 # Archived/legacy directory (not in active use)
-├── temp/                        # Temporary files during downloads (created at runtime)
-├── public/                      # Additional static assets
-├── node_modules/                # Root dependencies
-└── .planning/                   # GSD planning documents
-    └── codebase/                # Architecture analysis (this directory)
+suno-playlist-downloader/           # Project root — deployed server
+├── server.js                       # Express server entry point
+├── package.json                    # Root server dependencies
+├── package-lock.json               # Lockfile
+├── build.sh                        # Replit deploy build script
+├── deploy.sh                       # Manual deploy helper
+├── Procfile                        # Process definition (npm start)
+├── .replit                         # Replit environment config
+├── replit.json                     # Replit JSON config
+├── CLAUDE.md                       # Claude Code instructions
+├── README.md                       # Project README
+├── REPLIT_SETUP.md                 # Replit setup guide
+├── routes/                         # Express route handlers
+│   ├── playlist.js                 # GET /api/playlist/:id/all (+ @username)
+│   ├── download.js                 # POST /api/download/playlist, GET progress SSE
+│   └── settings.js                 # GET/POST/DELETE /api/settings
+├── utils/                          # Server utility modules
+│   └── fileManager.js              # Temp dir lifecycle (create/cleanup/sweep)
+├── public/                         # Pre-built React bundle served by Express
+│   ├── index.html                  # SPA entry (Vite-hashed)
+│   ├── ads.txt                     # Adsterra ads.txt
+│   ├── robots.txt                  # SEO robots
+│   ├── sitemap.xml                 # SEO sitemap
+│   ├── og-card.png                 # Open Graph image
+│   └── assets/                     # Hashed JS/CSS/image bundles
+├── client/                         # React frontend source (separate npm workspace)
+│   ├── package.json                # Client dependencies (React, Mantine, Vite, p5)
+│   ├── vite.config.ts              # Vite build + dev proxy config
+│   ├── index.html                  # HTML shell (Vite entry)
+│   ├── public/                     # Static pass-through assets
+│   │   └── assets/
+│   │       └── og-card.png
+│   ├── dist/                       # Vite build output (generated, not committed)
+│   └── src/
+│       ├── main.tsx                # React bootstrap (MantineProvider)
+│       ├── App.tsx                 # Root component — all main UI + state
+│       ├── App.css                 # App-level CSS
+│       ├── index.css               # Global CSS vars + theme tokens
+│       ├── vite-env.d.ts           # Vite ambient type declarations
+│       ├── assets/                 # Images imported at build time
+│       │   ├── hero-banner.png
+│       │   └── donation-banner.png
+│       ├── icons/                  # Static icon assets
+│       │   └── icons8-playlist-96.png
+│       ├── components/             # React components
+│       │   ├── WaveformBackground.tsx   # p5.js full-screen canvas
+│       │   ├── DonationModal.tsx        # Buy-me-a-coffee prompt
+│       │   ├── AdSlot.tsx               # Adsterra banner (single-instance)
+│       │   ├── ThemeToggle.tsx          # Light/dark switch
+│       │   ├── StatusIcon.tsx           # Per-song download status badge
+│       │   ├── Footer.tsx               # Static footer
+│       │   ├── SimpleSettingsModal.tsx  # Settings UI
+│       │   ├── DirectSettingsButton.tsx # Settings open button
+│       │   ├── SectionHeading.tsx       # Styled heading primitive
+│       │   ├── BasicModal.tsx           # Generic modal wrapper
+│       │   ├── ContextModal.tsx         # Context-aware modal
+│       │   ├── OptionsModal.tsx         # Options panel modal
+│       │   └── TestModal.tsx            # Dev testing modal
+│       ├── hooks/                  # Custom React hooks
+│       │   ├── useDarkMode.ts      # Theme state + localStorage sync
+│       │   └── useP5.ts            # p5.js instance lifecycle
+│       ├── services/               # Client-side business logic + API clients
+│       │   ├── Suno.ts             # Playlist/user fetch (calls /api/playlist)
+│       │   ├── WebApi.ts           # Download + SSE progress (calls /api/download)
+│       │   ├── SettingsManager.ts  # Settings singleton (localStorage + server)
+│       │   ├── Logger.ts           # Structured localStorage logging
+│       │   └── Utils.ts            # showError / showSuccess UI helpers
+│       └── sketches/               # p5.js sketch factories
+│           └── waveformSketch.ts   # Animated waveform background sketch
+├── temp/                           # Runtime temp dirs for downloads (auto-cleaned)
+├── web-version/                    # ARCHIVE — historical reference copy, not deployed
+│   ├── server.js
+│   ├── routes/
+│   ├── utils/
+│   └── client/
+├── node_modules/                   # Root server dependencies (not committed)
+└── .planning/                      # GSD planning artifacts
+    ├── codebase/                   # Architecture analysis docs
+    ├── phases/                     # Per-phase implementation plans
+    ├── milestones/
+    ├── intel/
+    ├── research/
+    └── todos/
 ```
 
 ## Directory Purposes
 
-**Root:**
-- Purpose: Server configuration and entry point
-- Contains: Express server, build scripts, package manifests
-- Key files: `server.js`, `package.json`, `build.sh`
-
-**routes/:**
-- Purpose: Express route handlers organized by feature
-- Contains: Three main API route modules
+**`routes/`:**
+- Purpose: One file per API feature area
+- Contains: Express `Router` instances exported as default
 - Key files:
-  - `playlist.js` - Playlist fetch + browser automation (200+ lines)
-  - `download.js` - ZIP creation + streaming (180+ lines)
-  - `settings.js` - User preference CRUD (80 lines)
+  - `playlist.js` (22KB) — Suno API calls + Puppeteer infinite-scroll for `@username` profiles
+  - `download.js` (6KB) — Parallel MP3 fetch, ID3 embed, AdmZip assembly, blob stream
+  - `settings.js` (2KB) — Session-backed settings CRUD
 
-**utils/:**
-- Purpose: Shared utility modules without HTTP routes
-- Contains: File system operations, cleanup logic
-- Key files: `fileManager.js` - Core file operations (130+ lines)
+**`utils/`:**
+- Purpose: Shared server utilities (no HTTP routing)
+- Contains: `fileManager.js` — `createTempDirectory`, `cleanupTempDirectory`, `schedulePeriodicCleanup`, `writeFile`, `fileExists`
 
-**client/src/:**
-- Purpose: React application source code
-- Contains: Components, services, hooks, styles
-- Entry: `main.tsx` renders to DOM, `App.tsx` is root component
+**`public/`:**
+- Purpose: Production-ready static bundle served directly by Express at `/`
+- Contains: Pre-built React app, SEO files, Open Graph assets
+- Built by: `build.sh` → Vite → `client/dist/` → copied here or discovered via `possiblePaths` in `server.js`
+- Committed: Yes (Replit requires pre-built assets)
 
-**client/src/components/:**
-- Purpose: Reusable React components (modals, buttons, icons)
-- Contains: 10 functional components using Mantine
-- Key patterns: Modal dialogs (settings, test, context), theme toggle, status indicators
+**`client/src/components/`:**
+- Purpose: All React UI components
+- Pattern: Functional components, Mantine v6 primitives, CSS variable theming
+- Key components: `WaveformBackground` (p5 canvas), `DonationModal`, `AdSlot` (Adsterra), `StatusIcon`
 
-**client/src/services/:**
-- Purpose: Business logic and external API communication
-- Contains: 5 TypeScript service classes
-- Key files:
-  - `Suno.ts` - Main playlist/user API client (extracts playlist ID from URL, calls backend)
-  - `WebApi.ts` - Download orchestration (fetch wrapper for ZIP endpoint)
-  - `SettingsManager.ts` - Singleton for user preferences (localStorage + server sync)
-  - `Logger.ts` - Structured logging
-  - `Utils.ts` - UI notification helpers (showError, showSuccess)
+**`client/src/services/`:**
+- Purpose: All HTTP communication + client business logic
+- Pattern: Classes with static methods or lazy singletons; never imported directly in other services
+- Key files: `Suno.ts` (playlist API), `WebApi.ts` (download + SSE), `SettingsManager.ts` (settings)
 
-**client/src/hooks/:**
-- Purpose: Custom React hooks
-- Contains: Dark mode detection and persistence logic
-- Key file: `useDarkMode.ts` - Reads system preference, syncs with localStorage, exports toggle
+**`client/src/hooks/`:**
+- Purpose: Custom React hooks encapsulating stateful behavior
+- `useDarkMode.ts` — theme toggle + localStorage sync
+- `useP5.ts` — p5.js instance mount/unmount lifecycle
 
-**client/dist/:**
-- Purpose: Built and minified React bundle (generated)
-- Contains: index.html (compiled), JavaScript/CSS bundles, assets
-- Generated by: `npm run build` (Vite)
-- Served by: Express static middleware
+**`client/src/sketches/`:**
+- Purpose: p5.js sketch factory functions (not React components)
+- `waveformSketch.ts` — 8-layer animated waveform using Perlin noise; reads CSS vars for theming
 
-**temp/:**
-- Purpose: Session-specific working directory for downloads
-- Contains: MP3 files, cover images, ZIP archives (temporary)
-- Created at: Request time via `createTempDirectory()`
-- Cleaned at: Request completion + 15 sec delay (or 1 hour auto-cleanup)
+**`client/src/assets/`:**
+- Purpose: Images imported at build time (Vite hashes and bundles them)
+- Use: `import heroBannerImg from './assets/hero-banner.png'` — Vite inlines or emits with hash
+
+**`temp/`:**
+- Purpose: Runtime per-download working directories
+- Generated: At request time by `fileManager.js`
+- Committed: No
+- Cleanup: Auto 1-hour safety timeout + 15s post-stream cleanup + hourly sweep for dirs >24h
+
+**`web-version/`:**
+- Purpose: Historical reference copy of an earlier standalone version
+- Status: NOT deployed; root `server.js` and root `client/` are the deployed code
+- Committed: Yes (kept as reference)
 
 ## Key File Locations
 
 **Entry Points:**
-- `server.js` - Server bootstrap, middleware setup, route mounting, static file serving
-- `client/src/main.tsx` - React app initialization, theme provider setup
-- `client/src/App.tsx` - Root component, UI layout, state management
+- `server.js` — Server bootstrap, middleware, route mounting, static serving
+- `client/src/main.tsx` — React app init, `MantineProvider` wrapper
+- `client/src/App.tsx` — Root component, all primary UI state
 
 **Configuration:**
-- `package.json` (root) - Server dependencies (Express 4.19, Puppeteer 24.9, etc)
-- `package.json` (client) - Client dependencies (React 18.2, Mantine 6.0, Vite 4.3)
-- `vite.config.ts` - Vite build settings, dev proxy to `/api` → `localhost:3000`
-- `.replit` - Replit environment variables and build commands
-- `build.sh` - Replit deployment script (chmod + npm install + npm run build)
+- `package.json` (root) — Server deps: Express 4.19, Puppeteer 24.9, adm-zip, node-id3
+- `client/package.json` — Client deps: React 18.2, Mantine 6.0.13, Vite 4.3.9, p5, Tabler icons
+- `client/vite.config.ts` — Build outDir `dist`, dev proxy `/api` → `http://localhost:3000`
+- `build.sh` — Replit deploy build orchestration
+- `.replit` — Replit run command and deployment target
 
 **Core Logic:**
-- `routes/playlist.js` - Fetches playlist from Suno API, uses Puppeteer for infinite scroll
-- `routes/download.js` - Downloads songs, embeds metadata, creates ZIP, streams response
-- `routes/settings.js` - CRUD operations on session settings
-- `utils/fileManager.js` - Manages temp directories and periodic cleanup
-- `client/src/services/Suno.ts` - URL parsing, playlist/user fetch API calls
-- `client/src/services/WebApi.ts` - Download initiation and progress monitoring
-- `client/src/services/SettingsManager.ts` - Settings persistence and sync
-
-**Testing:**
-- No test files present (testing not implemented)
+- `routes/playlist.js` — Suno API fetch + Puppeteer profile scraping
+- `routes/download.js` — MP3 download, ID3 tagging, ZIP assembly, streaming
+- `routes/settings.js` — Session settings CRUD
+- `utils/fileManager.js` — Temp file lifecycle
+- `client/src/services/Suno.ts` — URL parsing, backend playlist API calls
+- `client/src/services/WebApi.ts` — Download initiation (blob) + SSE progress monitor
+- `client/src/services/SettingsManager.ts` — Settings singleton, localStorage + server sync
 
 **Styling:**
-- `client/src/App.css` - App-specific styles
-- `client/src/index.css` - Global reset and theme variables
-- Mantine theming via MantineProvider in `main.tsx`
-- PostCSS via `postcss-preset-mantine` for Mantine theme generation
+- `client/src/index.css` — Global CSS custom properties (`--bg-primary`, `--text-primary`, `--border-color`, etc.) for dark/light themes
+- `client/src/App.css` — App layout, step cards, hero banner, progress bar, song table
+- Mantine components via `MantineProvider` in `main.tsx`
+
+**Testing:**
+- No test files present. No test framework configured.
 
 ## Naming Conventions
 
 **Files:**
-- Backend: camelCase for JavaScript (e.g., `fileManager.js`, `download.js`)
-- Frontend: PascalCase for React components (e.g., `App.tsx`, `ThemeToggle.tsx`)
-- Frontend: camelCase for services and utilities (e.g., `Suno.ts`, `useDarkMode.ts`)
-- Routes: descriptive lowercase (e.g., `playlist.js`, `download.js`, `settings.js`)
+- Backend route files: lowercase (`playlist.js`, `download.js`, `settings.js`)
+- Backend utils: camelCase (`fileManager.js`)
+- Frontend components: PascalCase `.tsx` (`WaveformBackground.tsx`, `DonationModal.tsx`)
+- Frontend services: PascalCase `.ts` (`Suno.ts`, `WebApi.ts`, `SettingsManager.ts`)
+- Frontend hooks: camelCase with `use` prefix (`useDarkMode.ts`, `useP5.ts`)
+- Frontend sketches: camelCase (`waveformSketch.ts`)
 
 **Directories:**
-- Functional organization: `routes/`, `utils/`, `components/`, `services/`, `hooks/`
-- lowercase for utility/feature directories
-- PascalCase for domain objects (none currently)
-
-**Functions (Backend - Node.js):**
-- camelCase: `createTempDirectory()`, `fetchAllSongsWithBrowser()`, `cleanupTempDirectory()`
-- Exported as ES6: `export const functionName = () => {}`
-
-**Functions (Frontend - React/TypeScript):**
-- camelCase: `getSongsFromPlayList()`, `downloadPlaylist()`, `useDarkMode()`
-- Component functions: PascalCase (e.g., `function App() {}`)
-
-**Variables:**
-- camelCase: `playlistUrl`, `downloadPercentage`, `embedImage`
-- Constants: UPPER_SNAKE_CASE: `TEMP_DIR`, `API_BASE`, `PORT`
-- Boolean flags: `is*` or `*Enabled`: `isDownloading`, `embedImage`, `initialized`
-
-**Types (TypeScript):**
-- PascalCase with I prefix for interfaces: `IPlaylist`, `IPlaylistClip`, `IPlaylistClipStatus`
-- Enum: `IPlaylistClipStatus { None, Processing, Skipped, Success, Error }`
+- All lowercase: `routes/`, `utils/`, `components/`, `services/`, `hooks/`, `sketches/`, `assets/`, `icons/`, `temp/`
 
 ## Where to Add New Code
 
-**New Feature (UI Component):**
-- Primary code: `client/src/components/{FeatureName}.tsx`
-- Tests: No test directory - add to `__tests__/` if testing added
-- Styling: Component-scoped CSS in same file or `client/src/components/{FeatureName}.module.css`
-- Export in: `client/src/App.tsx` imports if top-level
+**New UI component:**
+- Create: `client/src/components/{ComponentName}.tsx`
+- Style: CSS vars in `client/src/index.css` or inline `style` props using var references
+- Import: Add to `App.tsx` or parent component directly
 
-**New API Endpoint:**
-- Create or edit: `routes/{feature}.js`
-- Import in: `server.js` via `import featureRoutes from './routes/{feature}.js'`
-- Mount route: `app.use('/api/{feature}', featureRoutes)`
-- Call from client: Add method to appropriate service file in `client/src/services/`
+**New API endpoint:**
+- Create or edit: `routes/{feature}.js` — export `router` as default
+- Register: `server.js` — `import featureRoutes from './routes/{feature}.js'` + `app.use('/api/{feature}', featureRoutes)`
+- Client call: Add method to `client/src/services/WebApi.ts` or create `client/src/services/{Feature}.ts`
 
-**New Service (Business Logic):**
+**New client service:**
 - Create: `client/src/services/{ServiceName}.ts`
-- Pattern: Class with static methods or singleton export
-- Follow SettingsManager pattern for state management
-- Import in: Components or App.tsx as needed
+- Follow `SettingsManager.ts` singleton pattern for stateful services
+- Follow `Suno.ts` static-class pattern for stateless API clients
 
-**New Utility Function:**
-- Shared backend: `utils/{module}.js`
-- Export: `export const functionName = () => {}`
-- Import in: Routes and other utils files
-- Shared frontend: `client/src/services/Utils.ts` or new file in services/
+**New backend utility:**
+- Add to: `utils/fileManager.js` if file-system related, or create `utils/{module}.js`
+- Export: Named ES module exports (`export const fn = ...`)
 
-**New Hook:**
+**New custom hook:**
 - Create: `client/src/hooks/use{HookName}.ts`
-- Pattern: Follow useDarkMode pattern (custom React hook)
-- Export as default or named export
-- Import in: Components that need the hook
+- Export: Named export (`export function useHookName() {}`)
 
-**Static Assets:**
-- Backend: Place in `public/` directory, served at root
-- Frontend: Place in `client/public/assets/`, served from `/assets/`
-- Images in components: Import as TypeScript imports (Vite handles bundling)
+**New p5.js sketch:**
+- Create: `client/src/sketches/{sketchName}.ts`
+- Export factory: `export function create{Name}Sketch(config) { return (p: p5) => { ... } }`
+- Mount via `useP5` hook in a wrapper component
+
+**Static/SEO files:**
+- Place in: `public/` (Express serves these before SPA catch-all)
+- Examples: `public/ads.txt`, `public/robots.txt`, `public/sitemap.xml`
+
+**Images imported at build time:**
+- Place in: `client/src/assets/`
+- Import: `import img from './assets/image.png'` — Vite hashes and bundles
 
 ## Special Directories
 
-**node_modules/:**
-- Purpose: Installed npm dependencies (both root and client)
-- Generated: Yes (from package-lock.json / package.json)
-- Committed: No (.gitignore excludes)
-- Size: ~500MB total (Puppeteer browser download included)
+**`client/dist/`:**
+- Generated: Yes (Vite build)
+- Committed: No
+- Served by: Express via `possiblePaths` discovery in `server.js`
 
-**client/dist/:**
-- Purpose: Built Vite bundle ready for production serving
-- Generated: Yes (`npm run client-build` or `npm run build` from client/)
-- Committed: No (.gitignore excludes)
-- Contains: Minified index.html, JavaScript bundles, CSS, assets
+**`public/`:**
+- Generated: Partially (copied from `client/dist/` during deploy)
+- Committed: Yes (Replit needs pre-built files)
+- Primary static serving path; takes priority over `client/dist/` in `server.js`
 
-**temp/:**
-- Purpose: Runtime-created session directories for file operations
-- Generated: Yes (at request time by fileManager.js)
-- Committed: No (.gitignore excludes)
-- Cleanup: Automatic via periodic scheduler (1 hour) or request completion (15 sec)
+**`temp/`:**
+- Generated: Yes (at runtime)
+- Committed: No
+- Lifecycle: Created per download request, auto-deleted within 1 hour
 
-**web-version/:**
-- Purpose: Legacy/archived copy of earlier version
-- Generated: No (historical)
+**`web-version/`:**
+- Generated: No
 - Committed: Yes
-- Status: Not in active use - can be deprecated
+- Active: No — do not modify; exists as historical reference only
 
-**.planning/codebase/:**
-- Purpose: GSD codebase analysis documents
-- Generated: Yes (by `/gsd-map-codebase` command)
+**`.planning/`:**
+- Generated: Yes (GSD commands)
 - Committed: Yes
-- Contains: ARCHITECTURE.md, STRUCTURE.md, CONVENTIONS.md, etc
-
-## File Organization Examples
-
-**Adding a new download format (e.g., m4a support):**
-1. Edit `routes/download.js` - Add format parameter parsing, update conversion logic
-2. Edit `client/src/services/WebApi.ts` - Add format param to downloadPlaylist() call
-3. Edit `client/src/components/SimpleSettingsModal.tsx` - Add format picker to UI
-4. Update `client/src/services/SettingsManager.ts` - Add format_preference to Settings interface
-
-**Adding playlist caching:**
-1. Create `client/src/services/PlaylistCache.ts` - Implement storage logic
-2. Edit `client/src/services/Suno.ts` - Check cache before API call
-3. Edit `client/src/App.tsx` - Initialize cache on mount, clear on demand
-4. Create `utils/cacheManager.js` (if server-side cache needed)
-
-**Adding user authentication:**
-1. Create `routes/auth.js` - Login/logout/register endpoints
-2. Create `client/src/services/AuthManager.ts` - Token storage and validation
-3. Create `client/src/components/LoginModal.tsx` - UI for auth
-4. Edit `server.js` - Add auth middleware, protect routes
-5. Edit `routes/download.js`, `routes/playlist.js` - Check auth in handlers
+- Contains: Phase plans, codebase docs, research notes, todos
 
 ---
 
-*Structure analysis: 2026-04-11*
+*Structure analysis: 2026-05-02*

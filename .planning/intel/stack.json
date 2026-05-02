@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "updated_at": "2026-05-02T10:30:34.796Z",
-    "version": 2
+    "updated_at": "2026-05-02T12:00:00.000Z",
+    "version": 3
   },
   "languages": [
     "JavaScript",
@@ -24,7 +24,8 @@
     "nodemon",
     "concurrently",
     "Server-Sent Events",
-    "Adsterra banner script"
+    "Adsterra banner script",
+    "Google AdSense (public/index.html)"
   ],
   "build_system": "npm scripts with Vite client build and public/ deployment assets",
   "test_framework": "none configured",
@@ -32,10 +33,10 @@
   "content_formats": [
     "Markdown (README, Replit setup, GSD planning docs)",
     "JSON (package manifests, Replit config, entities)",
-    "HTML (Vite templates and prebuilt public index)",
-    "CSS (global styles and app styles)",
+    "HTML (Vite templates and prebuilt public index with OG/Twitter/JSON-LD meta)",
+    "CSS (global styles and app styles with CSS custom properties)",
     "Shell (build and deployment scripts)",
-    "PNG assets",
+    "PNG assets (hero-banner, donation-banner, og-card, favicon)",
     "Text/XML (ads.txt, robots.txt, sitemap.xml)"
   ],
   "component_counts": {
@@ -44,12 +45,21 @@
     "client/src/components/*.tsx": 13,
     "client/src/services/*.ts": 5,
     "client/src/hooks/*.ts": 2,
+    "client/src/sketches/*.ts": 1,
     "web-version/routes/*.js": 3,
     "web-version/client/src/components/*.tsx": 10
   },
+  "security_notes": [
+    "multer removed from root package.json (still present in web-version as legacy)",
+    "uuid upgraded to ^14.0.0 in client",
+    "vite upgraded to ^8.0.8 in client devDependencies",
+    "@vitejs/plugin-react upgraded to ^6.0.1",
+    "web-version/package.json overrides qs>=6.14.1 and on-headers>=1.1.0"
+  ],
   "evidence": [
     "package.json",
     "client/package.json",
+    "web-version/package.json",
     "server.js",
     "client/src/main.tsx",
     "client/vite.config.ts",

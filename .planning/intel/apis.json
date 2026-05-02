@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "updated_at": "2026-05-02T10:30:35.068Z",
-    "version": 2
+    "updated_at": "2026-05-02T12:00:00.000Z",
+    "version": 3
   },
   "entries": {
     "GET /api/debug": {
@@ -42,57 +42,42 @@
     "POST /api/playlist/fetch": {
       "method": "POST",
       "path": "/api/playlist/fetch",
-      "params": [
-        "body.url"
-      ],
+      "params": ["body.url"],
       "file": "routes/playlist.js",
       "description": "Extracts a Suno playlist ID from a submitted URL or ID and returns simplified playlist track data."
     },
     "GET /api/playlist/:id": {
       "method": "GET",
       "path": "/api/playlist/:id",
-      "params": [
-        "id",
-        "page"
-      ],
+      "params": ["id", "page"],
       "file": "routes/playlist.js",
       "description": "Proxies a paginated Suno playlist request to studio-api.prod.suno.com."
     },
     "GET /api/playlist/:id/all": {
       "method": "GET",
       "path": "/api/playlist/:id/all",
-      "params": [
-        "id"
-      ],
+      "params": ["id"],
       "file": "routes/playlist.js",
       "description": "Fetches all pages of a Suno playlist and returns normalized playlist and clip arrays."
     },
     "GET /api/playlist/user/:username/songs": {
       "method": "GET",
       "path": "/api/playlist/user/:username/songs",
-      "params": [
-        "username"
-      ],
+      "params": ["username"],
       "file": "routes/playlist.js",
       "description": "Experimental username lookup that scrapes a Suno profile, attempts API pagination, and can fall back to Puppeteer scrolling."
     },
     "POST /api/download/playlist": {
       "method": "POST",
       "path": "/api/download/playlist",
-      "params": [
-        "body.playlist",
-        "body.clips",
-        "body.embedImage"
-      ],
+      "params": ["body.playlist", "body.clips", "body.embedImage"],
       "file": "routes/download.js",
       "description": "Downloads clip audio, optionally embeds cover art into MP3 tags, packages tracks into a ZIP, streams it to the browser, and schedules temp cleanup."
     },
     "GET /api/download/progress/:sessionId": {
       "method": "GET",
       "path": "/api/download/progress/:sessionId",
-      "params": [
-        "sessionId"
-      ],
+      "params": ["sessionId"],
       "file": "routes/download.js",
       "description": "Server-Sent Events endpoint that registers a client in global.downloadTrackers and sends an initial connected event."
     },
@@ -106,11 +91,7 @@
     "POST /api/settings": {
       "method": "POST",
       "path": "/api/settings",
-      "params": [
-        "body.name_templates",
-        "body.overwrite_files",
-        "body.embed_images"
-      ],
+      "params": ["body.name_templates", "body.overwrite_files", "body.embed_images"],
       "file": "routes/settings.js",
       "description": "Updates session-backed download settings with provided fields."
     },
@@ -124,13 +105,7 @@
     "GET /api/download/song (web-version)": {
       "method": "GET",
       "path": "/api/download/song",
-      "params": [
-        "audioUrl",
-        "imageUrl",
-        "title",
-        "trackNumber",
-        "embedImage"
-      ],
+      "params": ["audioUrl", "imageUrl", "title", "trackNumber", "embedImage"],
       "file": "web-version/routes/download.js",
       "description": "Legacy web-version endpoint for single-song MP3 download with optional cover embedding."
     }

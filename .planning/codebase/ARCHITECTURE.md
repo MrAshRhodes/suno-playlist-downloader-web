@@ -1,221 +1,241 @@
+<!-- refreshed: 2026-05-02 -->
 # Architecture
 
-**Analysis Date:** 2026-04-11
+**Analysis Date:** 2026-05-02
+
+## System Overview
+
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                        Browser (React 18)                        │
+│  App.tsx  →  WaveformBackground  │  DonationModal  │  AdSlot    │
+│  client/src/App.tsx              client/src/components/         │
+└──────────┬──────────────────────────────────────────────────────┘
+           │  fetch() / EventSource (SSE)
+           │  /api/playlist/*  /api/download/*  /api/settings/*
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Express Server  (server.js)                   │
+│  GET  /api/playlist/:id/all       POST /api/download/playlist   │
+│  routes/playlist.js               routes/download.js            │
+│  GET/POST/DELETE /api/settings                                  │
+│                     routes/settings.js                          │
+└──────┬──────────────────────────┬──────────────────────────────┘
+       │                          │
+       ▼                          ▼
+┌──────────────┐        ┌─────────────────────┐
+│  Suno.com    │        │  Local Filesystem    │
+│  REST API    │        │  /temp/<session-id>/ │
+│  (node-fetch)│        │  utils/fileManager.js│
+│              │        │  → node-id3 (tags)   │
+│  Puppeteer   │        │  → AdmZip → ZIP blob │
+│  (profile    │        │  → streamed to client│
+│   fallback)  │        └─────────────────────┘
+└──────────────┘
+```
+
+## Component Responsibilities
+
+| Component | Responsibility | File |
+|-----------|----------------|------|
+| `App` | Root state machine — URL input, playlist state, download trigger | `client/src/App.tsx` |
+| `WaveformBackground` | Full-screen animated canvas backdrop (p5.js, 30 fps) | `client/src/components/WaveformBackground.tsx` |
+| `DonationModal` | Mantine Modal shown after download 1, then every 5th download | `client/src/components/DonationModal.tsx` |
+| `AdSlot` | Adsterra banner — single-instance global `window.atOptions` injection | `client/src/components/AdSlot.tsx` |
+| `ThemeToggle` | Light/dark toggle, driven by `useDarkMode` hook | `client/src/components/ThemeToggle.tsx` |
+| `StatusIcon` | Per-row status badge (None/Processing/Skipped/Success/Error) | `client/src/components/StatusIcon.tsx` |
+| `Footer` | Static footer content | `client/src/components/Footer.tsx` |
+| `Suno` | Client-side proxy — URL parsing, calls `/api/playlist/*` | `client/src/services/Suno.ts` |
+| `WebApi` | Download orchestration — calls `/api/download/playlist`, handles blob + SSE | `client/src/services/WebApi.ts` |
+| `SettingsManager` | localStorage + server session sync for user preferences | `client/src/services/SettingsManager.ts` |
+| `Logger` | Structured event logging to `localStorage` | `client/src/services/Logger.ts` |
+| `playlist.js` | Fetches Suno playlist/user-profile data; Puppeteer infinite-scroll fallback | `routes/playlist.js` |
+| `download.js` | Downloads MP3s in parallel, embeds ID3 tags, streams ZIP blob | `routes/download.js` |
+| `settings.js` | CRUD on `req.session.settings` | `routes/settings.js` |
+| `fileManager.js` | Temp directory lifecycle (create, cleanup, periodic sweep) | `utils/fileManager.js` |
 
 ## Pattern Overview
 
-**Overall:** Client-Server Web Application with Backend API Proxy
+**Overall:** Thin React frontend + Node.js backend proxy. Browser never calls Suno APIs directly — all external HTTP goes through Express.
 
 **Key Characteristics:**
-- Dual-layer frontend (React client + Vite) communicates with Node.js/Express backend
-- Backend acts as proxy to Suno.com APIs and handles file operations
-- Streaming ZIP download for playlist aggregation
-- Session-based state management with server-side cleanup
-- Browser automation (Puppeteer) for profile scraping fallback
+- Single-page app served as static bundle from `public/` by Express in production
+- All Suno.com API calls are proxied server-side to avoid CORS and rate-limit issues
+- File assembly (ZIP + ID3 tags) happens entirely on the server; client receives a binary blob
+- Server-Sent Events (SSE) used for real-time download progress without WebSockets
+- No Redux/Context — all state is `useState` in `App.tsx` plus `localStorage` for persistence
 
 ## Layers
 
-**Client Layer (React Frontend):**
-- Purpose: User interface for playlist discovery and download management
+**UI Layer:**
+- Purpose: User interaction, visual feedback, settings
 - Location: `client/src/`
-- Contains: React components, custom hooks, TypeScript services
-- Depends on: Mantine UI framework, Tabler icons
-- Used by: Browser users via Vite dev server (port 5173) or production static serving
+- Contains: React components, custom hooks, CSS modules
+- Depends on: Mantine v6, p5.js (via `useP5` hook), Tabler icons
+- Used by: Browser; loaded from `public/index.html`
 
-**API Service Layer (TypeScript in Client):**
-- Purpose: Abstracts HTTP communication to backend endpoints
-- Location: `client/src/services/` (Suno.ts, WebApi.ts, SettingsManager.ts)
-- Contains: Fetch wrappers, playlist/download/settings API calls
-- Depends on: Express backend API endpoints
-- Used by: React components and App.tsx
+**Client Service Layer:**
+- Purpose: Abstracts all HTTP communication to backend
+- Location: `client/src/services/`
+- Contains: `Suno.ts` (playlist fetch), `WebApi.ts` (download + SSE), `SettingsManager.ts`, `Logger.ts`, `Utils.ts`
+- Depends on: Express backend API endpoints at `/api/*`
+- Used by: `App.tsx` exclusively
 
-**Backend API Layer (Node.js/Express):**
-- Purpose: Routes HTTP requests, orchestrates file operations, proxies external APIs
-- Location: `server.js`, `routes/` directory
-- Contains: Express route handlers, middleware configuration
-- Depends on: Puppeteer for browser automation, node-fetch for HTTP requests, AdmZip for ZIP creation
-- Used by: Client frontend via REST API calls
+**Express API Layer:**
+- Purpose: Routes, middleware, external API proxy
+- Location: `server.js`, `routes/`
+- Contains: `playlist.js`, `download.js`, `settings.js`
+- Depends on: `node-fetch`, `puppeteer`, `adm-zip`, `node-id3`, `express-session`
+- Used by: Browser via fetch/SSE
 
-**File Management Layer:**
-- Purpose: Handles temporary file creation, cleanup, and disk operations
+**File System Layer:**
+- Purpose: Temp file lifecycle management
 - Location: `utils/fileManager.js`
-- Contains: Directory creation, file writing, periodic cleanup scheduler
-- Depends on: Node.js fs module, path module
-- Used by: Download routes to create session directories and clean up after transfers
+- Contains: `createTempDirectory`, `cleanupTempDirectory`, `schedulePeriodicCleanup`, `writeFile`, `fileExists`
+- Depends on: Node.js `fs`, `path`, `crypto`
+- Used by: `routes/download.js`
 
-**External Integration Layer:**
-- Purpose: Communicates with Suno.com APIs and services
-- Location: `routes/playlist.js` for playlist fetching, `routes/download.js` for audio
-- Contains: Puppeteer browser automation, API endpoint requests
-- Depends on: Puppeteer browser instance, node-fetch HTTP client
-- Used by: Download flow and playlist data retrieval
+**Static Serving Layer:**
+- Purpose: Serves pre-built React bundle and SEO files
+- Location: `public/` (served at `/` by Express in production)
+- Contains: `index.html`, hashed JS/CSS bundles, `ads.txt`, `robots.txt`, `sitemap.xml`, `og-card.png`
+- Built by: `build.sh` → `cd client && npm run build` → output lands in `client/dist/`, copied/served as `public/`
 
 ## Data Flow
 
-**Playlist Retrieval Flow:**
+### Playlist Fetch
 
-1. User enters Suno URL or username in `App.tsx`
-2. `Suno.getSongsFromPlayList()` called in `client/src/services/Suno.ts`
-3. Fetch to `GET /api/playlist/{id}/all` endpoint
-4. `routes/playlist.js` receives request, extracts playlist ID from URL
-5. Fetches playlist metadata from Suno API
-6. Launches Puppeteer browser to scrape full song list (handles infinite scroll)
-7. Returns `{ playlist, clips }` object with song metadata
-8. Client updates state with `IPlaylist` and `IPlaylistClip[]`
+1. User pastes Suno URL — `App.tsx` calls `getPlaylist()`
+2. `Suno.getSongsFromPlayList(url)` parses URL regex, calls `GET /api/playlist/{id}/all` (`client/src/services/Suno.ts`)
+3. `routes/playlist.js` calls `https://studio-api.suno.ai/api/playlist/{id}?page=0` via `node-fetch`
+4. For `@username` profiles, `routes/playlist.js` launches Puppeteer with infinite-scroll automation
+5. Response normalized into `{ playlist: IPlaylist, clips: IPlaylistClip[] }` and returned to client
+6. `App.tsx` stores into `playlistData` / `playlistClips` state; song table renders
 
-**Download Flow:**
+### Download Flow
 
-1. User clicks download in UI, triggering `downloadPlaylist()` in `client/src/services/WebApi.ts`
-2. POST to `/api/download/playlist` with `{ playlist, clips, embedImage }`
-3. `routes/download.js` creates session temp directory via `createTempDirectory()`
-4. For each clip:
-   - Downloads MP3 audio file from `clip.audio_url`
-   - If embedImage enabled: downloads image from `clip.image_url`
-   - Uses node-id3 to embed metadata and cover art into MP3
-   - Names file as `{clip.no} - {clip.title}.mp3` (sanitized with filenamify)
-5. Adds all processed files to AdmZip archive
-6. Streams ZIP to client as `Content-Type: application/zip`
-7. On stream completion or client disconnect, schedules cleanup of temp directory (after 15 seconds)
+1. User clicks "Download as ZIP" — `App.tsx` calls `downloadPlaylist()`
+2. `checkAndShowDonationModal()` increments `localStorage` counter; triggers `DonationModal` on 1st and every 5th download
+3. `WebApi.setupProgressMonitor(sessionId, cb)` opens `EventSource` to `GET /api/download/progress/{sessionId}` (SSE)
+4. `WebApi.downloadPlaylist(playlist, clips, embedImage)` → `POST /api/download/playlist` with JSON body
+5. `routes/download.js` calls `createTempDirectory()`, then parallel-fetches all MP3s via `node-fetch`
+6. For each MP3: writes to `temp/<session>/`, optionally fetches cover art, runs `NodeID3.write()` to embed metadata
+7. `AdmZip` assembles all files; `res.send(zip.toBuffer())` streams ZIP back to browser
+8. `WebApi.downloadPlaylist` receives blob → creates object URL → programmatic `<a>` click → browser saves file
+9. Temp dir removed 15s after stream completes, 5s after client disconnect detection
+10. SSE emits `{ progress, completedItem }` events; `App.tsx` updates progress bar and per-row `StatusIcon`
 
-**Settings Flow:**
+### Settings Sync
 
-1. `SettingsManager.ts` initializes on app load via `initializeSettingsManager()`
-2. First tries localStorage key `'suno-downloader-settings'`
-3. Falls back to `GET /api/settings` to retrieve server session settings
-4. User modifies settings in modal, triggers `POST /api/settings`
-5. `routes/settings.js` saves to `req.session.settings`
-6. Client updates local state and localStorage
-
-**State Management:**
-
-- **Client-side:** React hooks (useState, useEffect) in App.tsx
-  - `playlistUrl` - user input
-  - `playlistData` - IPlaylist metadata
-  - `playlistClips` - array of IPlaylistClip with status tracking
-  - `downloadPercentage`, `completedItems` - download progress
-  - `isDownloading`, `isGettingPlaylist` - operation flags
-
-- **Server-side:** Express sessions
-  - Stored in `req.session.settings`
-  - TTL: 24 hours
-  - Persisted across requests for same client
-
-- **Persistent client-side:** localStorage
-  - Key: `'suno-downloader-settings'`
-  - Stores user preferences locally
-  - Synced with server on login
+1. `SettingsManager.create()` (lazy singleton) checks `localStorage` first, then `GET /api/settings`
+2. Writes via `POST /api/settings` to sync server session; degrades silently if server unavailable
+3. `App.tsx` reads settings directly from `localStorage` keys (`suno-name-template`, `suno-overwrite-files`, `suno-embed-images`) at download time
 
 ## Key Abstractions
 
-**IPlaylist (TypeScript Interface):**
-- Purpose: Represents a single Suno playlist or user profile
+**`IPlaylistClip` (TypeScript Interface):**
+- Purpose: Represents one Suno track with all metadata + download status
 - Location: `client/src/services/Suno.ts`
-- Pattern: Simple data object with name and image URL
-- Example: `{ name: "My Playlist", image: "https://..." }`
+- Fields: `id`, `no`, `title`, `duration`, `tags`, `model_version`, `audio_url`, `image_url`, `status: IPlaylistClipStatus`
 
-**IPlaylistClip (TypeScript Interface):**
-- Purpose: Represents a single song/audio track
-- Location: `client/src/services/Suno.ts`
-- Pattern: Aggregates metadata, URLs, and status tracking
-- Fields: id, no (track number), title, duration, tags, audio_url, image_url, status
-- Status enum: None, Processing, Skipped, Success, Error
+**`IPlaylistClipStatus` (enum):**
+- Values: `None`, `Processing`, `Skipped`, `Success`, `Error`
+- Used by: `StatusIcon.tsx` for per-row badge rendering
 
-**SettingsManager (Singleton Class):**
-- Purpose: Central hub for reading/writing user preferences
+**`SettingsManager` (Singleton):**
+- Pattern: Private constructor + static `create()` factory; module-level lazy promise (`settingsManagerPromise`)
 - Location: `client/src/services/SettingsManager.ts`
-- Pattern: Private constructor, static `create()` factory method
-- Manages: name_templates, overwrite_files, embed_images flags
-- Fallback behavior: Returns default settings if server unavailable
+- Falls back to defaults if server unreachable; never throws to callers
 
-**fileManager Module (Export Functions):**
-- Purpose: Isolated file system operations
+**`createTempDirectory` / `cleanupTempDirectory`:**
 - Location: `utils/fileManager.js`
-- Functions:
-  - `createTempDirectory()` - Creates session-specific temp folder with 1-hour auto-cleanup
-  - `cleanupTempDirectory()` - Recursive delete with safety checks
-  - `schedulePeriodicCleanup()` - Hourly cleanup of stale directories (auto-started on module load)
-  - `writeFile()` - Synchronous file write wrapper
-  - `fileExists()` - File existence check
+- Creates `temp/<crypto-hex-id>/` per download; auto-schedules 1-hour safety cleanup; periodic sweep every hour removes dirs >24h old
+
+**`useP5` hook:**
+- Location: `client/src/hooks/useP5.ts`
+- Mounts/unmounts a p5.js instance into a React `ref`; used exclusively by `WaveformBackground`
+
+**`AdSlot` (single-instance warning):**
+- Location: `client/src/components/AdSlot.tsx`
+- Injects `window.atOptions` + Adsterra `invoke.js` script on mount
+- WARNING: mounting two instances overwrites `window.atOptions`; see component JSDoc for multi-slot `<iframe srcDoc>` refactor path
 
 ## Entry Points
 
 **Server:**
 - Location: `server.js`
-- Triggers: `npm start` or `npm run dev`
-- Responsibilities:
-  - Initializes Express app with middleware (CORS, session, body parsing)
-  - Mounts route handlers: `/api/playlist/*`, `/api/download/*`, `/api/settings/*`
-  - Discovers and serves client dist folder (checks 14+ paths for Replit compatibility)
-  - Falls back to API-only mode if client build not found
-  - Error handling middleware catches all unhandled errors
+- Triggers: `npm start` or `node server.js`
+- Responsibilities: Express init, middleware (Morgan, CORS, session, body parse), route mounting, static serving from `public/` with multi-path fallback for Replit, periodic temp cleanup via imported `fileManager`
 
 **Client:**
 - Location: `client/src/main.tsx`
-- Triggers: Browser loads HTML, Vite builds bundle
-- Responsibilities:
-  - Initializes React app
-  - Sets up Mantine provider with theme (light/dark)
-  - Wraps App component with theme, notification, and modal providers
-  - Detects system dark mode preference and restores saved theme from localStorage
+- Triggers: Browser loads `public/index.html`, executes bundled JS
+- Responsibilities: Mounts `<App />` into `#root`, wraps with Mantine `MantineProvider`
 
-**API Routes:**
-- `GET /api/playlist/{id}/all` - Fetches playlist metadata + all songs
-- `GET /api/playlist/@{username}/all` - Fetches user profile + all songs (browser automation)
-- `POST /api/download/playlist` - Downloads entire playlist as ZIP
-- `GET /api/settings` - Retrieves current settings
-- `POST /api/settings` - Updates settings
-- `DELETE /api/settings` - Resets to defaults
+**Build:**
+- Location: `build.sh`
+- Triggers: Replit deploy build, `npm run build`
+- Responsibilities: `npm install` (server deps), then `cd client && npm run build` (Vite outputs to `client/dist/`); `server.js` discovers and serves it via `possiblePaths` fallback logic
+
+**API Endpoints:**
+- `GET /api/playlist/{id}/all` — playlist metadata + song list
+- `GET /api/playlist/@{username}/all` — user profile + songs (Puppeteer)
+- `POST /api/download/playlist` — assembles and streams ZIP
+- `GET /api/download/progress/{sessionId}` — SSE stream for download progress
+- `GET /api/settings` — read session settings
+- `POST /api/settings` — update session settings
+- `DELETE /api/settings` — reset to defaults
+- `GET /api/debug` — liveness check
+
+## Architectural Constraints
+
+- **No direct Suno API from browser:** All `suno.ai` calls go through Express proxy (CORS avoidance)
+- **Single AdSlot instance:** `window.atOptions` is global; only one `<AdSlot />` per page at a time
+- **Mantine v6 locked:** Cannot upgrade without significant component rewrites
+- **Temp dir on local filesystem:** `temp/` is local to the Express process; incompatible with multi-replica horizontal scaling
+- **In-memory session store:** `express-session` default store; settings lost on process restart or in multi-instance deployments
+- **`web-version/` is NOT deployed:** Historical reference copy only. Deployed code is root `server.js` + root `client/`
+
+## Anti-Patterns
+
+### Duplicate `API_BASE` definition
+
+**What happens:** `API_BASE` is independently defined with identical logic in `Suno.ts`, `WebApi.ts`, and `SettingsManager.ts`.
+**Why it's wrong:** Changing the base URL requires edits in three separate files.
+**Do this instead:** Extract to `client/src/services/config.ts` and import from there.
+
+### Settings bypassed in `App.tsx`
+
+**What happens:** `downloadPlaylist()` in `App.tsx` reads `localStorage.getItem('suno-name-template')` etc. directly, bypassing `SettingsManager`.
+**Why it's wrong:** `SettingsManager` is the canonical settings source; direct localStorage reads mean server-session and local state can silently diverge.
+**Do this instead:** Call `SettingsManager.getSetting()` inside `downloadPlaylist()`.
 
 ## Error Handling
 
-**Strategy:** Try-catch wrapping with specific error messages and graceful degradation
+**Strategy:** try/catch at each async boundary; user-facing errors surfaced via `showError()` (Mantine notification in `Utils.ts`)
 
 **Patterns:**
-
-- **Client-side:** Try-catch in service functions, errors passed to UI via `showError()` helper
-  - Displays toasts to user: "Failed to fetch playlist data. Make sure you entered a valid link"
-  - Logs to console and Logger service for debugging
-
-- **Server-side:** Try-catch in route handlers, JSON error responses
-  - Returns status codes: 400 (invalid input), 404 (not found), 500 (server error)
-  - Error details hidden in production (only message shown)
-  - Includes error stack in development mode
-
-- **File Operations:** Safety checks in `fileManager.js`
-  - Validates cleanup paths contain `TEMP_DIR` to prevent accidental deletion
-  - Catches fs operations errors, logs, and returns gracefully
-  - Scheduled cleanup survives individual directory failures
-
-- **Browser Automation:** Timeout handling and fallback
-  - 30-second timeout for page load in Puppeteer
-  - Detects scroll completion via consecutive "no new content" checks
-  - Falls back to multiple API endpoint patterns if scraping fails
+- Client service functions throw on non-OK HTTP; `App.tsx` catches and calls `showError(message)`
+- Express routes return `res.status(400/500).json({ error: '...' })` for all failures
+- `SettingsManager` degrades silently on init error; returns defaults, never throws to callers
+- `fileManager.js` validates cleanup paths contain `TEMP_DIR` before deleting; catches fs errors gracefully
+- Puppeteer scroll loop exits after 3 consecutive no-change iterations (timeout safety)
 
 ## Cross-Cutting Concerns
 
 **Logging:**
-- Client: Console.log throughout, Logger service for structured events
-- Server: Morgan middleware for HTTP request logging, console.log for operations
-- Verbose output during playlist fetch (browser automation progress) and file operations
+- Client: `Logger.ts` stores structured events in `localStorage('suno-downloader-logs')`; `console.log`/`console.error` throughout
+- Server: Morgan HTTP logging + `console.log`/`console.error` in routes
 
-**Validation:**
-- Client-side: URL validation in Suno.ts (regex match for playlist ID or @ username format)
-- Server-side: Express request validation in download route
-  - Checks playlist and clips array present and non-empty
-  - Validates file paths for cleanup operations
+**Theme:**
+- `useDarkMode` hook (`client/src/hooks/useDarkMode.ts`) reads/writes `localStorage('theme')`, applies `dark-mode`/`light-mode` class to `<html>`
+- CSS vars (`--bg-primary`, `--text-primary`, `--border-color`, etc.) drive all component theming; p5 canvas reads them via `getComputedStyle`
+- Default theme: dark (hardcoded fallback in `useDarkMode`)
 
-**Authentication:**
-- No explicit auth layer (public service)
-- Session-based state via express-session with 24-hour TTL
-- CORS configured for localhost dev and production origins
-
-**Cleanup & Resource Management:**
-- Automatic temp directory creation on session start
-- Auto-cleanup after 1 hour if request hangs
-- Hourly periodic cleanup sweep removes directories >24 hours old
-- On successful stream: cleanup scheduled 15 seconds after transfer
-- On client disconnect: cleanup scheduled 5 seconds after disconnect detection
+**SEO / Compliance:**
+- `public/ads.txt`, `public/robots.txt`, `public/sitemap.xml` served as static files before SPA catch-all in `server.js`
+- FTC/EU ad disclosure label rendered inline in `App.tsx` above `<AdSlot />`
 
 ---
 
-*Architecture analysis: 2026-04-11*
+*Architecture analysis: 2026-05-02*

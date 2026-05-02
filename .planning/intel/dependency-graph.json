@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "updated_at": "2026-05-02T10:30:35.590Z",
-    "version": 2,
+    "updated_at": "2026-05-02T12:00:00.000Z",
+    "version": 3,
     "canonical_source": ".planning/intel/deps.json"
   },
   "nodes": {
@@ -14,37 +14,31 @@
         "utils/fileManager.js"
       ],
       "dependencies": [
-        "express",
-        "cors",
-        "dotenv",
-        "express-session",
-        "morgan",
-        "node-fetch",
-        "puppeteer",
-        "adm-zip",
-        "node-id3",
-        "filenamify"
+        "express", "cors", "dotenv", "express-session", "morgan",
+        "node-fetch", "puppeteer", "adm-zip", "node-id3", "filenamify"
       ]
     },
     "frontend-runtime": {
       "files": [
         "client/src/main.tsx",
         "client/src/App.tsx",
+        "client/src/components/WaveformBackground.tsx",
+        "client/src/components/DonationModal.tsx",
+        "client/src/components/AdSlot.tsx",
         "client/src/components/*.tsx",
         "client/src/hooks/*.ts",
         "client/src/services/*.ts",
         "client/src/sketches/waveformSketch.ts"
       ],
       "dependencies": [
-        "react",
-        "react-dom",
-        "@mantine/core",
-        "@mantine/modals",
-        "@mantine/notifications",
+        "react", "react-dom",
+        "@mantine/core", "@mantine/form", "@mantine/hooks", "@mantine/modals", "@mantine/notifications",
         "@tabler/icons-react",
         "uuid",
         "p5",
-        "scroll-into-view-if-needed"
+        "scroll-into-view-if-needed",
+        "p-limit",
+        "filenamify"
       ]
     },
     "build-tooling": {
@@ -56,14 +50,10 @@
         "deploy.sh"
       ],
       "dependencies": [
-        "vite",
-        "@vitejs/plugin-react",
-        "typescript",
-        "postcss",
-        "postcss-preset-mantine",
-        "postcss-simple-vars",
-        "nodemon",
-        "concurrently"
+        "vite", "@vitejs/plugin-react", "typescript",
+        "postcss", "postcss-preset-mantine", "postcss-simple-vars",
+        "nodemon", "concurrently",
+        "@types/p5", "@types/react", "@types/react-dom"
       ]
     },
     "legacy-web-version": {
@@ -74,13 +64,7 @@
         "web-version/client/src/services/WebApi.ts"
       ],
       "dependencies": [
-        "express",
-        "node-fetch",
-        "adm-zip",
-        "node-id3",
-        "multer",
-        "filenamify",
-        "p-limit"
+        "express", "node-fetch", "adm-zip", "node-id3", "filenamify", "p-limit"
       ]
     }
   },
@@ -93,6 +77,21 @@
     {
       "from": "client/src/App.tsx",
       "to": "client/src/services/WebApi.ts",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/App.tsx",
+      "to": "client/src/components/WaveformBackground.tsx",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/App.tsx",
+      "to": "client/src/components/DonationModal.tsx",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/App.tsx",
+      "to": "client/src/components/AdSlot.tsx",
       "kind": "imports"
     },
     {
@@ -138,6 +137,16 @@
     {
       "from": "client/src/components/WaveformBackground.tsx",
       "to": "client/src/sketches/waveformSketch.ts",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/hooks/useP5.ts",
+      "to": "p5",
+      "kind": "imports"
+    },
+    {
+      "from": "client/src/sketches/waveformSketch.ts",
+      "to": "p5",
       "kind": "imports"
     }
   ]

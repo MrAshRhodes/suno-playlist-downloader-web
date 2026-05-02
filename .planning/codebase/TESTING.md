@@ -1,331 +1,330 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-04-11
+**Analysis Date:** 2026-05-02
 
 ## Test Framework
 
-**Runner:**
-- Not detected - No test framework configured in project
+**Runner:** None — no test framework installed or configured
 
-**Assertion Library:**
-- Not detected - No testing dependencies in package.json
+**Assertion Library:** None
 
 **Run Commands:**
-- No test scripts defined in `package.json`
+- No `test` script defined in `package.json` or `client/package.json`
 
 ## Current Testing Status
 
-**Testing Infrastructure:**
-- Project contains NO automated tests
-- No test files (*.test.ts, *.spec.ts, etc.) found in codebase
-- No Jest, Vitest, or Mocha configuration files present
-- No testing libraries (jest, vitest, mocha, chai, etc.) in dependencies
+**Zero automated tests exist in this codebase:**
+- No `*.test.ts`, `*.test.tsx`, `*.spec.ts`, or `*.spec.js` files found
+- No `__tests__` directories
+- No Jest, Vitest, Mocha, or any test runner in dependencies
+- No `jest.config.*`, `vitest.config.*`, or test setup files
 
-## Test Organization (When to Implement)
+This is the complete testing picture — the project relies entirely on manual testing.
 
-**Recommended Location:**
-- Backend tests: `routes/__tests__/` directory for route tests
-- Client component tests: `client/src/components/__tests__/` for component tests
-- Service tests: `client/src/services/__tests__/` for service logic tests
+## Test File Organization (When Implemented)
 
-**Naming Pattern to Adopt:**
-- Backend routes: `routes/__tests__/playlist.test.js`, `routes/__tests__/download.test.js`
-- Components: `Button.test.tsx`, `Modal.test.tsx` (co-located in same directory)
-- Services: `Suno.test.ts`, `Logger.test.ts`
+**Recommended locations:**
+- Service unit tests: `client/src/services/__tests__/Suno.test.ts`
+- Component tests: `client/src/components/__tests__/StatusIcon.test.tsx`
+- Hook tests: `client/src/hooks/__tests__/useDarkMode.test.ts`
+- Backend route tests: `routes/__tests__/playlist.test.js`, `routes/__tests__/download.test.js`
 
-## Testing Needs by Module
+**Naming pattern to adopt:**
+- Match source filename + `.test.` extension
+- Co-locate in `__tests__/` subdirectory alongside source
 
-**High Priority Areas for Testing:**
+## Coverage Gaps by Priority
 
-**Backend Routes (`routes/`):**
-- Playlist fetching (`playlist.js`):
-  - URL parsing and ID extraction
-  - API proxy requests to Suno API
-  - Error handling for invalid URLs
-  - Pagination handling for large playlists
-  - Browser automation with Puppeteer for user profiles
-  
-- Download handling (`download.js`):
-  - ZIP file creation and streaming
-  - Concurrent downloads with Promise.all()
-  - Audio metadata embedding with NodeID3
-  - Temp directory cleanup
-  - Stream error handling and client disconnection detection
-  
-- Settings management (`settings.js`):
-  - GET/POST/DELETE operations on session storage
-  - Default settings initialization
-  - Settings persistence and retrieval
+**High priority — core business logic:**
 
-**Frontend Services (`client/src/services/`):**
-- Suno.ts:
-  - URL validation and playlist ID extraction
-  - API fetch calls with error handling
-  - User profile vs playlist detection logic
-  - Type safety of return values
-  
-- Logger.ts:
-  - User ID generation and retrieval
-  - localStorage persistence
-  - Log array management (50-item limit)
-  - Server logging fallback behavior
-  
-- WebApi.ts (not shown but referenced):
-  - Download initiation
-  - Progress monitoring setup
+`client/src/services/Suno.ts`:
+- Playlist URL parsing and ID extraction (regex `suno\.com\/playlist\/(.*)`)
+- Username detection (`@` prefix, no `http`/`playlist`/`.` heuristic)
+- API fetch error handling and status code branching
+- `getSongsFromUser` vs `getSongsFromPlayList` routing
 
-**Frontend Components (`client/src/components/`):**
-- App.tsx:
-  - Playlist URL input and submission
-  - Download state management
-  - Progress tracking UI updates
-  - Error/success message display
-  
-- SimpleSettingsModal.tsx:
-  - Settings form interactions
-  - localStorage read/write
-  - Modal open/close behavior
+`routes/playlist.js`:
+- Playlist ID extraction from URL
+- Puppeteer browser automation flow for user profiles
+- Error handling for invalid URLs, network failures
+- Pagination handling for large playlists
 
-**Hooks (`client/src/hooks/`):**
-- useDarkMode.ts:
-  - Theme state initialization from localStorage
-  - System preference detection
-  - Class application to document
-  - Theme toggle functionality
+`routes/download.js`:
+- ZIP file creation and streaming
+- Concurrent download management
+- ID3 metadata embedding logic
+- Temp directory lifecycle (creation, cleanup on stream end, cleanup on disconnect)
 
-## Testing Utilities Needed
+**Medium priority — settings and state:**
 
-**For Backend:**
-- HTTP assertions: chai-http or supertest for route testing
-- Mock data: Fixtures for playlist/user responses
-- Spy/Mock functions: sinon for mocking Puppeteer and fetch calls
+`client/src/services/SettingsManager.ts`:
+- `create()` factory and initialization sequence
+- localStorage read/write lifecycle
+- Server sync behavior and fallback when server unavailable
+- `getSetting` / `setSetting` with typed generics
 
-**For Frontend:**
-- Component rendering: React Testing Library
-- Event simulation: user-event for interactions
-- Mock localStorage: Custom jest.mock or localStorage-mock
-- Mock fetch: jest.mock or msw for API calls
+`routes/settings.js`:
+- GET / POST / DELETE on session storage
+- Default settings fallback
+- Session persistence
 
-## Recommended Test Structure (Future Implementation)
+**Medium priority — hooks and components:**
 
-**Backend Example Pattern:**
+`client/src/hooks/useDarkMode.ts`:
+- Theme initialization from localStorage
+- System `prefers-color-scheme` detection
+- `document.documentElement.classList` toggling
+- `toggleTheme` state flip
+
+`client/src/components/SimpleSettingsModal.tsx`:
+- Settings form read from localStorage on open
+- Save writes to localStorage under correct keys
+- Modal open/close behavior
+
+`client/src/components/StatusIcon.tsx`:
+- Each `IPlaylistClipStatus` enum value renders correct icon
+
+**Low priority:**
+- `client/src/services/Logger.ts` — localStorage cap behavior, server fallback
+- `client/src/services/Utils.ts` — `formatFileSize`, `throttle`, `delay`
+- Decorative components (`WaveformBackground.tsx`, `AdSlot.tsx`)
+
+## Recommended Setup (Vitest for client, Jest for server)
+
+**Client (Vitest — matches Vite ecosystem):**
+```bash
+cd client && npm install --save-dev vitest @vitest/ui jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+```
+
+`client/vite.config.ts` addition:
+```typescript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true,
+  },
+  // existing config...
+})
+```
+
+`client/src/test/setup.ts`:
+```typescript
+import '@testing-library/jest-dom';
+```
+
+**Backend (Jest with ESM):**
+```bash
+npm install --save-dev jest @types/jest supertest @types/supertest
+```
+
+`jest.config.js`:
 ```javascript
-// routes/__tests__/playlist.test.js
-import express from 'express';
-import request from 'supertest';
-import playlistRouter from '../playlist';
-
-describe('Playlist Routes', () => {
-  let app;
-  
-  beforeEach(() => {
-    app = express();
-    app.use(express.json());
-    app.use('/api/playlist', playlistRouter);
-  });
-  
-  describe('POST /fetch', () => {
-    it('should extract playlist ID from valid URL', async () => {
-      const response = await request(app)
-        .post('/api/playlist/fetch')
-        .send({ url: 'https://suno.com/playlist/abc123' });
-      
-      expect(response.status).toBe(200);
-    });
-    
-    it('should return 400 for missing URL', async () => {
-      const response = await request(app)
-        .post('/api/playlist/fetch')
-        .send({});
-      
-      expect(response.status).toBe(400);
-    });
-  });
-});
+export default {
+  transform: {},
+  testEnvironment: 'node',
+  testMatch: ['**/routes/__tests__/**/*.test.js'],
+};
 ```
 
-**Frontend Component Example Pattern:**
-```typescript
-// client/src/components/__tests__/SimpleSettingsModal.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import SimpleSettingsModal from '../SimpleSettingsModal';
+## Service Test Patterns
 
-describe('SimpleSettingsModal', () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-  
-  it('should render settings button', () => {
-    render(<SimpleSettingsModal theme="light" />);
-    expect(screen.getByTitle('Settings')).toBeInTheDocument();
-  });
-  
-  it('should save settings to localStorage', async () => {
-    render(<SimpleSettingsModal theme="light" />);
-    
-    const button = screen.getByTitle('Settings');
-    fireEvent.click(button);
-    
-    // Interact with form...
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-    
-    expect(localStorage.getItem('suno-name-template')).toBeDefined();
-  });
-});
-```
-
-**Service Test Example Pattern:**
+**Suno.ts — mock fetch, verify parsing:**
 ```typescript
-// client/src/services/__tests__/Suno.test.ts
 import Suno from '../Suno';
 
-describe('Suno Service', () => {
+describe('Suno', () => {
   beforeEach(() => {
-    global.fetch = jest.fn();
+    global.fetch = vi.fn();
   });
-  
-  describe('getSongsFromPlayList', () => {
-    it('should extract playlist ID and fetch data', async () => {
-      global.fetch = jest.fn().mockResolvedValue({
-        status: 200,
-        json: async () => ({
-          playlist: { name: 'Test', image: 'url' },
-          clips: []
-        })
-      });
-      
-      const [playlist, clips] = await Suno.getSongsFromPlayList(
-        'https://suno.com/playlist/abc123'
-      );
-      
-      expect(playlist.name).toBe('Test');
-      expect(clips).toEqual([]);
+
+  it('extracts playlist ID from suno.com URL', async () => {
+    (fetch as vi.Mock).mockResolvedValue({
+      status: 200,
+      json: async () => ({ playlist: { name: 'Test', image: '' }, clips: [] })
     });
+
+    const [playlist, clips] = await Suno.getSongsFromPlayList(
+      'https://suno.com/playlist/abc123'
+    );
+
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/playlist/abc123/all'));
+    expect(playlist.name).toBe('Test');
+    expect(clips).toEqual([]);
+  });
+
+  it('throws on invalid URL', async () => {
+    await expect(Suno.getSongsFromPlayList('not-a-url')).rejects.toThrow(
+      'Invalid URL or no playlist ID found'
+    );
+  });
+
+  it('routes @ prefix to getSongsFromUser', async () => {
+    (fetch as vi.Mock).mockResolvedValue({
+      status: 200,
+      json: async () => ({ playlist: { name: 'User', image: '' }, clips: [] })
+    });
+
+    await Suno.getSongsFromPlayList('@username');
+
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/playlist/user/username/songs'));
   });
 });
 ```
 
-**Hook Test Example Pattern:**
+**SettingsManager.ts — mock localStorage:**
 ```typescript
-// client/src/hooks/__tests__/useDarkMode.test.ts
+import { getSettingsManager, defaultSettings } from '../SettingsManager';
+
+describe('SettingsManager', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => defaultSettings });
+  });
+
+  it('returns default settings when localStorage empty', async () => {
+    const manager = await getSettingsManager();
+    const val = await manager.getSetting('embed_images', 'true');
+    expect(val).toBe('true');
+  });
+
+  it('reads existing settings from localStorage', async () => {
+    localStorage.setItem('suno-downloader-settings', JSON.stringify({ ...defaultSettings, embed_images: 'false' }));
+    const manager = await getSettingsManager();
+    const val = await manager.getSetting('embed_images', 'true');
+    expect(val).toBe('false');
+  });
+});
+```
+
+## Component Test Patterns
+
+**StatusIcon.tsx — enum → icon mapping:**
+```typescript
+import { render, screen } from '@testing-library/react';
+import { MantineProvider } from '@mantine/core';
+import StatusIcon from '../StatusIcon';
+import { IPlaylistClipStatus } from '../../services/Suno';
+
+const wrap = (ui: React.ReactElement) =>
+  render(<MantineProvider>{ui}</MantineProvider>);
+
+describe('StatusIcon', () => {
+  it('renders loader for Processing status', () => {
+    wrap(<StatusIcon status={IPlaylistClipStatus.Processing} />);
+    expect(document.querySelector('.mantine-Loader-root')).toBeInTheDocument();
+  });
+
+  it('renders nothing for unknown status', () => {
+    const { container } = wrap(<StatusIcon status={99 as IPlaylistClipStatus} />);
+    expect(container.firstChild).toBeNull();
+  });
+});
+```
+
+## Hook Test Patterns
+
+**useDarkMode.ts:**
+```typescript
 import { renderHook, act } from '@testing-library/react';
 import { useDarkMode } from '../useDarkMode';
 
 describe('useDarkMode', () => {
   beforeEach(() => {
     localStorage.clear();
+    document.documentElement.className = '';
   });
-  
-  it('should initialize theme from localStorage', () => {
-    localStorage.setItem('theme', 'dark');
-    
+
+  it('defaults to dark when no localStorage entry', () => {
     const { result } = renderHook(() => useDarkMode());
-    
     expect(result.current.theme).toBe('dark');
   });
-  
-  it('should toggle theme', () => {
+
+  it('reads theme from localStorage', () => {
+    localStorage.setItem('theme', 'light');
     const { result } = renderHook(() => useDarkMode());
-    
-    act(() => {
-      result.current.toggleTheme();
-    });
-    
-    expect(result.current.theme).toBe('dark');
+    expect(result.current.theme).toBe('light');
+  });
+
+  it('toggles theme and updates documentElement class', () => {
+    const { result } = renderHook(() => useDarkMode());
+    act(() => { result.current.toggleTheme(); });
+    expect(result.current.theme).toBe('light');
+    expect(document.documentElement.classList.contains('light-mode')).toBe(true);
   });
 });
 ```
 
-## Async Testing Pattern
+## Backend Route Test Patterns
 
-**For async operations (Promises, async/await):**
+**Playlist routes (supertest + Jest):**
 ```javascript
-// Backend route test
-it('should handle async playlist fetch', async () => {
-  const response = await request(app)
-    .get('/api/playlist/abc123/all');
-  
-  expect(response.status).toBe(200);
-  expect(response.body).toHaveProperty('clips');
-});
+import express from 'express';
+import request from 'supertest';
+import playlistRouter from '../playlist.js';
 
-// Frontend service test
-it('should return playlist and clips', async () => {
-  const [playlist, clips] = await Suno.getSongsFromPlayList(url);
-  
+describe('Playlist Routes', () => {
+  let app;
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use('/api/playlist', playlistRouter);
+  });
+
+  it('GET /:id/all returns 400 for missing id', async () => {
+    const res = await request(app).get('/api/playlist/ /all');
+    expect(res.status).toBe(400);
+  });
+});
+```
+
+## Mocking Strategy
+
+**What to mock:**
+- `global.fetch` — isolate all HTTP calls in service tests
+- `localStorage` — use `beforeEach(() => localStorage.clear())` to reset state
+- `document.documentElement` — reset `className` before hook tests
+- Puppeteer browser instance — mock at module level for route tests
+
+**What NOT to mock:**
+- TypeScript enum values (test via real imports)
+- CSS variable resolution (not testable in jsdom)
+- Mantine component internals
+
+## Async Testing
+
+Always use `async/await` in tests — no mixing with `.then()`:
+```typescript
+it('handles async fetch', async () => {
+  const [playlist] = await Suno.getSongsFromPlayList('https://suno.com/playlist/x');
   expect(playlist).toBeDefined();
-  expect(Array.isArray(clips)).toBe(true);
 });
 ```
 
-## Error Testing Pattern
+For components with async state updates, use `waitFor`:
+```typescript
+import { waitFor } from '@testing-library/react';
 
-**Error handling validation:**
-```javascript
-// Testing error paths
-it('should return 400 for invalid playlist ID', async () => {
-  const response = await request(app)
-    .post('/api/playlist/fetch')
-    .send({ url: 'invalid-url' });
-  
-  expect(response.status).toBe(400);
-  expect(response.body).toHaveProperty('message');
-});
-
-// Testing error boundaries in components
-it('should display error message on failed fetch', async () => {
-  global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
-  
-  render(<App />);
-  
-  fireEvent.change(screen.getByPlaceholderText('Playlist URL'), {
-    target: { value: 'https://suno.com/playlist/abc' }
-  });
-  fireEvent.click(screen.getByText('Load Playlist'));
-  
-  await waitFor(() => {
-    expect(screen.getByText(/Failed to fetch/)).toBeInTheDocument();
-  });
+await waitFor(() => {
+  expect(screen.getByText(/Failed to fetch/)).toBeInTheDocument();
 });
 ```
 
-## Coverage Recommendations
+## Error Path Testing
 
-**Critical paths (70%+ coverage target):**
-- Playlist ID extraction logic
-- Download ZIP creation and streaming
-- Error handling in all routes
-- Service fetch calls
-- State management in main App component
+```typescript
+it('shows error on 500 response', async () => {
+  (fetch as vi.Mock).mockResolvedValue({ status: 500, json: async () => ({ error: 'Server error' }) });
 
-**Important but lower priority:**
-- UI component rendering (60%+)
-- Settings modal interactions
-- Theme toggle functionality
-
-**Not required:**
-- Console logging
-- Decorative components
-- CSS-only styling
-
-## Configuration for Future Test Setup
-
-**Backend (Node.js):**
-```bash
-npm install --save-dev jest @types/jest supertest @types/supertest
+  await expect(Suno.getSongsFromPlayList('https://suno.com/playlist/abc')).rejects.toThrow();
+});
 ```
-
-**Frontend (React + TypeScript):**
-```bash
-npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event jest @types/jest jest-environment-jsdom
-```
-
-**Configuration files to create:**
-- `jest.config.js` - Main test runner config
-- `jest.setup.js` - Global test setup
-- `.babelrc` or `babel.config.js` - For TypeScript/JSX transpilation
 
 ---
 
-*Testing analysis: 2026-04-11*
+*Testing analysis: 2026-05-02*

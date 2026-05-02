@@ -1,17 +1,14 @@
 {
   "_meta": {
-    "updated_at": "2026-05-02T10:30:35.848Z",
-    "version": 2,
+    "updated_at": "2026-05-02T12:00:00.000Z",
+    "version": 3,
     "canonical_source": ".planning/intel/arch.md"
   },
   "decisions": [
     {
       "id": "express-esm-backend",
       "decision": "Use an ESM Express server as the runtime entry point.",
-      "evidence": [
-        "package.json",
-        "server.js"
-      ],
+      "evidence": ["package.json", "server.js"],
       "consequences": [
         "Routes are default-exported Express routers.",
         "Runtime path resolution uses fileURLToPath(import.meta.url)."
@@ -20,10 +17,7 @@
     {
       "id": "backend-proxies-suno",
       "decision": "Call Suno APIs from Express route handlers instead of directly from the browser.",
-      "evidence": [
-        "routes/playlist.js",
-        "client/src/services/Suno.ts"
-      ],
+      "evidence": ["routes/playlist.js", "client/src/services/Suno.ts"],
       "consequences": [
         "The client calls /api/playlist endpoints.",
         "Server-side code handles pagination and profile scraping behavior."
@@ -32,23 +26,16 @@
     {
       "id": "zip-only-active-download",
       "decision": "The active root download flow serves complete playlists as ZIP files.",
-      "evidence": [
-        "routes/download.js",
-        "client/src/services/WebApi.ts",
-        "client/src/App.tsx"
-      ],
+      "evidence": ["routes/download.js", "client/src/services/WebApi.ts", "client/src/App.tsx"],
       "consequences": [
-        "Root routes/download.js comments identify individual song routes as removed.",
+        "Root routes/download.js has individual song routes removed.",
         "web-version/routes/download.js still contains legacy single-song support."
       ]
     },
     {
       "id": "session-and-local-storage-settings",
       "decision": "Persist settings in browser localStorage and synchronize them to Express sessions.",
-      "evidence": [
-        "client/src/services/SettingsManager.ts",
-        "routes/settings.js"
-      ],
+      "evidence": ["client/src/services/SettingsManager.ts", "routes/settings.js"],
       "consequences": [
         "Settings survive browser refreshes through localStorage.",
         "Server-side settings are per-session and resettable via DELETE /api/settings."
@@ -57,12 +44,7 @@
     {
       "id": "public-assets-first-deployment",
       "decision": "Prefer checked-in prebuilt public assets before building or serving client/dist.",
-      "evidence": [
-        "server.js",
-        "build.sh",
-        "public/index.html",
-        ".replit"
-      ],
+      "evidence": ["server.js", "build.sh", "public/index.html", ".replit"],
       "consequences": [
         "Replit deployments can run without a successful client build.",
         "server.js scans multiple possible static asset locations."
@@ -71,10 +53,7 @@
     {
       "id": "vite-proxy-dev-api",
       "decision": "Use Vite for the client and proxy /api to the Express server during development.",
-      "evidence": [
-        "client/vite.config.ts",
-        "client/package.json"
-      ],
+      "evidence": ["client/vite.config.ts", "client/package.json"],
       "consequences": [
         "Frontend dev server runs on port 5000.",
         "Backend API remains on port 3000."
@@ -83,28 +62,60 @@
     {
       "id": "adsterra-single-slot",
       "decision": "Render a single Adsterra banner through a client-side script component.",
-      "evidence": [
-        "client/src/components/AdSlot.tsx",
-        "client/.env.example",
-        "client/src/App.tsx"
-      ],
+      "evidence": ["client/src/components/AdSlot.tsx", "client/src/App.tsx"],
       "consequences": [
         "The banner key is read from VITE_ADSTERRA_UNIT_KEY.",
-        "AdSlot reserves fixed layout height and assumes one mounted instance."
+        "AdSlot reserves fixed layout height for CLS stability and assumes one mounted instance.",
+        "Multiple instances would overwrite window.atOptions — documented inline as a constraint."
+      ]
+    },
+    {
+      "id": "css-variables-for-theming",
+      "decision": "Use CSS custom properties (--bg-primary, --accent, etc.) as the single theming mechanism across components, p5.js sketch, and Mantine inline styles.",
+      "evidence": ["client/src/App.css", "client/src/index.css", "client/src/sketches/waveformSketch.ts", "client/src/components/DonationModal.tsx"],
+      "consequences": [
+        "Dark/light mode switching works by toggling CSS classes on document root.",
+        "p5.js sketch reads getComputedStyle(document.documentElement) to pick colors.",
+        "Mantine component styles reference var(--bg-card) and var(--accent) in style prop."
+      ]
+    },
+    {
+      "id": "p5-waveform-background",
+      "decision": "Use p5.js for the animated waveform background with a custom React hook (useP5) instead of a canvas element managed in a useEffect.",
+      "evidence": ["client/src/hooks/useP5.ts", "client/src/sketches/waveformSketch.ts", "client/src/components/WaveformBackground.tsx"],
+      "consequences": [
+        "p5 instance lifecycle is fully managed by useP5, including React Strict Mode double-mount safety.",
+        "Sketch is seeded for deterministic initial render (seed=42 default).",
+        "Canvas resizes on window resize via p5 windowResized."
+      ]
+    },
+    {
+      "id": "seo-in-prebuilt-html",
+      "decision": "Embed all SEO meta (OG, Twitter Card, JSON-LD), Google AdSense, and Google Fonts in public/index.html rather than in the React app.",
+      "evidence": ["public/index.html"],
+      "consequences": [
+        "SEO tags are present in the served HTML without JS execution.",
+        "AdSense loads as a blocking script from public/index.html — present regardless of client build.",
+        "Changes to SEO or ad config require updating public/index.html and rebuilding the deployment."
       ]
     },
     {
       "id": "preserve-web-version-copy",
       "decision": "Keep web-version as a duplicate/legacy implementation alongside the active root app.",
-      "evidence": [
-        "web-version/server.js",
-        "web-version/routes/download.js",
-        "web-version/client/src/App.tsx",
-        "web-version/package.json"
-      ],
+      "evidence": ["web-version/server.js", "web-version/routes/download.js", "web-version/client/src/App.tsx", "web-version/package.json"],
       "consequences": [
         "Some endpoints and client dependencies differ between root and web-version.",
+        "web-version/package.json has its own qs/on-headers security overrides.",
         "Codebase intelligence must distinguish root active files from web-version files."
+      ]
+    },
+    {
+      "id": "multer-removed-root",
+      "decision": "Remove multer from root package.json dependencies.",
+      "evidence": ["package.json"],
+      "consequences": [
+        "multer is still present in web-version as it has a different package tree.",
+        "No multipart form handling in active root server."
       ]
     }
   ]

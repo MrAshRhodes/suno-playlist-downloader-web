@@ -1,150 +1,154 @@
 # External Integrations
 
-**Analysis Date:** 2026-04-11
+**Analysis Date:** 2026-05-02
 
 ## APIs & External Services
 
 **Suno Music Platform:**
-- Suno website scraping - `https://suno.com/@{username}`
-  - Purpose: Extract user profiles and public playlists
-  - Method: Browser automation with Puppeteer for infinite scroll
+- Suno public pages — `https://suno.com/@{username}`
+  - Purpose: Browser-based profile scraping with infinite scroll
+  - Method: Puppeteer headless Chrome (`routes/playlist.js`)
   - Auth: None (public profiles only)
-- Suno Studio API - `https://studio-api.prod.suno.com/api/`
-  - Endpoints queried:
-    - `/api/playlist/{id}/` - Fetch playlist metadata and clips with pagination
-    - `/api/clips` - Query clips by user handle or user ID
-    - `/api/profile/{userId}` - User profile data with optional clip inclusion
-    - `/api/search` - Search clips by user
-    - `/api/feed/{userId}` - User feed/activity
-  - Purpose: Retrieve playlist and song metadata (title, duration, audio URLs, images)
+- Suno Studio API — `https://studio-api.prod.suno.com/api/`
+  - Endpoints:
+    - `GET /api/playlist/{id}/` — playlist metadata + clips with pagination
+    - `GET /api/playlist/{id}/?page={n}` — paginated clips
+    - `GET /api/clips` — clips query by user handle or user ID
+    - `GET /api/profile/{userId}` — user profile data
+    - `GET /api/search` — clip search by user
+    - `GET /api/feed/{userId}` — user feed/activity
   - Auth: None required for public data
-  - Implementation: `routes/playlist.js` - Multiple fallback strategies for robust retrieval
+  - Implementation: `routes/playlist.js` — 4-tier fallback strategy (API variations → browser automation → HTML scraping → user-facing error)
+
+**Google Fonts:**
+- Inter font family loaded via CDN in `client/index.html`
+- URL: `https://fonts.googleapis.com/css2?family=Inter:wght@400;600`
+- Preconnect hints to `fonts.googleapis.com` and `fonts.gstatic.com`
+
+## Monetization Services
+
+**Google AdSense:**
+- Script tag in `client/index.html` (auto ads)
+- Client ID: `ca-pub-2601322490070593`
+- Loaded via: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js`
+- Status: Script present in HTML; AdSense auto ads active
+
+**Adsterra (display banners):**
+- Component: `client/src/components/AdSlot.tsx`
+- Network host: `//www.highperformanceformat.com/{adKey}/invoke.js`
+- Config: `window.atOptions` global set before `invoke.js` loads
+- Integration: Single-instance banner above footer in `client/src/App.tsx` (line ~299)
+- Ad key sourced from Vite env var (`VITE_ADSTERRA_KEY` or similar — set at build time)
+- Graceful degradation: renders empty reserved space if `adKey` is falsy (no console error)
+- Single-instance constraint: Two `<AdSlot />` on same page breaks due to shared `window.atOptions` global
+
+**Buy Me a Coffee:**
+- Link in `client/src/App.tsx` (line ~158) and `client/src/components/DonationModal.tsx` (line ~33)
+- URL: `https://buymeacoffee.com/focused`
+- Implementation: Plain `<a>` tag, no SDK
 
 ## Data Storage
 
 **Databases:**
-- None - Stateless architecture
+- None — stateless architecture
 
 **File Storage:**
 - Local filesystem only
-  - Temp directory: `./temp/` (created on server start)
-  - MP3 downloads stored temporarily during ZIP creation
-  - Session-based directory structure with UUID identifiers
-  - Auto-cleanup: 1 hour per session, 24-hour max age
-  - Implementation: `utils/fileManager.js`
+  - Temp directory: `./temp/` (created on server start by `utils/fileManager.js`)
+  - Session-based subdirectory per download (UUID-named)
+  - MP3 files written temporarily during ZIP creation
+  - Auto-cleanup: 1 hour after session completes, 24-hour max age sweep
+  - On disconnect: cleanup scheduled 5 seconds after detection
+  - On transfer complete: cleanup scheduled 15 seconds after stream end
 
 **Caching:**
-- None - No external caching service
-- Browser localStorage: Client-side preference storage
-  - `suno-name-template` - File naming convention
-  - `suno-overwrite-files` - File overwrite behavior
-  - `suno-embed-images` - Whether to embed cover art
+- None — no external caching service
+- Browser localStorage (client-side preference persistence):
+  - `suno-name-template` — file naming convention
+  - `suno-overwrite-files` — overwrite behavior flag
+  - `suno-embed-images` — cover art embedding flag
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- None - Public/anonymous access only
-- Session Management: `express-session` with in-memory store
-  - Purpose: Track download preferences per user session
-  - Cookies: Secure in production, HttpOnly, 24-hour maxAge
-  - Secret: `SESSION_SECRET` from environment (with fallback default)
-  - Routes: `routes/settings.js` - GET/POST/DELETE for preferences
+- None — fully public/anonymous access
+
+**Session Management:**
+- `express-session` with in-memory store (`server.js`)
+- Purpose: Track download settings per browser session
+- Cookies: `secure: true` in production, 24-hour `maxAge`
+- Secret: `SESSION_SECRET` env var (insecure fallback string present in code)
+- Routes: `routes/settings.js` — GET/POST/DELETE settings
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- None - No external error tracking service
+- None — no external error tracking service
 
 **Logs:**
-- Console logging (stdout) via Morgan middleware
-  - Development: 'dev' format (colorized, condensed)
-  - Server logs: `console.log()` and `console.error()` throughout
-  - Client logs: Browser console via `services/Logger.ts`
-- No persistent log storage
+- Morgan middleware (`dev` format) for HTTP request logging (`server.js`)
+- `console.log()` / `console.error()` throughout server routes
+- Client: `client/src/services/Logger.ts` — structured logging to browser `localStorage`
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Google Cloud Run - Configured via `.replit` with `deploymentTarget = "cloudrun"`
-- Alternative: Replit (web-version subfolder contains older setup)
+- Google Cloud Run — configured via `.replit` `deploymentTarget = "cloudrun"`
+- Replit platform — handles build and run commands
 
-**CI Pipeline:**
-- Replit auto-deploy: Triggers `build.sh` on push
-  - Builds client with Vite
-  - Starts Express server on port 3000
-  - Maps to Cloud Run deployment
+**Build Pipeline:**
+- Push to git triggers Replit pull: `git reset --hard origin/main`
+- `build.sh` runs on Replit: installs npm deps, skips client build if `public/` pre-populated
+- `deploy.sh` (local): builds Vite → copies `client/dist/*` to `public/` → commits → pushes
+- Static files in `public/` are committed to git and served directly by Express
+
+**Ports:**
+- 3000 (Express API + static serving) → external port 80
+- 5000 (Vite dev server, dev only)
 
 ## Environment Configuration
 
-**Required env vars (runtime):**
-- `PORT` - Server port (default: 3000)
-- `NODE_ENV` - Environment mode ('production' enables secure cookies)
-- `SESSION_SECRET` - Session encryption key (critical for security)
+**Required env vars:**
+- `PORT` — server port (default: 3000)
+- `NODE_ENV` — `production` enables secure cookies and relative API_BASE
+- `SESSION_SECRET` — session signing key (critical for security)
 
 **Optional env vars:**
-- `CLEANUP_INTERVAL` - Temp file cleanup frequency in milliseconds (default: 1 hour)
-- `MAX_FILE_AGE` - Temp file retention duration in milliseconds (default: 24 hours)
-- `LOG_LEVEL` - Logging verbosity level (default: 'info')
+- `CLEANUP_INTERVAL` — temp file cleanup frequency in ms (default: 3600000)
+- `MAX_FILE_AGE` — temp file retention in ms (default: 86400000)
+- `LOG_LEVEL` — logging verbosity (default: `info`)
 
 **Secrets location:**
 - Environment variables only (no secrets.json or credentials file)
-- Replit Secrets tab for deployment
-- Cloud Run Secret Manager integration (if configured)
+- Replit Secrets tab for production deployment
+- `.env` file for local development (not tracked in git)
+
+## Internal API Endpoints
+
+**Playlist:**
+- `GET /api/playlist/:id/all` — fetch all clips with auto-pagination
+- `GET /api/playlist/@:username/all` — fetch user profile + all songs (browser automation)
+
+**Download:**
+- `POST /api/download/playlist` — ZIP download; parallel MP3 fetch, optional ID3 tags, 15-min timeout, streaming response
+
+**Progress (SSE):**
+- `GET /api/download/progress/:sessionId` — Server-Sent Events for real-time progress
+
+**Settings:**
+- `GET /api/settings` — retrieve session preferences
+- `POST /api/settings` — update preferences
+- `DELETE /api/settings` — reset to defaults
+
+**Debug:**
+- `GET /api/debug` — health check
 
 ## Webhooks & Callbacks
 
-**Incoming:**
-- None
+**Incoming:** None
 
-**Outgoing:**
-- None
-
-## API Endpoints
-
-**Playlist API:**
-- `POST /api/playlist/fetch` - Fetch playlist by URL with flexible ID extraction
-- `GET /api/playlist/:id` - Get paginated playlist data (page parameter)
-- `GET /api/playlist/:id/all` - Get all playlist clips with automatic pagination
-- `GET /api/playlist/user/:username/songs` - Extract all songs from user profile (experimental)
-  - Uses browser automation fallback if API methods fail
-  - Returns pagination metadata for incomplete results
-
-**Download API:**
-- `POST /api/download/playlist` - Initiate ZIP download of complete playlist
-  - Parallel MP3 download with configurable concurrency
-  - Optional ID3 tag embedding with cover art
-  - 15-minute request timeout for large playlists
-  - Streaming response for memory efficiency
-
-**Progress Monitoring:**
-- `GET /api/download/progress/:sessionId` - Server-Sent Events (SSE)
-  - Purpose: Real-time download progress updates to client
-  - Format: JSON events with progress percentage and completed item IDs
-
-**Settings API:**
-- `GET /api/settings` - Retrieve session preferences
-- `POST /api/settings` - Update session preferences
-- `DELETE /api/settings` - Reset to defaults
-- Preferences stored in `express-session` (in-memory, not persistent)
-
-**Debug:**
-- `GET /api/debug` - Health check endpoint
-
-## Web Scraping Implementation
-
-**Puppeteer Configuration:**
-- Headless Chrome with `--no-sandbox` for containerized environments
-- User-Agent spoofing: Chrome 91 Windows 10
-- Viewport: 1920x1080
-- Timeout: 30 seconds per page load
-- Infinite scroll detection: Waits for DOM updates, max 3 consecutive no-change iterations
-
-**Fallback Strategies** (in `routes/playlist.js`):
-1. API endpoint variations (6 different patterns)
-2. Browser automation with infinite scroll
-3. HTML page scraping with regex extraction
-4. Graceful error messages with suggestions for users
+**Outgoing:** None
 
 ---
 
-*Integration audit: 2026-04-11*
+*Integration audit: 2026-05-02*
