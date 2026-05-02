@@ -3,19 +3,21 @@
   "milestone": "v2.0",
   "milestone_status": "COMPLETE — archived, tagged, pushed",
   "phase": null,
-  "phase_status": "All phases done — v2.0 closed",
-  "position": "Between milestones — ready for /gsd-new-milestone",
+  "phase_status": "Between milestones — v2.0 closed, postcss hotfix applied",
+  "position": "Ready for /gsd-new-milestone",
   "blockers": [],
   "next_steps": [
+    "git push (1 commit pending — postcss fix)",
+    "Verify Dependabot PR #2 auto-closed (all 12 alerts fixed)",
+    "Verify Dependabot PR #3 auto-closes (postcss 8.5.13)",
     "Run /gsd-new-milestone to start v3.0 planning",
-    "Check Dependabot PR #2 auto-closed on GitHub",
     "Purchase sunozip.com when ready",
-    "Wire Adsterra key when account approved"
+    "Wire Adsterra key when account confirmed (key already set in Replit)"
   ],
   "seeds_planted": [
     "sunozip-domain — purchase when next milestone starts",
-    "adsterra-live-key — wire when Adsterra account approved",
-    "dependabot-pr-close — verify PR #2 auto-closed next session"
+    "adsterra-live-key — key already live in Replit, low priority",
+    "dependabot-pr-close — verify PR #2 + PR #3 auto-closed"
   ],
   "open_todos": [
     "2026-04-14-download-music-by-username-as-well-as-playlist.md",
@@ -24,8 +26,9 @@
   "git_state": {
     "branch": "main",
     "tag": "v2.0",
-    "last_commit": "5604fa8 docs(intel): refresh codebase map + intel after v2.0 milestone",
-    "pushed": true
+    "last_commit": "3750e84 fix(sec): patch postcss >=8.5.13 in client + web-version/client (XSS CVE)",
+    "pushed": false,
+    "commits_ahead": 1
   },
   "resume_with": "/ash-session-start"
 }
