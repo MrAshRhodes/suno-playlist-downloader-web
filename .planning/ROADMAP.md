@@ -19,14 +19,15 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Core Monolith** - Palette, cards, and typography — the complete visual transformation
 - [x] **Phase 2: Atmospheric Art** - p5.js ambient waveform background
 - [x] **Phase 3: Interactions & Polish** - Micro-animations, hover states, and finishing touches
-- [ ] **Phase 4: Google Ads** - AdSense Auto Ads for monetization
-- [ ] **Phase 5: Download Support Popup** - buymeacoffee.com/focused link on ZIP download
+- [x] **Phase 4: Google Ads** - AdSense Auto Ads for monetization
+- [x] **Phase 5: Download Support Popup** - fulfilled by Phase 7 donation modal on ZIP download
 - [x] **Phase 6: Premium Title Banner & Step Cards** - Hero banner image and monolith-card step sections
-- [ ] **Phase 6.1: Match Site Styling to Banner** - Harmonize color palette, cards, buttons with neon design language (INSERTED)
+- [x] **Phase 6.1: Match Site Styling to Banner** - Harmonize color palette, cards, buttons with neon design language (INSERTED)
 - [x] **Phase 7: Donation Modal** - Gratitude-first donation modal with generated banner
-- [ ] **Phase 8: Dependabot Security** - Resolve dependabot alerts via GitHub CLI
-- [ ] **Phase 9: SEO & Domain** - SEO improvements and domain name suggestions
+- [x] **Phase 8: Dependabot Security** - Resolve dependabot alerts via GitHub CLI
+- [x] **Phase 9: SEO & Domain** - SEO improvements and domain name suggestions
 - [x] **Phase 10: Adsterra Monetisation** - Replace blocked AdSense with Adsterra banner + parallel Media.net submission (completed 2026-05-01)
+- [ ] **Phase 11: Dependabot Security Check + Full Website Regression** - Resolve current Dependabot alerts with full regression coverage
 
 ## Phase Details
 
@@ -56,7 +57,7 @@ Plans:
   1. A generative waveform is visible behind the UI without obscuring any interactive elements
   2. The waveform pattern is reproducible — same seed produces the same visual across page loads
   3. The animation is ambient enough that users can focus on the download workflow without distraction
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [x] 02-01-PLAN.md — Install p5.js, create useP5 hook + waveform sketch, build WaveformBackground component, wire into App (ART-01, ART-02, ART-03)
@@ -92,13 +93,16 @@ Plans:
 
 ### Phase 5: Download Support Popup
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Fulfilled by Phase 7 support donation modal: a Buy Me a Coffee support popup appears on ZIP download using a persistent download counter.
+**Requirements**: DON-01, DON-02, DON-03, DON-04, DON-05, DON-06
 **Depends on:** Phase 4
-**Plans:** 0 plans
+**Plans:** 1/1 reconciliation complete
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 5 to break down)
+- [x] 05-01-PLAN.md — Retrospective reconciliation: Phase 5 Download Support Popup fulfilled by Phase 7 Donation Modal (DON-01 through DON-06)
+
+**Note:** No additional code was required for Phase 5. The implementation and verification live in Phase 7 artifacts:
+`07-01-SUMMARY.md`, `07-02-SUMMARY.md`, and `07-VERIFICATION.md`.
 
 ### Phase 6: Premium title banner and modern step cards
 
@@ -110,7 +114,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — Hero banner image with title overlay + step card wrappers with numbered headings (D-01, D-02, D-03, D-04, D-05, D-06)
 
-### Phase 06.1: Match site styling to the new modern vector/neon hero banner - update color palette, card styles, buttons, and overall aesthetic to harmonize with the dark navy/purple/blue neon design language (INSERTED)
+### Phase 6.1: Match site styling to the new modern vector/neon hero banner - update color palette, card styles, buttons, and overall aesthetic to harmonize with the dark navy/purple/blue neon design language (INSERTED)
 
 **Goal:** Harmonize the full app color palette, card borders, buttons, and accent system with the neon navy/purple/cyan hero banner — CSS variable value swap with dual accent system (purple for actions, cyan for progress/status)
 **Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09, D-10, D-11, D-12, D-13
@@ -127,7 +131,7 @@ Plans:
 **Goal:** A gratitude-first donation modal with generated coffee+music banner image appears at strategic download moments, encouraging users to support via Buy Me a Coffee
 **Requirements**: DON-01, DON-02, DON-03, DON-04, DON-05, DON-06
 **Depends on:** Phase 6
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 07-01-PLAN.md — Generate banner image asset via nanobanana MCP and build DonationModal component (DON-02, DON-03, DON-04)
@@ -138,7 +142,7 @@ Plans:
 **Goal:** Resolve all open Dependabot security alerts by removing unused vulnerable packages, upgrading vite 4.x to 6.x, running npm audit fix across both root and client, and closing all alerts via GitHub CLI
 **Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07
 **Depends on:** Phase 7
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 08-01-PLAN.md — Remove unused multer, npm audit fix on root server deps (D-01, D-02, D-04, D-05)
@@ -149,7 +153,7 @@ Plans:
 **Goal:** Add comprehensive SEO infrastructure (meta tags, OG social cards, Twitter Cards, JSON-LD structured data, canonical URL, robots.txt, sitemap.xml) and research custom domain name candidates
 **Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09, D-10, D-11
 **Depends on:** Phase 8
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 09-01-PLAN.md — SEO meta tags, OG/Twitter cards, JSON-LD, canonical, robots.txt, sitemap.xml, OG image pipeline (D-01, D-02, D-03, D-04, D-06, D-07, D-08, D-09, D-10, D-11)
@@ -189,10 +193,10 @@ Plans:
 **Goal:** Resolve the 11 currently open GitHub Dependabot alerts across root, `web-version`, and `web-version/client` while preserving all website behavior: search, playlist loading, individual song selection, ZIP download, settings, support UI, ad UI, static SEO files, and deploy/build flows.
 **Requirements**: SEC-01, SEC-02, SEC-03, SEC-04, SEC-05, SEC-06, SEC-07, SEC-08, SEC-09
 **Depends on:** Phase 10
-**Plans:** 0/5 planned sub-phases executed
+**Plans:** 1/5 plans executed
 
 Plans:
-- [ ] 11-01-PLAN.md - Baseline and root lockfile patch: confirm GitHub Dependabot alert state, patch `package-lock.json` `basic-ftp` alert #75 to `>=5.3.0`, run root audit/build smoke checks (SEC-01, SEC-02, SEC-07)
+- [x] 11-01-PLAN.md - Baseline and root lockfile patch: confirm GitHub Dependabot alert state, patch `package-lock.json` `basic-ftp` alert #75 to `>=5.3.0`, run root audit/build smoke checks (SEC-01, SEC-02, SEC-07)
 - [ ] 11-02-PLAN.md - Web server upload dependency patch: upgrade/adapt `web-version` `multer` alerts #23, #24, #25, #27 to `>=2.0.2`, preserve upload/download behavior (SEC-03, SEC-08)
 - [ ] 11-03-PLAN.md - Web server middleware transitive patch: resolve `web-version` `qs` #29 to `>=6.14.1` and `on-headers` #28 to `>=1.1.0` via parent updates or minimal overrides, preserve Express/session/header behavior (SEC-04, SEC-05, SEC-08)
 - [ ] 11-04-PLAN.md - Client toolchain patch: update `web-version/client` Vite alerts #2, #20, #21, #22 to `>=6.4.1`, keep TypeScript/Vite build and generated site assets working (SEC-06, SEC-07)
