@@ -23,9 +23,9 @@
 
 ### Atmospheric Art
 
-- [ ] **ART-01**: p5.js audio waveform canvas renders behind UI content as ambient background
-- [ ] **ART-02**: Waveform uses seeded randomness for reproducible patterns
-- [ ] **ART-03**: Background is non-distracting and music-themed
+- [x] **ART-01**: p5.js audio waveform canvas renders behind UI content as ambient background
+- [x] **ART-02**: Waveform uses seeded randomness for reproducible patterns
+- [x] **ART-03**: Background is non-distracting and music-themed
 
 ### Interactions
 
@@ -42,10 +42,10 @@
 
 ### Ads & Monetization
 
-- [ ] **ADS-01**: Google AdSense Auto Ads script tag present in index.html head with async loading
-- [ ] **ADS-02**: Real publisher ID (ca-pub-XXXXX) hardcoded in script — no .env complexity
-- [ ] **ADS-03**: No manual ad units — Auto Ads only, Google controls placement
-- [ ] **ADS-04**: Graceful degradation when ad-blockers active — no broken layout, no detection messages
+- [x] **ADS-01**: Google AdSense Auto Ads script tag present in index.html head with async loading
+- [x] **ADS-02**: Real publisher ID (ca-pub-XXXXX) hardcoded in script — no .env complexity
+- [x] **ADS-03**: No manual ad units — Auto Ads only, Google controls placement
+- [x] **ADS-04**: Graceful degradation when ad-blockers active — no broken layout, no detection messages
 
 ### Donation Modal
 
@@ -102,9 +102,9 @@
 | CARD-02 | Phase 1 | Complete |
 | TYPO-01 | Phase 1 | Complete |
 | TYPO-02 | Phase 1 | Complete |
-| ART-01 | Phase 2 | Pending |
-| ART-02 | Phase 2 | Pending |
-| ART-03 | Phase 2 | Pending |
+| ART-01 | Phase 2 | Complete |
+| ART-02 | Phase 2 | Complete |
+| ART-03 | Phase 2 | Complete |
 | INTR-01 | Phase 3 | Complete |
 | INTR-02 | Phase 3 | Complete |
 | INTR-03 | Phase 3 | Complete |
@@ -112,10 +112,10 @@
 | PLSH-01 | Phase 3 | Complete |
 | PLSH-02 | Phase 3 | Complete |
 | PLSH-03 | Phase 3 | Complete |
-| ADS-01 | Phase 4 | Pending |
-| ADS-02 | Phase 4 | Pending |
-| ADS-03 | Phase 4 | Pending |
-| ADS-04 | Phase 4 | Pending |
+| ADS-01 | Phase 4 | Complete |
+| ADS-02 | Phase 4 | Complete |
+| ADS-03 | Phase 4 | Complete |
+| ADS-04 | Phase 4 | Complete |
 | DON-01 | Phase 7 | Complete |
 | DON-02 | Phase 7 | Complete |
 | DON-03 | Phase 7 | Complete |
