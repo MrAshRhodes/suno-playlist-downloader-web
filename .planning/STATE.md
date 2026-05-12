@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: UX & Discovery
-status: Roadmap ready — awaiting plan phase
-stopped_at: Phase 12 context gathered
-last_updated: "2026-05-12T10:38:48.004Z"
-last_activity: 2026-05-12 — v2.1 roadmap created (Phases 12-14)
+status: Phase 12 complete — Phase 13 up next
+stopped_at: Phase 12 verified and shipped
+last_updated: "2026-05-12T15:30:00.000Z"
+last_activity: 2026-05-12 — Phase 12 per-song checkbox selection complete (SEL-01–05)
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # Project State
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 
 ## Current Position
 
-Phase: 12 (not started)
+Phase: 13 (not started)
 Plan: —
-Status: Roadmap ready — awaiting plan phase
-Last activity: 2026-05-12 — v2.1 roadmap created (Phases 12-14)
+Status: Phase 12 complete — ready to plan Phase 13
+Last activity: 2026-05-12 — Phase 12 shipped (per-song checkbox selection, SEL-01–05)
 
 ## Performance Metrics
 
