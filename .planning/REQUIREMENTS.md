@@ -8,28 +8,28 @@
 
 ### Song Selection
 
-- [ ] **SEL-01**: User can select/deselect individual songs via checkbox before downloading
-- [ ] **SEL-02**: User can select all or deselect all songs via header checkbox (with indeterminate state when partial)
-- [ ] **SEL-03**: Download button shows count of selected songs ("Download 4 songs as ZIP") when a subset is selected
-- [ ] **SEL-04**: Download button is disabled when zero songs are selected
-- [ ] **SEL-05**: Selection defaults to all songs selected when playlist loads (opt-out model — existing behavior preserved if user doesn't interact)
+- [x] **SEL-01**: User can select/deselect individual songs via checkbox before downloading
+- [x] **SEL-02**: User can select all or deselect all songs via header checkbox (with indeterminate state when partial)
+- [x] **SEL-03**: Download button shows count of selected songs ("Download 4 songs as ZIP") when a subset is selected
+- [x] **SEL-04**: Download button is disabled when zero songs are selected
+- [x] **SEL-05**: Selection defaults to all songs selected when playlist loads (opt-out model — existing behavior preserved if user doesn't interact)
 
 ### @Username Investigation
 
-- [ ] **USR-01**: @username Puppeteer scraping tested end-to-end on Replit against `suno.com/@focusedbeats`
-- [ ] **USR-02**: Scraping limitations, failure modes, and timing documented (load time, infinite scroll depth, auth requirements)
-- [ ] **USR-03**: Recommendation produced: UX-only changes sufficient, or backend changes required
+- [x] **USR-01**: @username Puppeteer scraping tested end-to-end on Replit against `suno.com/@focusedbeats`
+- [x] **USR-02**: Scraping limitations, failure modes, and timing documented (load time, infinite scroll depth, auth requirements)
+- [x] **USR-03**: Recommendation produced: UX-only changes sufficient, or backend changes required
 
 ### Input Discovery (gates on Phase 13 investigation findings)
 
-- [ ] **INP-01**: Input placeholder shows @username format alongside playlist URL example
-- [ ] **INP-02**: Helper text below input field describes accepted formats (playlist URL and @username)
-- [ ] **INP-03**: Pasting a full `suno.com/@username` URL (e.g. `https://suno.com/@focusedbeats`) is accepted and routed correctly — adds regex branch to Suno.ts validation
+- [x] **INP-01**: Input placeholder shows @username format alongside playlist URL example
+- [x] **INP-02**: Helper text below input field describes accepted formats (playlist URL and @username)
+- [x] **INP-03**: Pasting a full `suno.com/@username` URL (e.g. `https://suno.com/@focusedbeats`) is accepted and routed correctly — adds regex branch to Suno.ts validation
 
 ### Housekeeping
 
-- [ ] **SEC-01**: Dependabot PRs #2 and #3 confirmed closed via gh CLI (`gh pr view 2`, `gh pr view 3`)
-- [ ] **SEC-02**: npm audit clean from root package tree
+- [x] **SEC-01**: Dependabot PRs #2 and #3 confirmed closed via gh CLI (`gh pr view 2`, `gh pr view 3`)
+- [x] **SEC-02**: npm audit clean from root package tree
 
 ## Implementation Notes
 
@@ -58,16 +58,16 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEL-01 | Phase 12 | Pending |
-| SEL-02 | Phase 12 | Pending |
-| SEL-03 | Phase 12 | Pending |
-| SEL-04 | Phase 12 | Pending |
-| SEL-05 | Phase 12 | Pending |
-| USR-01 | Phase 13 | Pending |
-| USR-02 | Phase 13 | Pending |
-| USR-03 | Phase 13 | Pending |
-| INP-01 | Phase 13 | Pending |
-| INP-02 | Phase 13 | Pending |
-| INP-03 | Phase 13 | Pending |
-| SEC-01 | Phase 14 | Pending |
-| SEC-02 | Phase 14 | Pending |
+| SEL-01 | Phase 12 | Complete |
+| SEL-02 | Phase 12 | Complete |
+| SEL-03 | Phase 12 | Complete |
+| SEL-04 | Phase 12 | Complete |
+| SEL-05 | Phase 12 | Complete |
+| USR-01 | Phase 13 | Complete |
+| USR-02 | Phase 13 | Complete |
+| USR-03 | Phase 13 | Complete |
+| INP-01 | Phase 13 | Complete |
+| INP-02 | Phase 13 | Complete |
+| INP-03 | Phase 13 | Complete |
+| SEC-01 | Phase 14 | Complete |
+| SEC-02 | Phase 14 | Complete |
