@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Monolith UI
-status: completed
-stopped_at: Phase 11 planning complete — 5 plans ready
-last_updated: "2026-05-02T12:36:24.293Z"
-last_activity: 2026-05-02
+milestone: v2.1
+milestone_name: UX & Discovery
+status: planning
+last_updated: "2026-05-12T09:51:08.883Z"
+last_activity: 2026-05-12
 progress:
-  total_phases: 13
-  completed_phases: 12
-  total_plans: 27
-  completed_plans: 26
-  percent: 96
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,12 +24,10 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-05-02
-
-Progress: [██████████] 96%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-12 — Milestone v2.1 started
 
 ## Performance Metrics
 

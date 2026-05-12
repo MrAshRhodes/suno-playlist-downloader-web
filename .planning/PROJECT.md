@@ -8,7 +8,16 @@ A web-based tool that downloads music from Suno playlists and user profiles as Z
 
 Downloads work reliably. Visual quality matches a premium product. Zero functional regressions from UI changes.
 
-## Current State: v2.0 Monolith UI — SHIPPED 2026-05-02
+## Current Milestone: v2.1 UX & Discovery
+
+**Goal:** Improve song selection UX and @username discovery while keeping all downloads intact.
+
+**Target features:**
+- Verify Dependabot PR #2 + #3 auto-closed (housekeeping)
+- @username download UX — better discovery/guidance (backend route already works)
+- Per-song selection — checkboxes in song table, selective ZIP download
+
+## Previous: v2.0 Monolith UI — SHIPPED 2026-05-02
 
 **Shipped this milestone:**
 - Monolith design system — Rich Black dark / Warm Ivory light, Deep Blue accent, 24px depth cards, Inter typography
@@ -55,7 +64,7 @@ Downloads work reliably. Visual quality matches a premium product. Zero function
 - [ ] Download music by @username as well as playlist URL (backlog, api area)
 - [ ] Select individual songs from playlist before download (backlog, ui area)
 - [ ] Adsterra live publisher key wired (pending Adsterra account approval)
-- [ ] sunozip.com domain purchase and DNS configuration
+- ✓ sunozip.com domain purchased and live on Replit — v2.1
 
 ### Out of Scope
 
@@ -77,7 +86,7 @@ Downloads work reliably. Visual quality matches a premium product. Zero function
 | multer removed (not upgraded) | Confirmed unused — removal safer than upgrade | ✓ Shipped |
 | npm overrides for transitive deps | Avoid parent version bumps for qs/on-headers | ✓ Shipped |
 | web-version/ is separate pkg tree | Not the Replit deployment — root server.js is deployed | ✓ Clarified |
-| sunozip.com top domain candidate | 20/20 score: memorable, descriptive, .com available | Pending purchase |
+| sunozip.com top domain candidate | 20/20 score: memorable, descriptive, .com available | ✓ Live on Replit |
 | Adsterra minimal banner scope | AdSense blocked; minimal = no popunder/social/direct-link risk | ✓ Shipped (key pending) |
 
 ## Constraints
@@ -87,5 +96,22 @@ Downloads work reliably. Visual quality matches a premium product. Zero function
 - **Replit deployment**: Must remain deployable on Replit with current build process
 - **Node.js 20**: Minimum runtime requirement
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd-complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-05-02 after v2.0 Monolith UI milestone — all 11 phases shipped*
+*Last updated: 2026-05-12 — v2.1 UX & Discovery milestone started*
