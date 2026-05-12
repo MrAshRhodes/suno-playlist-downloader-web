@@ -504,86 +504,81 @@ router.get('/user/:username/songs', async (req, res) => {
     const userId = userIdMatch[1];
     console.log("Found user ID:", userId);
     
-    // Extract clips with pagination support
-    console.log("Extracting clips from profile with pagination...");
-    
+    // Extract clips from the user_songs feed (Suno 2025 structure)
+    // Songs live under: feed.items[0].content_item.items[*].content_item (content_type: "clip")
+    // The HTML embeds JSON with \" escaping inside a self.__next_f.push() script tag.
+    console.log("Extracting clips from profile feed...");
+
     let clips = [];
     let totalSongs = 0;
-    
+
     try {
-      // First, extract total number of songs and initial clips from HTML
-      const totalMatch = profileHtml.match(/num_total_clips\\"?:(\d+)/);
-      if (totalMatch) {
-        totalSongs = parseInt(totalMatch[1]);
+      // Total count is now under clips_count, not num_total_clips
+      const clipsCountMatch = profileHtml.match(/\\"clips_count\\":(\d+)/);
+      if (clipsCountMatch) {
+        totalSongs = parseInt(clipsCountMatch[1]);
         console.log(`User has ${totalSongs} total songs`);
       }
-      
-      // Extract initial clips from HTML
-      const clipsPattern = /\\"clips\\":\[({.*?\\"entity_type\\":\\"song_schema\\".*?}(?:,{.*?\\"entity_type\\":\\"song_schema\\".*?})*)\]/s;
-      const clipsMatch = profileHtml.match(clipsPattern);
-      
-      if (clipsMatch) {
-        let clipsString = clipsMatch[1];
-        clipsString = clipsString.replace(/\\"/g, '"');
-        
-        try {
-          clips = JSON.parse(`[${clipsString}]`);
-          console.log(`HTML parsing: Found ${clips.length} clips on first page`);
-          
-          // If we have fewer clips than total, try to get more via pagination
-          if (totalSongs > clips.length && totalSongs > 20) {
-            console.log(`Attempting to fetch remaining ${totalSongs - clips.length} songs via pagination...`);
-            
-            // First try API pagination approaches
-            const additionalClips = await fetchAdditionalSongs(cleanUsername, userId, clips.length, totalSongs);
-            if (additionalClips.length > 0) {
-              clips = clips.concat(additionalClips);
-              console.log(`Total clips after API pagination: ${clips.length}`);
-            } else {
-              console.log(`API pagination failed - trying browser automation...`);
-              
-              // If API methods failed, try browser automation with infinite scroll
-              const browserClips = await fetchAllSongsWithBrowser(cleanUsername, totalSongs);
-              if (browserClips.length > clips.length) {
-                clips = browserClips;
-                console.log(`Browser automation succeeded: ${clips.length}/${totalSongs} songs`);
-              } else {
-                console.log(`Browser automation also failed - only got ${clips.length}/${totalSongs} songs`);
+
+      // Locate the user_songs feed section and its items array
+      const userSongsMarker = '\\"feed_id\\":\\"user_songs\\"';
+      const markerIdx = profileHtml.indexOf(userSongsMarker);
+
+      if (markerIdx !== -1) {
+        const itemsKey = '\\"items\\":[';
+        const itemsStart = profileHtml.indexOf(itemsKey, markerIdx);
+
+        if (itemsStart !== -1) {
+          // Walk the items array using bracket counting — safe because { } are not escaped
+          let pos = itemsStart + itemsKey.length;
+
+          while (pos < profileHtml.length) {
+            if (profileHtml[pos] === '{') {
+              let depth = 0;
+              const start = pos;
+              while (pos < profileHtml.length) {
+                if (profileHtml[pos] === '{') depth++;
+                else if (profileHtml[pos] === '}') {
+                  depth--;
+                  if (depth === 0) {
+                    const itemStr = profileHtml.slice(start, pos + 1);
+                    try {
+                      const unescaped = itemStr.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                      const item = JSON.parse(unescaped);
+                      if (item.content_type === 'clip' && item.content_item?.entity_type === 'song_schema') {
+                        clips.push(item.content_item);
+                      }
+                    } catch (_) {
+                      // Skip malformed items
+                    }
+                    pos++;
+                    break;
+                  }
+                }
+                pos++;
               }
+              while (pos < profileHtml.length && (profileHtml[pos] === ',' || profileHtml[pos] === ' ')) pos++;
+            } else if (profileHtml[pos] === ']') {
+              break;
+            } else {
+              pos++;
             }
           }
-          
-        } catch (parseError) {
-          console.log("JSON parsing failed, trying alternative extraction...");
-          
-          // Count songs found but couldn't parse
-          const songMatches = profileHtml.match(/\\"entity_type\\":\\"song_schema\\"/g);
-          if (songMatches) {
-            return res.status(501).json({
-              error: `Username feature is experimental. Found ${songMatches.length} songs for @${cleanUsername} but couldn't extract them. Recommendation: Use one of @${cleanUsername}'s public playlists instead - playlist downloads work perfectly!`,
-              suggestion: `Visit https://suno.com/@${cleanUsername} and copy a playlist URL instead`
-            });
-          }
-        }
-      } else {
-        // No clips pattern found
-        const songMatches = profileHtml.match(/\\"entity_type\\":\\"song_schema\\"/g);
-        if (songMatches) {
-          return res.status(501).json({
-            error: `Username feature is experimental. Detected ${songMatches.length} songs for @${cleanUsername} but couldn't extract them due to complex profile structure. Recommendation: Use one of @${cleanUsername}'s public playlists instead!`,
-            suggestion: `Visit https://suno.com/@${cleanUsername} and copy a playlist URL - playlist downloads work perfectly!`
-          });
-        } else {
-          return res.status(404).json({
-            error: `No songs found for @${cleanUsername}. The user may have private songs or no public songs.`
-          });
+
+          console.log(`Feed extraction: found ${clips.length} clips on first page`);
         }
       }
-      
+
+      if (clips.length === 0) {
+        return res.status(404).json({
+          error: `No songs found for @${cleanUsername}. The user may have a private profile or no public songs.`
+        });
+      }
+
     } catch (error) {
       console.error("Error extracting clips:", error);
-      return res.status(500).json({ 
-        error: `Failed to extract songs from @${cleanUsername} profile. Try using one of their public playlists instead.`,
+      return res.status(500).json({
+        error: `Failed to extract songs from @${cleanUsername} profile. Try using a playlist URL instead.`,
         suggestion: `Visit https://suno.com/@${cleanUsername} and copy a playlist URL`
       });
     }
