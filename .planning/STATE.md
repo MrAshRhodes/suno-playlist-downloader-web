@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: UX & Discovery
-status: Phase 12 complete — Phase 13 up next
-stopped_at: Phase 12 verified and shipped
-last_updated: "2026-05-12T15:30:00.000Z"
-last_activity: 2026-05-12 — Phase 12 per-song checkbox selection complete (SEL-01–05)
+status: Phase 13 context gathered — ready to plan
+stopped_at: Phase 13 context captured
+last_updated: "2026-05-12T16:00:00.000Z"
+last_activity: 2026-05-12 — Phase 13 @username input UX context gathered (INP-01–03)
 progress:
   total_phases: 3
   completed_phases: 1
