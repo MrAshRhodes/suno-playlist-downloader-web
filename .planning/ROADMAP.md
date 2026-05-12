@@ -29,9 +29,9 @@ See full details: `.planning/milestones/v2.0-ROADMAP.md`
 
 ### v2.1 UX & Discovery
 
-- [ ] **Phase 12: Per-Song Checkbox Selection** — Individual song selection with select-all and download count
-- [ ] **Phase 13: @Username Input UX** — Placeholder, helper text, and full URL acceptance
-- [ ] **Phase 14: Dependabot Verification** — Confirm PRs #2 and #3 closed, npm audit clean
+- [x] **Phase 12: Per-Song Checkbox Selection** — Individual song selection with select-all and download count
+- [x] **Phase 13: @Username Input UX** — Placeholder, helper text, and full URL acceptance
+- [x] **Phase 14: Dependabot Verification** — Confirm PRs #2 and #3 closed, npm audit clean
 
 ## Phase Details
 
@@ -47,7 +47,7 @@ See full details: `.planning/milestones/v2.0-ROADMAP.md`
   5. When a playlist loads, all songs are checked by default — unmodified behavior for users who never touch checkboxes
 **Plans**: 1 plan
 Plans:
-- [ ] 12-01-PLAN.md — Selection state, checkbox column, download filter, and button label
+- [x] 12-01-PLAN.md — Selection state, checkbox column, download filter, and button label
 
 **UI hint**: yes
 
@@ -61,7 +61,7 @@ Plans:
   3. Pasting `https://suno.com/@focusedbeats` into the input loads that user's songs correctly
 **Plans**: 1 plan
 Plans:
-- [ ] 13-01-PLAN.md — Placeholder text, helper text element, and Suno.ts full-URL routing branch
+- [x] 13-01-PLAN.md — Placeholder text, helper text element, and Suno.ts full-URL routing branch
 
 **UI hint**: yes
 
@@ -92,6 +92,6 @@ Plans:
 | 9. SEO & Domain | v2.0 | 2/2 | Complete | 2026-04-30 |
 | 10. Adsterra Monetisation | v2.0 | 6/6 | Complete | 2026-05-01 |
 | 11. Security Check + Regression | v2.0 | 5/5 | Complete | 2026-05-02 |
-| 12. Per-Song Checkbox Selection | v2.1 | 0/1 | Not started | - |
-| 13. @Username Input UX | v2.1 | 0/1 | Not started | - |
+| 12. Per-Song Checkbox Selection | v2.1 | 1/1 | Complete | 2026-05-12 |
+| 13. @Username Input UX | v2.1 | 1/1 | Complete | 2026-05-12 |
 | 14. Dependabot Verification | v2.1 | 1/1 | Complete | 2026-05-12 |
