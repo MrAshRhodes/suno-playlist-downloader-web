@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: UX & Discovery
-status: Phase 14 planned — ready to execute
-stopped_at: Phase 14 plan complete (14-01-PLAN.md)
+status: Phase 14 complete
+stopped_at: Phase 14 complete (all plans done, v2.1 milestone candidates shipped)
 last_updated: "2026-05-12T18:00:00.000Z"
 last_activity: 2026-05-12 — Phase 14 planned (14-01-PLAN.md — SEC-01 verified, SEC-02 fix: ip-address 10.1.0→10.2.0)
 progress:
