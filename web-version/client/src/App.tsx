@@ -126,11 +126,11 @@ function App() {
 
     // Download individual songs one by one
     const downloadIndividualSongs = async () => {
+        if (!playlistData || !playlistClips) return;
+
         setDownloadPercentage(0);
         setCompletedItems(0);
         setIsDownloading(true);
-
-        if (!playlistData || !playlistClips) return;
 
         const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
         setTotalToDownload(selectedClips.length);
@@ -184,10 +184,10 @@ function App() {
 
     // Download entire playlist as ZIP
     const downloadPlaylistAsZip = async () => {
+        if (!playlistData || !playlistClips) return;
+
         setDownloadPercentage(0);
         setIsDownloading(true);
-
-        if (!playlistData || !playlistClips) return;
 
         const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
 
