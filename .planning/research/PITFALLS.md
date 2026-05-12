@@ -1,271 +1,273 @@
-# Domain Pitfalls: Visual Redesign
+# Pitfalls Research
 
-**Domain:** Visual-only modernization of a working React app — glassmorphism, generative art, theme overhaul
-**Researched:** 2026-04-11
-**Stack in scope:** React 18, Mantine v6, Vite 4, p5.js (new), deployed on Replit
+**Domain:** React 18 + Mantine v6 — adding checkbox selection + @username UX to existing download app
+**Researched:** 2026-05-12
+**Confidence:** HIGH — grounded in actual App.tsx, WebApi.ts, and Suno.ts code
 
 ---
 
 ## Critical Pitfalls
 
-Mistakes that cause rewrites, broken functionality, or major visual regressions.
+### Pitfall 1: Bulk-Status Updates Mark Unselected Clips
+
+**What goes wrong:**
+`App.tsx` lines 89–91, 116–118, and 125–127 run `prevClips.map(clip => ({ ...clip, status: X }))` unconditionally across the entire `playlistClips` array. After per-song selection exists, this sets Processing / Success / Error on clips the user never wanted downloaded.
+
+**Why it happens:**
+The original code had no selection concept — "all clips" and "clips to download" were the same thing. The bulk-status helpers predate selection and will be naively left unchanged.
+
+**How to avoid:**
+Keep `selectedIds` as a `Set<string>` in state. Thread it into all three status-map calls:
+- Line 89 (Processing sweep): skip clips not in `selectedIds`
+- Line 116 (post-download success sweep): same guard
+- Line 125 (error recovery sweep): same guard
+
+**Warning signs:**
+Unselected rows show Processing spinner during download, then flip to Success/Error on completion.
+
+**Phase to address:** Per-song checkbox phase.
 
 ---
 
-### Pitfall 1: p5.js Instance Not Cleaned Up on Unmount
+### Pitfall 2: Selection State Leaks Into Backend Payload
 
-**What goes wrong:** A p5 sketch started in `useEffect` keeps its draw loop running after the component unmounts. The canvas element is removed from the DOM but the p5 instance continues calling `requestAnimationFrame`, consuming CPU and eventually leaking memory. In React 18 Strict Mode, `useEffect` fires twice in development — two p5 instances are created, two canvases render on top of each other, and only one is cleaned up.
+**What goes wrong:**
+`WebApi.ts:75` sends `clips` verbatim: `body: JSON.stringify({ playlist, clips, embedImage })`. If `selected: boolean` is added to `IPlaylistClip`, that field ships to the frozen Express backend. The backend is frozen — even if it currently ignores unknown fields, this pollutes the domain model permanently.
 
-**Why it happens:** p5 manages its own animation loop internally. Removing the container div does not stop the loop. The instance must be explicitly destroyed by calling `p5Instance.remove()`. The double-invoke behaviour of Strict Mode catches any missing cleanup.
+**Why it happens:**
+Adding a convenience boolean to the existing interface is the path of least resistance. Developers forget the interface is serialized directly.
 
-**Consequences:** CPU pegged at 10-30% permanently. Canvas artifacts in dev mode (doubled waveform). Memory grows with each hot reload until the tab is killed.
+**How to avoid:**
+Do not add selection state to `IPlaylistClip`. Keep selection in a separate `Set<string> selectedIds`. Before calling `downloadPlaylistApi`, filter: `playlistClips.filter(c => selectedIds.has(c.id))`. Pass only that slice. Backend receives only the clips to process — no interface changes, no payload pollution.
 
-**Prevention:**
-```tsx
-useEffect(() => {
-  const p5Instance = new p5(sketch, containerRef.current);
-  return () => {
-    p5Instance.remove(); // stops draw loop AND removes canvas
-  };
-}, []); // empty dep array — mount/unmount only
-```
-Use instance mode (not global mode) so the sketch is scoped. Set the ref to `null` after remove.
+**Warning signs:**
+`IPlaylistClip` gains a `selected` or `checked` field. Network tab shows `selected: true/false` in the POST body.
 
-**Warning signs:** CPU fan spinning on page with waveform. `performance.memory` growing in DevTools. Double canvas visible in Elements panel in dev.
-
-**Phase:** Waveform background implementation phase.
+**Phase to address:** Per-song checkbox phase.
 
 ---
 
-### Pitfall 2: Mantine v6 `MantineProvider` Ignored Because It Wraps Nothing
+### Pitfall 3: Mantine v6 Checkbox `onChange` Signature Differs From v7
 
-**What goes wrong:** App.tsx currently applies theme via `useDarkMode()` and inline `style` props — it does not use `MantineProvider` at the root or pass `colorScheme` to it. If Mantine components are added during the redesign without a `MantineProvider` with `colorScheme` set, Mantine defaults to its own light theme, overriding any dark styling applied to wrapper divs. Modal backgrounds, tooltips, and portal-rendered components (dropdowns, popovers) render white-on-white in dark mode.
+**What goes wrong:**
+Mantine v6 `Checkbox.onChange` is `(event: ChangeEvent<HTMLInputElement>) => void`. Writing `onChange={(checked) => ...}` (the v7 pattern) silently passes the event object as `checked` — always truthy — making all checkboxes appear permanently checked.
 
-**Why it happens:** Mantine v6 components read `colorScheme` from context. The existing `useDarkMode` hook writes to `document.documentElement.className` and `document.body.style` — it does not update Mantine context. These are parallel systems that must be synchronized.
+**Why it happens:**
+Mantine v7 changed the signature to `(checked: boolean)`. Any v7 example, docs snippet, or AI output will use the wrong pattern for this v6-frozen project.
 
-**Consequences:** Mantine-managed components (any future `Modal`, `Tooltip`, `Notification`, `Menu`) ignore the custom dark theme. Each new Mantine component added requires its own workaround. Portal-rendered elements are especially invisible because they live outside the component tree.
+**How to avoid:**
+Read the value as `e.currentTarget.checked`. The "select all" header checkbox requires the `indeterminate` prop when `selectedIds.size > 0 && selectedIds.size < playlistClips.length` — Mantine v6 supports this prop on `Checkbox`.
 
-**Prevention:** Wrap the app in `MantineProvider` at the root, pass `colorScheme={theme}` derived from the same `useDarkMode` hook state, and use `theme` overrides to set the Monolith palette. The hook's `localStorage` and `document.documentElement.className` logic can stay for CSS variable driving, but Mantine's `colorScheme` must track the same value.
+**Warning signs:**
+Checkboxes appear always-checked or never toggle. TypeScript may not catch this because `ChangeEvent` is truthy.
 
-```tsx
-<MantineProvider theme={{ colorScheme: theme, ...monolithTheme }}>
-  <App />
-</MantineProvider>
-```
-
-**Warning signs:** Dark wrapper div but white Mantine `Paper` inside it. `Notification` toast renders white background. Any `Modal` opened in dark mode has white background.
-
-**Phase:** Theme foundation phase (must be done first before any Mantine components are redesigned).
+**Phase to address:** Per-song checkbox phase.
 
 ---
 
-### Pitfall 3: Inline Style `theme` Prop Drilling Breaks Silently During Extraction
+### Pitfall 4: Selection Not Cleared on `getPlaylist` Re-fetch
 
-**What goes wrong:** App.tsx contains ~60 inline style objects, all conditionally switching values based on `theme === 'dark'`. When migrating to CSS variables (the correct approach), it is easy to miss one or introduce a logic inversion. Because there are no TypeScript errors for wrong inline style values, these break silently — rendering with the wrong background colour or wrong text colour that is only visible in specific states.
+**What goes wrong:**
+`getPlaylist()` calls `setPlaylistClips(data[1])` which replaces the clips array with fresh IDs. A `selectedIds` Set in separate state is not automatically cleared. Stale IDs from the previous playlist persist — on the next download, the filter matches nothing and a 0-song ZIP is produced.
 
-**Why it happens:** The codebase has no linting for inline style values. Every `rgba(255,255,255,0.1)` in a dark branch and `rgba(0,0,0,0.06)` in a light branch is a separate migration target. The table rows, thead, badges, progress bar, footer, and info banner all have separate inline dark/light pairs.
+**Why it happens:**
+`useState` for clips and `useState` for selectedIds are independent. Clearing clips does not clear selection.
 
-**Consequences:** Subtle colour regressions that are hard to catch in code review. The most common failure: a component that looks correct at the time of migration but breaks when the user toggles the theme, because the CSS variable was applied in the wrong direction.
+**How to avoid:**
+In `getPlaylist()`, after `setPlaylistClips(data[1])`, also call `setSelectedIds(new Set())`. A `useEffect` keyed on `playlistData` as a safety net reinforces this.
 
-**Prevention:** 
-1. Extract all inline theme values to CSS custom properties in `index.css` before touching any component visuals.
-2. Migrate one semantic group at a time (e.g. card backgrounds first, text colours second).
-3. After each group, toggle theme and visually verify both states before moving to the next group.
-4. Use browser DevTools computed styles panel to confirm the CSS variable resolves correctly in both modes.
+**Warning signs:**
+After loading a second playlist, selected IDs from the first persist in state. Download produces an empty ZIP or the download button is oddly disabled.
 
-**Warning signs:** Component looks correct in one theme but wrong after toggle. Background and text colours both wrong (usually indicates a light/dark inversion). Visible only after interaction (state change triggers re-render with wrong inline style).
-
-**Phase:** Inline style extraction phase — must precede all visual redesign work.
+**Phase to address:** Per-song checkbox phase.
 
 ---
 
-### Pitfall 4: `backdrop-filter` Glassmorphism Has No Firefox Default Support
+### Pitfall 5: Download Button Guard Misses Empty Selection
 
-**What goes wrong:** `backdrop-filter: blur()` is not enabled by default in Firefox as of 2026. It requires the user to enable `layout.css.backdrop-filter.enabled` in `about:config`. This means all glassmorphism card effects are invisible in Firefox — cards render as fully transparent without the frosted glass blur, which against the dark waveform background can make text unreadable.
+**What goes wrong:**
+`App.tsx:259` disables the download button only on `isGettingPlaylist || isDownloading || !playlistData`. After selection exists, a user can load a playlist, deselect all songs, and click Download — resulting in a POST with an empty `clips` array, a broken ZIP, or a server error.
 
-**Why it happens:** Mozilla has withheld default enablement citing performance concerns. This is a longstanding issue, not a recent regression.
+**Why it happens:**
+The existing guard predates selection. `!playlistData` was sufficient when all loaded songs were implicitly included.
 
-**Consequences:** Firefox users see transparent cards with no background, making the app unusable. This affects a non-trivial percentage of users.
+**How to avoid:**
+Add `|| selectedIds.size === 0` to the disabled condition. If "select all by default" behavior is implemented on playlist load, this still correctly prevents post-deselect accidental submits.
 
-**Prevention:**
-1. Always include `-webkit-backdrop-filter` alongside `backdrop-filter`.
-2. Implement a solid fallback background for the `@supports not (backdrop-filter: blur(1px))` case:
-```css
-.glass-card {
-  background: rgba(17, 22, 39, 0.85); /* solid fallback */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-@supports not (backdrop-filter: blur(1px)) {
-  .glass-card {
-    background: rgba(17, 22, 39, 0.95); /* higher opacity when no blur */
-  }
-}
-```
-3. Test in Firefox before marking any phase complete.
+**Warning signs:**
+Download button is clickable with 0 checkboxes selected.
 
-**Warning signs:** Cards invisible or text hard to read during Firefox testing. `backdrop-filter` shows in CSS but no visual blur effect.
-
-**Phase:** Glassmorphism implementation phase.
+**Phase to address:** Per-song checkbox phase.
 
 ---
 
-### Pitfall 5: Glassmorphism Fails WCAG AA Contrast Against Animated Background
+### Pitfall 6: `@username` UX Change Bypasses Existing Validation Logic
 
-**What goes wrong:** A frosted glass card placed over a moving waveform animation fails WCAG AA (4.5:1 text contrast ratio) at certain frames of the animation. The background behind the blur changes continuously, so a contrast ratio that passes at rest fails when a bright wave passes behind the card. This is not detectable with a static contrast checker.
-
-**Why it happens:** Contrast is measured against a fixed background. When the background is animated, the "effective background" changes frame by frame. Semi-transparent glass panels averaging `rgba(255,255,255,0.08)` over a dark base look fine on average but can spike to poor contrast when bright waveform peaks align with text.
-
-**Consequences:** WCAG AA failure (stated requirement in PROJECT.md). Potentially unreadable UI at certain animation frames. More visible during active download (animation likely more intense).
-
-**Prevention:**
-1. Keep waveform art subdued — low opacity strokes (`0.15-0.3`), low brightness colours, seeded to stay in the dark register.
-2. Apply a semi-opaque base tint to all glass cards: minimum `rgba(10, 14, 26, 0.65)` dark background.
-3. Verify contrast against the *lightest possible frame* of the animation, not the average.
-4. Use a vignette or radial gradient overlay on the canvas to darken the center where UI cards sit.
-
-**Warning signs:** Text readable at page load but intermittently hard to read. Contrast checker passes but visual inspection shows legibility issues at peak wave moments.
-
-**Phase:** Waveform background + glassmorphism integration phase.
-
----
-
-## Moderate Pitfalls
-
----
-
-### Pitfall 6: p5.js CPU Hammering on Retina Displays
-
-**What goes wrong:** p5.js by default calls `pixelDensity(window.devicePixelRatio)` automatically, scaling canvas dimensions by 2x on Retina screens. A waveform drawn at 1200x800 is actually rendered at 2400x1600. Combined with a draw loop at 60fps, this can push CPU to 25-40% on Retina MacBooks — noticeable heat and fan activity while the user is trying to download music.
-
-**Why it happens:** p5.js's auto pixel density means every pixel written to the canvas is 4x the work on HiDPI screens. Background animations that feel lightweight on a 1080p monitor are expensive on a 2x display.
-
-**Consequences:** Poor UX — user's machine heats up while using the downloader. Battery drain on laptops. Performance marks against Replit's free tier resource limits.
-
-**Prevention:**
-1. Cap `pixelDensity` explicitly: `p.pixelDensity(Math.min(window.devicePixelRatio, 1.5))`.
-2. Use `p.frameRate(30)` instead of the default 60. Waveform art is ambient — 30fps is indistinguishable.
-3. Use `p.noSmooth()` if fine details are not needed.
-4. Size the canvas to the viewport, not larger.
-
-**Warning signs:** CPU in Activity Monitor climbing when the waveform background is visible. Noticeable render jank during download.
-
-**Phase:** Waveform background implementation phase.
-
----
-
-### Pitfall 7: Mantine v6 Theme `colors` Array Format — Object Format Silently Breaks Components
-
-**What goes wrong:** Mantine v6 requires colour scales to be arrays of exactly 10 shades (`string[]`). If a colour is passed as an object or a shorter array, Mantine components that reference `theme.colors.yourColor[N]` receive `undefined` and render with fallback styles (usually black backgrounds or invisible text). This fails silently — no TypeScript error at the call site for Mantine's internal component code.
-
-**Prevention:** Always define custom colours as a 10-element tuple. Use a tool like [Mantine Colors Generator](https://v6.mantine.dev/colors-generator/) to derive the full scale from a single hex. Example for the Monolith primary blue `#1a82e2`:
+**What goes wrong:**
+`Suno.ts:41` contains the load-bearing routing:
 ```ts
-primaryColor: 'monolith-blue',
-colors: {
-  'monolith-blue': ['#e6f1fc', '#c3d9f7', '#9cc0f2', '#72a6ed', '#4d8fe8', '#1a82e2', '#1570c5', '#0f5aa8', '#0a458a', '#06316d']
-}
+if (url.startsWith('@') || (!url.includes('http') && !url.includes('playlist') && !url.includes('.')))
 ```
+Any UX change that adds a separate input field, a mode toggle, or transforms the value before calling `getSongsFromPlayList` can bypass this branch. Routing logic lives in `Suno.ts`, not the UI — UX work that treats it as a pure UI change misses the coupling.
 
-**Warning signs:** Mantine `Button` renders black instead of brand blue. `Badge` has no background. Any Mantine component with `color="primary"` renders incorrectly.
+**Why it happens:**
+The developer thinks "separate username input" is a pure UI change. The connection to the service layer through the raw string value is not obvious.
 
-**Phase:** Theme foundation phase.
+**How to avoid:**
+Keep `getSongsFromPlayList` as the single entry point — do not bypass it or add a parallel call to `getSongsFromUser`. If adding a username-specific input, pass its value directly to `getSongsFromPlayList` unmodified (with or without `@` prefix — the service handles both). Do not pre-validate or transform in the UI.
 
----
+**Warning signs:**
+A user entering `@artist` in a new username field gets "Failed to fetch playlist data" — the service branch was never entered.
 
-### Pitfall 8: Theme Toggle Triggers Full Page Repaint + p5.js Canvas Flicker
-
-**What goes wrong:** The current `useDarkMode` hook writes `document.body.style.backgroundColor` directly on every theme change, which can trigger a full reflow. When a p5 canvas is in the background, this reflow causes a visible frame drop or flicker as the canvas is repainted alongside the DOM.
-
-**Prevention:**
-1. Remove direct `document.body.style` writes from the theme hook — drive all colours through CSS variables on `:root` only.
-2. Ensure the p5 canvas is on a fixed `z-index` layer below the UI, not subject to layout reflow.
-3. Use CSS `transition` only on elements that need it, not on the body element itself.
-
-**Warning signs:** Visible flash when toggling theme. Canvas "resets" or stutters for one frame on toggle.
-
-**Phase:** Inline style extraction + theme foundation phases.
+**Phase to address:** @username UX phase.
 
 ---
 
-### Pitfall 9: Vite 4 Build on Replit — p5.js Bundle Size
+### Pitfall 7: Suno Profile URL `suno.com/@username` Falls Through Validation
 
-**What goes wrong:** p5.js is ~800KB minified. Added to the existing bundle, this could push total bundle size past 1.5MB+, causing slow initial load on Replit (which uses shared infrastructure). Replit has no explicit bundle size limit but slow cold starts and first-load latency degrade UX.
+**What goes wrong:**
+Pasting `https://suno.com/@username` hits neither the `@`-prefix branch (no `@` at position 0) nor the bare-username branch (has `http` and `.`). It falls through to the playlist regex `/suno\.com\/playlist\/(.*)/` which produces no match, throwing "Invalid URL or no playlist ID found."
 
-**Prevention:**
-1. Import p5 as a dynamic import so it loads after initial paint:
+**Why it happens:**
+The `@username` feature was added after the original URL-only design. The validation handles bare `@user` input but not full Suno profile URL format.
+
+**How to avoid:**
+If the UX work claims to support pasting full Suno profile URLs, add an explicit branch in `getSongsFromPlayList` before the playlist regex:
 ```ts
-const p5 = (await import('p5')).default;
+const profileMatch = url.match(/suno\.com\/@([^/?]+)/);
+if (profileMatch) return this.getSongsFromUser(profileMatch[1]);
 ```
-2. Alternatively, load p5 from a CDN in `index.html` and reference it as a global — avoids bundling it with the app.
-3. Check bundle output with `vite-bundle-visualizer` before deploying.
+If UX changes are guidance/copy only (not new format support), the placeholder and error text must list only the formats that actually work — not imply "paste any Suno link."
 
-**Warning signs:** `yarn build` output shows chunk >1MB. Initial page load on Replit takes >3 seconds. Lighthouse performance score drops significantly post-redesign.
+**Warning signs:**
+Any placeholder or copy that says "paste any Suno link" or "paste profile URL" without the corresponding code branch in Suno.ts.
 
-**Phase:** Waveform implementation phase, pre-deploy check.
-
----
-
-## Minor Pitfalls
+**Phase to address:** @username UX phase.
 
 ---
 
-### Pitfall 10: CSS Animations Fighting Inline Style Transitions
+### Pitfall 8: Placeholder Text and Validation Are Out of Sync
 
-**What goes wrong:** App.tsx already has inline `transition: "background-color 0.2s ease, box-shadow 0.2s ease"` on buttons. If CSS class animations are added on top, the two transition systems conflict — one takes precedence depending on specificity, and the other is silently ignored.
+**What goes wrong:**
+`App.tsx:190` currently shows `placeholder="https://suno.com/playlist/..."` — users don't discover that `@username` works. Updating the placeholder to "Paste playlist URL or @username" without verifying the full URL format case (Pitfall 7) creates a false promise.
 
-**Prevention:** During inline style extraction, remove all `transition` values from inline styles and consolidate them into CSS classes. Never have `transition` declared in both places on the same element.
+**Why it happens:**
+Placeholder updates feel like pure UI changes. The developer doesn't trace the shown format through `Suno.ts` validation.
 
-**Phase:** Inline style extraction phase.
+**How to avoid:**
+Map every example shown in the placeholder to a specific branch in `Suno.ts`. Update placeholder and error message text together so they agree on what is actually supported.
 
----
+**Warning signs:**
+Placeholder shows a format not covered by any branch in `getSongsFromPlayList`.
 
-### Pitfall 11: Placeholder Styles Cannot Be Set Via React `style` Prop
-
-**What goes wrong:** App.tsx has `"::placeholder": { color: ... }` inside an inline style object (line 290-292). This is not valid — React does not support pseudo-element styles inline. The code is currently non-functional (silently ignored), meaning placeholder text colour is unthemed. The redesign should not propagate this pattern.
-
-**Prevention:** Placeholder styles must be in CSS. The existing `dark-placeholder`/`light-placeholder` class names on the input (line 294) are the right approach — define the actual `::placeholder` rules in `index.css` or a CSS module.
-
-**Phase:** Inline style extraction phase.
+**Phase to address:** @username UX phase.
 
 ---
 
-### Pitfall 12: `document.documentElement.className = ...` Clobbers All Classes
+### Pitfall 9: Dependabot PRs Target `web-version/` Not the Deployed Root
 
-**What goes wrong:** App.tsx line 217 uses `document.documentElement.className = theme === 'dark' ? 'dark-mode' : 'light-mode'` (assignment, not `classList.toggle`). This wipes any other classes on `<html>`. If a third-party library or Mantine adds classes to `<html>`, they are removed on every theme change.
+**What goes wrong:**
+Dependabot may have targeted the `web-version/` subtree (separate `package.json`) rather than the root. The root `server.js` is what Replit deploys. Closing `web-version/` PRs without checking the root audit gives a false clean bill of health.
 
-**Prevention:** Replace with `classList.add`/`classList.remove` in `useDarkMode`. The hook already uses the correct approach on line 36-39 of `useDarkMode.ts` — but App.tsx overrides it via `useEffect` at line 217. Remove the `useEffect` in App.tsx that sets `className` directly.
+**Why it happens:**
+The repo has multiple `package.json` files. Dependabot creates PRs per package file. `web-version/` is not deployed — only root is.
 
-**Phase:** Theme foundation phase (day one fix).
+**How to avoid:**
+Verify what files Dependabot PRs #2 and #3 actually modified. Run `npm audit` from the repo root (not `web-version/`) to confirm the deployed tree is clean. Note: existing `overrides` in root `package.json` already cover transitively-pinned deps from previous Dependabot work — PRs touching only those paths may be no-ops for the deployed app.
+
+**Warning signs:**
+PR diff shows changes only under `web-version/`. Root `package-lock.json` is unmodified.
+
+**Phase to address:** Dependabot verification phase.
 
 ---
 
-## Phase-Specific Warnings
+## Technical Debt Patterns
 
-| Phase Topic | Likely Pitfall | Mitigation |
-|---|---|---|
-| Inline style extraction | Silent colour inversion bugs | Migrate group-by-group, toggle test after each group |
-| Theme foundation (MantineProvider) | Mantine components ignore custom dark theme | Sync `colorScheme` prop with `useDarkMode` state |
-| Theme foundation | `document.documentElement.className` clobber | Replace assignment with `classList` in App.tsx |
-| Theme foundation | Mantine colour array format | Use 10-element tuple, verify with generator |
-| Glassmorphism implementation | Firefox has no backdrop-filter by default | `@supports` fallback with higher-opacity background |
-| Glassmorphism + waveform integration | WCAG contrast fails at bright animation frames | Dark waveform palette + min 0.65 opacity card backgrounds |
-| Waveform background | p5.js duplicate canvas in Strict Mode | Instance mode + `remove()` cleanup in useEffect return |
-| Waveform background | Retina CPU thrash | `pixelDensity(1.5)` cap + `frameRate(30)` |
-| Waveform background | p5.js bundle size (~800KB) | Dynamic import or CDN load |
-| Theme toggle UX | Canvas flicker on toggle | CSS vars only on `:root`, no `document.body.style` writes |
-| Pre-deploy | Bundle size regression | vite-bundle-visualizer check before push |
+| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
+|----------|-------------------|----------------|-----------------|
+| Adding `selected` to `IPlaylistClip` | One fewer state variable | Interface serialized to backend — payload pollution, field leaks | Never |
+| Bypassing `getSongsFromPlayList` for @username path | Simpler UI code | Two code paths for same operation, validation diverges silently | Never |
+| Sharing full `playlistClips` as download list | No filter step | Unselected songs download; all rows get status updates | Never |
+| Separate @username input that transforms value before service call | Cleaner UI intent | Breaks routing in Suno.ts silently | Never |
+
+---
+
+## Integration Gotchas
+
+| Integration | Common Mistake | Correct Approach |
+|-------------|----------------|------------------|
+| Mantine v6 Checkbox | Copy v7 `onChange={(checked) => ...}` pattern | `onChange={(e) => e.currentTarget.checked}` |
+| Mantine v6 Checkbox header row | Omit `indeterminate` prop on partial selection | Pass `indeterminate={selectedIds.size > 0 && selectedIds.size < clips.length}` |
+| `downloadPlaylistApi` (WebApi.ts) | Pass full `playlistClips` when selection exists | Pre-filter to `playlistClips.filter(c => selectedIds.has(c.id))` before call |
+| SSE progress monitor | Think completedItem IDs outside selectedSet are a bug | They are safe no-ops — server fires for all completed items regardless |
+
+---
+
+## UX Pitfalls
+
+| Pitfall | User Impact | Better Approach |
+|---------|-------------|-----------------|
+| Unselected rows show Processing/Success/Error | User confused — did they download things they didn't select? | Guard all three status-map calls with selectedIds |
+| No "select all" / "deselect all" shortcut | 50-song playlist requires 50 clicks to undo deselect | Header checkbox with indeterminate state |
+| Download button enabled with 0 songs selected | Empty ZIP or server error on click | Disable when `selectedIds.size === 0` |
+| Placeholder claims format validation doesn't support | Valid-looking input fails with cryptic error | Match placeholder exactly to supported branches in Suno.ts |
+
+---
+
+## "Looks Done But Isn't" Checklist
+
+- [ ] **Checkbox selection:** Unselected rows remain `IPlaylistClipStatus.None` throughout and after download.
+- [ ] **Checkbox selection:** `selectedIds` is cleared when `getPlaylist` loads a new playlist.
+- [ ] **Checkbox selection:** Download button is disabled when `selectedIds.size === 0`.
+- [ ] **Checkbox selection:** POST body to `/api/download/playlist` contains only selected clips, not the full array.
+- [ ] **Checkbox selection:** `IPlaylistClip` interface has no new `selected`/`checked` field.
+- [ ] **@username UX:** `@username`, bare `username`, and `https://suno.com/playlist/...` all still resolve correctly.
+- [ ] **@username UX:** Every input format shown in placeholder has a corresponding branch in Suno.ts.
+- [ ] **Dependabot:** `npm audit` from repo root is clean (not just `web-version/` subtree).
+- [ ] **Dependabot:** PRs #2 and #3 are confirmed closed (not "stale / awaiting review").
+
+---
+
+## Recovery Strategies
+
+| Pitfall | Recovery Cost | Recovery Steps |
+|---------|---------------|----------------|
+| Bulk-status marks unselected clips | LOW | Add `selectedIds.has(clip.id)` guard to three map calls in App.tsx |
+| Selection leaks into backend payload | LOW | Move selection to `Set<string>`, filter before POST |
+| getPlaylist does not clear selection | LOW | Add `setSelectedIds(new Set())` in getPlaylist after setPlaylistClips |
+| Mantine v6 onChange wrong signature | LOW | Change handler to use `e.currentTarget.checked` |
+| @username UX bypasses validation | MEDIUM | Revert UI changes, re-thread value through `getSongsFromPlayList` |
+| Suno profile URL not handled | MEDIUM | Add regex branch to Suno.ts before playlist regex |
+
+---
+
+## Pitfall-to-Phase Mapping
+
+| Pitfall | Prevention Phase | Verification |
+|---------|------------------|--------------|
+| Bulk-status marks unselected clips | Per-song checkbox phase | Unselected rows stay None throughout download |
+| Selection leaks into backend payload | Per-song checkbox phase | Network tab: POST body contains only selected clips |
+| Mantine v6 Checkbox onChange signature | Per-song checkbox phase | Checkboxes toggle; TypeScript compiles |
+| Selection not cleared on re-fetch | Per-song checkbox phase | Load playlist A, select some; load B — selection resets |
+| Download button guard misses empty selection | Per-song checkbox phase | Button disabled with 0 checkboxes selected |
+| @username UX breaks validation logic | @username UX phase | All input formats still resolve correctly |
+| Suno profile URL falls through validation | @username UX phase | `suno.com/@artist` resolves if that format is claimed |
+| Placeholder / validation out of sync | @username UX phase | Every placeholder example has a corresponding Suno.ts branch |
+| Dependabot PRs target wrong package tree | Dependabot verification phase | Root `npm audit` clean; PRs closed |
 
 ---
 
 ## Sources
 
-- [p5.js remove() reference](https://p5js.org/reference/p5/remove/)
-- [Preventing duplicate canvas in React Strict Mode with p5](https://www.lloydatkinson.net/posts/2022/how-to-prevent-a-duplicated-canvas-when-using-p5-and-react-strict-mode/)
-- [p5.js retina/HiDPI issues](https://github.com/processing/p5.js/issues/220)
-- [Mantine v6 dark theme guide](https://v6.mantine.dev/guides/dark-theme/)
-- [Mantine v6 theme object](https://v6.mantine.dev/theming/theme-object/)
-- [Glassmorphism meets accessibility — Axess Lab](https://axesslab.com/glassmorphism-meets-accessibility-can-frosted-glass-be-inclusive/)
-- [NN/G Glassmorphism best practices](https://www.nngroup.com/articles/glassmorphism/)
-- [Glassmorphism implementation guide 2025](https://playground.halfaccessible.com/blog/glassmorphism-design-trend-implementation-guide)
-- [CSS variables for React theming — Josh W. Comeau](https://www.joshwcomeau.com/css/css-variables-for-react-devs/)
-- [p5.js performance optimization wiki](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
+- App.tsx lines 82–131: download flow, bulk-status map calls
+- App.tsx line 259: download button disabled condition
+- App.tsx line 190: placeholder text
+- Suno.ts lines 38–75: getSongsFromPlayList routing and playlist regex
+- Suno.ts lines 77–112: getSongsFromUser
+- WebApi.ts lines 64–99: downloadPlaylist payload construction
+- Mantine v6 Checkbox API: onChange signature, indeterminate prop
+
+---
+*Pitfalls research for: Suno Playlist Downloader v2.1 — checkbox selection + @username UX + Dependabot verification*
+*Researched: 2026-05-12*

@@ -1,130 +1,153 @@
-# Feature Landscape — Visual Modernization
+# Feature Research — v2.1 UX & Discovery
 
-**Domain:** Premium music/download tool (web, dark-first)
-**Researched:** 2026-04-11
-**Scope:** Visual features only — no new functional features
+**Domain:** Music download tool — per-song selection + input UX + housekeeping
+**Researched:** 2026-05-12
+**Confidence:** HIGH (grounded in existing codebase analysis; no speculative library choices)
 
 ---
 
-## Table Stakes
+## Feature Landscape
 
-Features users expect from a "premium dark-themed music tool" in 2026. Missing any of these makes the redesign feel incomplete.
+### Table Stakes (Users Expect These)
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Deep dark background (not `#000` or `#1a1a1a`) | Industry standard since Material Design. Pure black and flat dark grey feel cheap/unfinished. | Low | Target: `#0a0e1a` / `#111627`. These specific values are already decided in PROJECT.md |
-| CSS variable-driven color system | Enables dual-theme (dark + light) without duplicating every rule. Current codebase uses per-component inline styles — this is the single biggest maintenance problem. | Medium | Requires extracting all inline `theme === 'dark' ? ...` ternaries into CSS variables. Mantine v6 supports scoped CSS vars via `createStyles` |
-| Glassmorphism card surfaces | Expected in any music/AI-tool UI post-2023. Frosted glass panels on the URL input section, song table, and download card. | Low-Medium | `backdrop-filter: blur(8-12px)` + `rgba(255,255,255,0.07-0.12)` background. Keep blur ≤12px for performance. Do NOT apply to the entire page, only card-level surfaces |
-| Smooth state transitions | Loading state → results state → downloading state must animate smoothly. Current app uses instant renders with no transitions. | Medium | CSS transitions on opacity/transform (300-400ms). Use `@media (prefers-reduced-motion)` fallback |
-| Refined typography hierarchy | Current h3/h4 headings are browser-default weight and size. Premium tools use intentional type scale — weight contrast, letter-spacing on labels, lighter secondary text. | Low | No font change needed (system font works). Fix: weight 300 for section labels, 600 for titles, uppercase + tracking for column headers |
-| Polished progress bar | Current bar is a flat 4px div. Expected: gradient fill, glow effect on the active end, smooth width transition. | Low | Already has `transition: width 0.3s ease` — needs gradient and glow |
-| Icon/logo refinement | Current vinyl icon sits in a flat gradient square. Premium tools use more deliberate logo treatment — subtle glow, better proportions. | Low | Icon stays, surround treatment changes |
-| Accessible contrast (WCAG AA) | Users with visual impairments, legal/reputational risk if not met. The Monolith palette is already verified AA. | Low | Design decision already made — just enforce in implementation |
-| Hover and focus states on interactive elements | Current buttons have `transition: background-color 0.2s ease` but no glow, lift, or scale on hover. Inputs have no focus ring. | Low | Add box-shadow glow on hover, subtle scale transform (1.01–1.02) on buttons |
+| Checkbox per song row | Any multi-select list in 2024+ has row checkboxes — file managers, Gmail, GitHub | LOW | Mantine v6 `Checkbox` available in `@mantine/core` (same import used elsewhere). Add `<td>` column, manage via `useState<Set<string>>` |
+| Select All / Deselect All header control | Standard in every file-picker, email client, Google Drive — users look for it automatically | LOW | Header `<th>` checkbox; indeterminate state when partially selected. Single `onClick` handler |
+| Download button reflects selection count | "Download 4 songs as ZIP" — users need confirmation of what they're about to get | LOW | Derive from `selectedIds.size`. No new state. Update button label string only |
+| Input placeholder hints at @username format | The @username backend route exists but is invisible. Users who don't know the format cannot discover it without a hint | LOW | Single `placeholder` attribute change. Zero risk |
+| Helper text below URL input | Companion to placeholder — brief static description survives after the user starts typing | LOW | One `<p>` element styled with `var(--text-secondary)`. No state, no logic |
 
----
-
-## Differentiators
-
-Visual elements that make the tool feel distinctly premium — not expected baseline, but immediately noticed.
+### Differentiators (Competitive Advantage)
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Audio waveform generative art background | Ties visual identity to the music domain. Ambient, non-distracting. Reinforces purpose of the tool on every page view. | Medium | p5.js with seeded noise (Perlin) for reproducible waveform shape. Draw on a `<canvas>` behind the UI, z-index below cards. Low opacity (0.15–0.25) so it reads as texture not decoration. Runs at ~30fps not 60 to save GPU |
-| Ambient color bleed from palette | Subtle radial gradient tints at top/bottom edges of the page using the brand accent color. Creates depth without a full background illustration. | Low | `radial-gradient` from `rgba(26, 82, 226, 0.15)` at corners. One implementation line in CSS |
-| Track row micro-animation | Each row in the song table fades/slides in when playlist loads (staggered, 20–30ms delay per row). During download, a shimmer or color-shift on the active row. | Medium | Use CSS `@keyframes` + inline `animation-delay` per row index. Shimmer on the processing row is achievable with a moving gradient overlay |
-| Song thumbnail with ring treatment | Current thumbnails are 40x40 with `borderRadius: 3px`. Premium: rounded corners (6–8px), a subtle colored border/ring, and a faint drop shadow. | Low | One-liner CSS change per thumbnail |
-| Download button with gradient and glow | CTA button is the highest-value interactive element. Should have gradient background, soft glow on hover, and a brief "pulse" on click/disabled state change. | Low-Medium | Use `box-shadow` with color-matched glow. Brief scale animation on press via `:active { transform: scale(0.98) }` |
-| Frosted glass header | The header bar (logo + theme toggle) floating above content with a glass treatment creates visual layering — reinforces premium depth. | Low | `backdrop-filter: blur(10px)` + transparent background on header. Already distinct from body |
-| Vignette overlay | A full-screen radial gradient from transparent center to `rgba(0,0,0,0.3)` at edges. Pulls focus to center content. Used in Spotify, Apple Music, every premium music product. | Low | One CSS pseudo-element on body or root container |
-| Theme toggle with smooth morph | Current toggle is a raw button with icon swap. Premium: icon morphs (sun/moon transition), or the entire UI does a smooth cross-fade between themes. | Medium | CSS transition on all CSS variables (200ms) gives automatic cross-fade. Swap `transition: background 0.2s, color 0.2s` on `:root` |
-| Song count + playlist name display | Once playlist loads, showing the playlist name and song count prominently (above the table) with styled typography feels polished and confirms the operation succeeded visually. | Low | Purely typographic — existing `playlistData.name` wired to a styled display |
+| Selective ZIP download (filter by selection) | User grabs 3 tracks from a 40-song playlist without downloading everything — uniquely useful for curated listening | MEDIUM | `downloadPlaylistApi` already accepts arbitrary `clips[]`. Frontend filters `playlistClips` by `selectedIds` before passing — no backend change. This is the key insight |
+| Default-all-selected on playlist load | Selection is opt-out, not opt-in — existing "Download as ZIP" behavior is preserved; user just now has the option to deselect | LOW | `useEffect` re-initialises `selectedIds` to full set when `playlistClips` changes |
+| Selection count badge variant on button | Visible affordance that the button action is scoped to selection | LOW | `btn-accent` class already exists; count embedded in label text |
+| Shift-click range selection | Power-user shortcut for large playlists | MEDIUM | Track `lastChecked` index in ref; toggle range between last and current on shift+click. Progressive enhancement — not blocking for MVP |
 
----
+### Anti-Features (Commonly Requested, Often Problematic)
 
-## Anti-Features
-
-Build none of these. Each one either actively harms the experience or wastes implementation effort.
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Particle systems / floating orbs | Visual noise with no music-domain relevance. Distracts from the UI's clear 3-step workflow. Hard to tune to "ambient" rather than "screensaver." | Stick to the waveform: contextually relevant and controllable |
-| Animated gradient backgrounds (looping full-page) | GPU-intensive, can cause layout shifts, often triggers motion sickness. Looks trendy for 6 months then dates the app instantly. | Use static radial tints + the waveform canvas instead |
-| Parallax scrolling | App is a single-screen linear workflow (URL → results → download). No scroll depth to justify parallax. Just adds jitter and motion sickness risk. | N/A — it's not a marketing page |
-| Skeleton loading screens | App only has one async operation (playlist fetch). Adding full skeleton screens (empty rectangles mimicking rows) increases implementation complexity for minimal payoff. The table is already empty until data arrives. | A spinner on the "Get playlist songs" button is sufficient |
-| Heavy backdrop-blur everywhere | `backdrop-filter: blur()` on more than 3–4 elements simultaneously degrades GPU performance, especially on lower-end machines. Many Suno users are casual audio enthusiasts, not power-user setups. | Limit blur to: header, song table card, progress section. Three elements maximum |
-| Animated counter on download percentage | Incrementing number animations (e.g., 0% → 73% with a tween) feel gimmicky on a utility tool. The progress bar communicates the same thing without demanding attention. | Percentage text can be static; bar animation carries the visual interest |
-| Custom scroll bars (heavily styled) | Thin custom scrollbars (`::webkit-scrollbar`) frequently have poor contrast and confuse users unfamiliar with the handle. Song table already has `overflowY: auto`. | Use OS scrollbar or minimal neutral styling only |
-| Toast notification redesign | Mantine's notification system already works. Re-styling it risks breaking the behavior. Low ROI visual change that touches a non-visual layer. | Leave notifications as-is; focus effort on primary UI surface |
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| Individual per-song download (not ZIP) | Users may want a single file | Individual download route was explicitly removed from `download.js` ("Individual song download routes removed — ZIP download only"). Re-adding changes backend — violates "no functional changes" constraint | Selective ZIP + unzip achieves same end result |
+| Audio preview / playback | Help users decide what to select | New feature, explicitly listed as Out of Scope in PROJECT.md. Adds media element complexity and Suno CDN dependency questions | Tags column visible; title visible — sufficient for recognition |
+| Drag-to-reorder songs | Customise ZIP output order | Medium-high complexity (needs dnd library or custom drag logic). ZIP track order is cosmetic — ID3 track numbers already embedded | Track numbers in ID3 are the canonical sort key |
+| Persist selection across page refresh | Power-user comfort | Playlist is refetched each session; persisting IDs from a previous fetch is meaningless if the playlist has changed | Clear-on-reload is expected behaviour for ephemeral download tools |
+| Tag/genre filter panel | Advanced curation | Requires search/filter UI overhaul — out of scope for v2.1. Medium complexity with no dependency on other v2.1 work | Visible tags column enables manual scanning |
+| Select by status (e.g. "only errored songs") | Re-download failures | Adds filter-layer complexity. Errors during download are already visible via StatusIcon | User can deselect successful songs manually after a partial failure |
 
 ---
 
 ## Feature Dependencies
 
-The order matters for implementation. Downstream features break without upstream ones.
-
 ```
-CSS variable system → Everything else
-  (All glassmorphism, theme transitions, and color changes must be
-   driven by variables, not inline ternary expressions)
+[Per-song checkbox column]
+    └──requires──> [selectedIds: Set<string> in App.tsx state]
+                       └──requires──> [IPlaylistClip.id — already exists, no schema change]
 
-CSS variable system → Dual-theme quality
-  (Light mode upgrade requires variables; inline styles can't be 
-   transitioned between themes smoothly)
+[Select All / Deselect All]
+    └──requires──> [Per-song checkbox column]
+    └──uses──> [playlistClips.length to determine indeterminate state]
 
-Background canvas (p5.js waveform) → Glassmorphism cards look correct
-  (Glass surfaces are visually inert over a flat dark background; 
-   the waveform texture behind them is what makes blur meaningful)
+[Selective ZIP download]
+    └──requires──> [selectedIds state]
+    └──reuses──> [downloadPlaylistApi(playlist, clips, embedImage) — WebApi.ts]
+                    └──clips param: filter playlistClips by selectedIds
+                    └──no backend change required
 
-Typography hierarchy → Visual hierarchy reads correctly
-  (Progress bar glow and button polish are wasted if heading 
-   weight/scale doesn't communicate the 3-step flow)
+[Download button count label]
+    └──requires──> [selectedIds state]
+    └──enhances──> [Selective ZIP download]
+
+[Default-all-selected on load]
+    └──requires──> [selectedIds state]
+    └──triggers on──> [playlistClips state change (useEffect)]
+
+[@username helper text]
+    └──standalone — zero dependencies, zero state
+
+[@username placeholder update]
+    └──standalone — single attribute change
+
+[Dependabot PR check]
+    └──standalone — read-only gh CLI, not a code change
 ```
 
----
+### Dependency Notes
 
-## MVP Recommendation
-
-For a milestone targeting visual premium-feel with the highest ROI per implementation hour:
-
-**Build first (highest visual impact, low-medium complexity):**
-1. CSS variable extraction — unlocks everything downstream
-2. Deep background colors (`#0a0e1a`) + vignette overlay — instant premium feel
-3. Glassmorphism on the song table and URL input card
-4. Typography hierarchy — weight/spacing corrections
-5. Button gradient + glow hover state
-
-**Build second (differentiators that require the above):**
-6. p5.js waveform background canvas
-7. Track row stagger animation on playlist load
-8. Theme cross-fade transition (CSS variable transition)
-
-**Defer to polish pass:**
-9. Download row shimmer during active processing
-10. Song thumbnail ring treatment
-11. Playlist name/count display refinements
+- **Selective download is a pure frontend filter:** `downloadPlaylistApi` in `WebApi.ts` already accepts `clips: any[]`. Passing `playlistClips.filter(c => selectedIds.has(c.id))` requires zero backend change. This is the critical finding that makes the feature LOW-risk.
+- **Default-all-selected preserves existing behavior:** Current "Download as ZIP" downloads everything. With checkboxes defaulting to all-selected, clicking download without touching checkboxes produces identical output to today.
+- **Select All is progressive enhancement:** Can ship checkboxes without it and add in the same PR — natural sequence.
+- **@username features are independent:** No dependency on selection work. Can be done in any order.
 
 ---
 
-## Confidence Assessment
+## MVP Definition
 
-| Finding | Confidence | Basis |
-|---------|------------|-------|
-| Glassmorphism is table stakes for this aesthetic | HIGH | Verified: NNG, Apple Liquid Glass adoption, multiple 2025 music UI showcases |
-| backdrop-blur ≤12px for performance | HIGH | Multiple official sources (MDN-adjacent, NNG, AxessLab) agree on this threshold |
-| Particle systems as anti-feature | MEDIUM | Pattern observed across premium utility tools; not a published standard |
-| p5.js Perlin noise waveform approach | HIGH | Official p5.js docs + codeburst tutorial confirm this is the canonical approach for ambient music visualization |
-| CSS variable extraction as prerequisite | HIGH | Direct analysis of current App.tsx inline style pattern; architectural conclusion, not a web claim |
-| Stagger animation on table rows | MEDIUM | Common pattern in Framer Motion and CSS-tricks examples; specific ms values are tuned by convention |
+### Launch With (v2.1)
+
+- [ ] `selectedIds: Set<string>` state in `App.tsx`, initialised to all IDs on playlist load
+- [ ] Checkbox column added to song table (`<th>` + `<td>` per row)
+- [ ] Select All header checkbox with indeterminate state (partial selection)
+- [ ] `downloadPlaylist()` filters clips by `selectedIds` before API call
+- [ ] Download button label: `"Download ${selectedIds.size} song(s) as ZIP"`
+- [ ] Input `placeholder` updated: `"https://suno.com/playlist/... or @username"`
+- [ ] Helper text below input: `"Paste a playlist URL or @username to fetch all their songs"`
+- [ ] Dependabot PR #2 + #3 status confirmed via `gh pr list`
+
+### Add After Validation (v2.1.x)
+
+- [ ] Shift-click range selection — add only if user feedback requests it
+
+### Future Consideration (v2.2+)
+
+- Tag/genre filter panel — requires search/filter UX overhaul, no v2.1 dependency
 
 ---
 
-## Sources
+## Implementation Notes for Requirements Writer
 
-- [Glassmorphism: Definition and Best Practices — NNG](https://www.nngroup.com/articles/glassmorphism/)
-- [Glassmorphism Meets Accessibility — Axess Lab](https://axesslab.com/glassmorphism-meets-accessibility-can-frosted-glass-be-inclusive/)
-- [Glassmorphism Design Trend: Implementation Guide 2025](https://playground.halfaccessible.com/blog/glassmorphism-design-trend-implementation-guide)
-- [P5.js Tutorial: Make a Music Visualization — Codeburst](https://codeburst.io/p5-js-tutorial-for-beginners-make-a-music-visualization-bb747c4cd402)
-- [Dark Mode UI Patterns and Best Practices 2025 — UI Deploy](https://ui-deploy.com/blog/complete-dark-mode-design-guide-ui-patterns-and-implementation-best-practices-2025)
-- [Mantine v6 Dark Theme Guide](https://v6.mantine.dev/guides/dark-theme/)
-- [Design Trends 2025: Glassmorphism, Neumorphism — Contra](https://contra.com/p/PYkeMOc7-design-trends-2025-glassmorphism-neumorphism-and-styles-you-need-to-know)
+### Per-song selection — existing surface
+
+`App.tsx` lines 211–248: `<table ref={songTable}>` with `<tbody>` iterating `playlistClips`. Each `<tr>` already has `data-id={row-${clip.id}}`.
+
+**State additions needed:**
+```
+useState<Set<string>>  — selectedIds
+useEffect on playlistClips change  — reset to all-selected
+```
+
+**Checkbox component:** Mantine v6 `Checkbox` from `@mantine/core`. Confirmed available — same package already used for `Switch`, `Radio`, `TextInput`, `ActionIcon` throughout the codebase. No new dependency.
+
+**Download call change:** In `downloadPlaylist()`, replace `playlistClips` with `playlistClips.filter(c => selectedIds.has(c.id))` in the `downloadPlaylistApi` call.
+
+**Table column addition:** Prepend a `<th>` (Select All checkbox) and `<td>` (per-row checkbox) to the existing four-column table structure (Img, Title, Length, Status).
+
+### @username UX — existing surface
+
+`App.tsx` lines 185–201: `<input ... placeholder="https://suno.com/playlist/...">`.
+
+**Changes:**
+1. `placeholder` attribute — one string change
+2. `<p>` element added below the `<div style={{ display: "flex", gap: "10px" }}>` row
+
+**Backend is already complete:** `Suno.ts` lines 30–34 routes `@`-prefixed input to `getSongsFromUser()`. Zero backend change.
+
+### Dependabot check
+
+`gh pr list --state open --label dependencies` — one command, not a code change. Done when PRs #2 and #3 confirmed closed.
+
+---
+
+## Scope Boundaries
+
+| Temptation | Why Out of Scope |
+|------------|-----------------|
+| Backend partial-ZIP endpoint | Not needed — frontend filter on existing `clips[]` param achieves identical result |
+| Audio playback | Explicitly Out of Scope in PROJECT.md |
+| Mantine upgrade for better Checkbox API | PROJECT.md: Mantine v6 frozen |
+| Drag-to-reorder | No user value sufficient to justify dnd library addition |
+| Persist selection to localStorage | Playlist is dynamic per-session; stale IDs are meaningless |
+| Settings modal changes | Not in v2.1 scope |
