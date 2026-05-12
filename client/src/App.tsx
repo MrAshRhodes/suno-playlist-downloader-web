@@ -200,14 +200,14 @@ function App() {
                 <div className="step-card monolith-card">
                   <div className="step-heading">
                     <div className="step-number">1</div>
-                    <h3 className="section-heading" style={{ margin: 0 }}>Paste playlist link</h3>
+                    <h3 className="section-heading" style={{ margin: 0 }}>Paste playlist link or @username</h3>
                   </div>
                   <div style={{ display: "flex", gap: "10px" }}>
                     <input
                         type="text"
                         value={playlistUrl}
                         onChange={(e) => setPlaylistUrl(e.target.value)}
-                        placeholder="https://suno.com/playlist/..."
+                        placeholder="Playlist URL or @username"
                         disabled={isGettingPlaylist || isDownloading}
                         className="input-field"
                     />
@@ -218,6 +218,9 @@ function App() {
                     >
                         Get playlist songs
                     </button>
+                  </div>
+                  <div style={{ color: "var(--text-secondary)", fontSize: "12px", marginTop: "6px" }}>
+                    Accepts playlist URLs and @username handles
                   </div>
                 </div>
 

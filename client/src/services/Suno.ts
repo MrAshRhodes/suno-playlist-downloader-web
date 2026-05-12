@@ -42,6 +42,12 @@ class Suno {
             return this.getSongsFromUser(url);
         }
         
+        // Route full suno.com/@username URLs to getSongsFromUser
+        const usernameUrlMatch = url.match(/suno\.com\/@([^/?#]+)/);
+        if (usernameUrlMatch) {
+            return this.getSongsFromUser(usernameUrlMatch[1]);
+        }
+
         // Extract Playlist Id
         const regex = /suno\.com\/playlist\/(.*)/
         const match = url.match(regex)
