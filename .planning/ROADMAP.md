@@ -72,7 +72,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `gh pr view 2` and `gh pr view 3` both report a closed or merged state
   2. `npm audit` run from the repo root exits with zero vulnerabilities
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 14-01-PLAN.md — Verify PR closure (SEC-01) and fix ip-address XSS via npm audit fix (SEC-02)
 
 ## Progress
 
@@ -92,4 +94,4 @@ Plans:
 | 11. Security Check + Regression | v2.0 | 5/5 | Complete | 2026-05-02 |
 | 12. Per-Song Checkbox Selection | v2.1 | 0/1 | Not started | - |
 | 13. @Username Input UX | v2.1 | 0/1 | Not started | - |
-| 14. Dependabot Verification | v2.1 | 0/? | Not started | - |
+| 14. Dependabot Verification | v2.1 | 0/1 | Not started | - |
