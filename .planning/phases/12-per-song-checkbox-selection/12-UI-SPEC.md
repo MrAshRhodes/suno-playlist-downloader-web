@@ -45,14 +45,7 @@ Exceptions: Checkbox column is fixed at ~40px wide — narrower than any spacing
 
 ## Typography
 
-Inherited from existing app. No new type roles introduced.
-
-| Role | Size | Weight | Line Height |
-|------|------|--------|-------------|
-| Body | 14px | 400 | 1.5 |
-| Label | 12px | 500 | 1.4 |
-| Heading | 16px | 600 | 1.4 |
-| Display | n/a | n/a | n/a |
+No new typography introduced — inherits existing app design system.
 
 ---
 
@@ -183,7 +176,7 @@ No third-party registries. No new npm packages required.
 - [x] Dimension 1 Copywriting: PASS — singular/plural rules locked, all button states specified
 - [x] Dimension 2 Visuals: PASS — column position, width, and checkbox states specified
 - [x] Dimension 3 Color: PASS — inherits existing theme; accent reserved for checked fill only
-- [x] Dimension 4 Typography: PASS — no new type roles; inherits existing
+- [x] Dimension 4 Typography: PASS — no new typography introduced; inherits existing app design system
 - [x] Dimension 5 Spacing: PASS — column fixed ~40px; all other spacing inherited
 - [x] Dimension 6 Registry Safety: PASS — Mantine v6 Checkbox, already installed
 
