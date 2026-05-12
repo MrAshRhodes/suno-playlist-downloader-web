@@ -14,7 +14,13 @@
 - [ ] **SEL-04**: Download button is disabled when zero songs are selected
 - [ ] **SEL-05**: Selection defaults to all songs selected when playlist loads (opt-out model — existing behavior preserved if user doesn't interact)
 
-### Input Discovery
+### @Username Investigation
+
+- [ ] **USR-01**: @username Puppeteer scraping tested end-to-end on Replit against `suno.com/@focusedbeats`
+- [ ] **USR-02**: Scraping limitations, failure modes, and timing documented (load time, infinite scroll depth, auth requirements)
+- [ ] **USR-03**: Recommendation produced: UX-only changes sufficient, or backend changes required
+
+### Input Discovery (gates on Phase 13 investigation findings)
 
 - [ ] **INP-01**: Input placeholder shows @username format alongside playlist URL example
 - [ ] **INP-02**: Helper text below input field describes accepted formats (playlist URL and @username)
@@ -57,8 +63,11 @@
 | SEL-03 | Phase 12 | Pending |
 | SEL-04 | Phase 12 | Pending |
 | SEL-05 | Phase 12 | Pending |
-| INP-01 | Phase 13 | Pending |
-| INP-02 | Phase 13 | Pending |
-| INP-03 | Phase 13 | Pending |
-| SEC-01 | Phase 14 | Pending |
-| SEC-02 | Phase 14 | Pending |
+| USR-01 | Phase 13 | Pending |
+| USR-02 | Phase 13 | Pending |
+| USR-03 | Phase 13 | Pending |
+| INP-01 | Phase 14 | Pending |
+| INP-02 | Phase 14 | Pending |
+| INP-03 | Phase 14 | Pending |
+| SEC-01 | Phase 15 | Pending |
+| SEC-02 | Phase 15 | Pending |
