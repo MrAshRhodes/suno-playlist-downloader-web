@@ -36,21 +36,22 @@ export interface IPlaylistClip {
 class Suno {
 
     static async getSongsFromPlayList(url: string): Promise<[IPlaylist, IPlaylistClip[]]> {
-        
+        const trimmed = url.trim();
+
         // Check if this is a username (starts with @ or doesn't look like a URL)
-        if (url.startsWith('@') || (!url.includes('http') && !url.includes('playlist') && !url.includes('.'))) {
-            return this.getSongsFromUser(url);
+        if (trimmed.startsWith('@') || (!trimmed.includes('http') && !trimmed.includes('playlist') && !trimmed.includes('.'))) {
+            return this.getSongsFromUser(trimmed);
         }
-        
+
         // Route full suno.com/@username URLs to getSongsFromUser
-        const usernameUrlMatch = url.match(/suno\.com\/@([^/?#]+)/);
+        const usernameUrlMatch = trimmed.match(/suno\.com\/@([^/?#]+)/);
         if (usernameUrlMatch) {
             return this.getSongsFromUser(usernameUrlMatch[1]);
         }
 
         // Extract Playlist Id
         const regex = /suno\.com\/playlist\/([^/?#]+)/
-        const match = url.match(regex)
+        const match = trimmed.match(regex)
         let playlistId = ""
 
         if (match && match[1]) {
