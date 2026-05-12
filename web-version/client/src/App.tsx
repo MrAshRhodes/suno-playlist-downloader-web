@@ -61,6 +61,7 @@ function App() {
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadPercentage, setDownloadPercentage] = useState(0);
     const [completedItems, setCompletedItems] = useState(0);
+    const [totalToDownload, setTotalToDownload] = useState(0);
     const [downloadMode, setDownloadMode] = useState<"individual" | "zip">("individual");
     const [sessionId] = useState(uuidv4());
 
@@ -132,6 +133,7 @@ function App() {
         if (!playlistData || !playlistClips) return;
 
         const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
+        setTotalToDownload(selectedClips.length);
 
         // Reset status only for selected clips
         setPlaylistClips((prevClips) =>
@@ -284,12 +286,11 @@ function App() {
     }, [isDownloading]);
 
     useEffect(() => {
-        const totalItems = playlistClips.length;
-        if (totalItems > 0) {
-            const newPercentage = Math.ceil((completedItems / totalItems) * 100);
+        if (totalToDownload > 0) {
+            const newPercentage = Math.ceil((completedItems / totalToDownload) * 100);
             setDownloadPercentage(newPercentage);
         }
-    }, [completedItems, playlistClips.length]);
+    }, [completedItems, totalToDownload]);
 
     const allSelected = playlistClips.length > 0 && selectedIds.size === playlistClips.length;
     const someSelected = selectedIds.size > 0 && selectedIds.size < playlistClips.length;
