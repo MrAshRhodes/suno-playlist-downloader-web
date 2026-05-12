@@ -59,7 +59,10 @@ Plans:
   1. The input placeholder shows both accepted formats (e.g. "Playlist URL or @username")
   2. Helper text below the input describes what formats are accepted
   3. Pasting `https://suno.com/@focusedbeats` into the input loads that user's songs correctly
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 13-01-PLAN.md — Placeholder text, helper text element, and Suno.ts full-URL routing branch
+
 **UI hint**: yes
 
 ### Phase 14: Dependabot Verification
@@ -88,5 +91,5 @@ Plans:
 | 10. Adsterra Monetisation | v2.0 | 6/6 | Complete | 2026-05-01 |
 | 11. Security Check + Regression | v2.0 | 5/5 | Complete | 2026-05-02 |
 | 12. Per-Song Checkbox Selection | v2.1 | 0/1 | Not started | - |
-| 13. @Username Input UX | v2.1 | 0/? | Not started | - |
+| 13. @Username Input UX | v2.1 | 0/1 | Not started | - |
 | 14. Dependabot Verification | v2.1 | 0/? | Not started | - |

@@ -66,8 +66,8 @@
 | USR-01 | Phase 13 | Pending |
 | USR-02 | Phase 13 | Pending |
 | USR-03 | Phase 13 | Pending |
-| INP-01 | Phase 14 | Pending |
-| INP-02 | Phase 14 | Pending |
-| INP-03 | Phase 14 | Pending |
-| SEC-01 | Phase 15 | Pending |
-| SEC-02 | Phase 15 | Pending |
+| INP-01 | Phase 13 | Pending |
+| INP-02 | Phase 13 | Pending |
+| INP-03 | Phase 13 | Pending |
+| SEC-01 | Phase 14 | Pending |
+| SEC-02 | Phase 14 | Pending |
