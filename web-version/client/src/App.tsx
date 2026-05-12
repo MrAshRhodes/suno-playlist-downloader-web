@@ -1,21 +1,22 @@
 import "./App.css";
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { 
-  ActionIcon, 
-  AppShell, 
-  Badge, 
-  Box, 
-  Button, 
-  Divider, 
-  Flex, 
-  Group, 
-  Image, 
-  Popover, 
-  Progress, 
-  Stack, 
-  Table, 
-  Text, 
+import {
+  ActionIcon,
+  AppShell,
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  Flex,
+  Group,
+  Image,
+  Popover,
+  Progress,
+  Stack,
+  Table,
+  Text,
   TextInput,
   Title,
   Alert,
@@ -67,6 +68,7 @@ function App() {
 
     const [playlistData, setPlaylistData] = useState<IPlaylist | null>(null);
     const [playlistClips, setPlaylistClips] = useState<IPlaylistClip[]>([]);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
     const [footerView, setFooterView] = useState<1 | 2>(1);
 
@@ -74,10 +76,12 @@ function App() {
         setIsGettingPLaylist(true);
         setPlaylistData(null);
         setPlaylistClips([]);
+        setSelectedIds(new Set());
         try {
             const data = await Suno.getSongsFromPlayList(playlistUrl);
             setPlaylistData(data[0]);
             setPlaylistClips(data[1]);
+            setSelectedIds(new Set(data[1].map((c: IPlaylistClip) => c.id)));
 
             // Log the details
             Logger.log({
@@ -127,9 +131,15 @@ function App() {
 
         if (!playlistData || !playlistClips) return;
 
-        // Reset the status of all clips
+        const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
+
+        // Reset status only for selected clips
         setPlaylistClips((prevClips) =>
-            prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.None }))
+            prevClips.map((clip) =>
+                selectedIds.has(clip.id)
+                    ? { ...clip, status: IPlaylistClipStatus.None }
+                    : clip
+            )
         );
 
         // Use localStorage settings or defaults
@@ -140,7 +150,7 @@ function App() {
         };
 
         const limit = pLimit(5);
-        const downloadPromises = playlistClips.map((song) => {
+        const downloadPromises = selectedClips.map((song) => {
             return limit(async () => {
                 try {
                     updateClipStatus(song.id, IPlaylistClipStatus.Processing);
@@ -177,9 +187,15 @@ function App() {
 
         if (!playlistData || !playlistClips) return;
 
-        // Reset the status of all clips
+        const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
+
+        // Reset status only for selected clips
         setPlaylistClips((prevClips) =>
-            prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Processing }))
+            prevClips.map((clip) =>
+                selectedIds.has(clip.id)
+                    ? { ...clip, status: IPlaylistClipStatus.Processing }
+                    : clip
+            )
         );
 
         // Use localStorage settings or defaults
@@ -204,13 +220,17 @@ function App() {
             // Trigger the download
             await downloadPlaylist(
                 playlistData,
-                playlistClips,
+                selectedClips,
                 settings.embed_images === "true"
             );
 
             // Update UI
             setPlaylistClips((prevClips) =>
-                prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Success }))
+                prevClips.map((clip) =>
+                    selectedIds.has(clip.id)
+                        ? { ...clip, status: IPlaylistClipStatus.Success }
+                        : clip
+                )
             );
 
             cleanup();
@@ -219,9 +239,13 @@ function App() {
             console.error("Download failed:", error);
             showError("Failed to download playlist");
 
-            // Mark all as failed
+            // Mark selected as failed
             setPlaylistClips((prevClips) =>
-                prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Error }))
+                prevClips.map((clip) =>
+                    selectedIds.has(clip.id)
+                        ? { ...clip, status: IPlaylistClipStatus.Error }
+                        : clip
+                )
             );
         }
 
@@ -266,6 +290,9 @@ function App() {
             setDownloadPercentage(newPercentage);
         }
     }, [completedItems, playlistClips.length]);
+
+    const allSelected = playlistClips.length > 0 && selectedIds.size === playlistClips.length;
+    const someSelected = selectedIds.size > 0 && selectedIds.size < playlistClips.length;
 
     return (
         <AppShell
@@ -463,6 +490,21 @@ function App() {
                     <Table verticalSpacing="sm" ref={songTable}>
                         <Table.Thead>
                             <Table.Tr>
+                                <Table.Th w={40}>
+                                    <Checkbox
+                                        checked={allSelected}
+                                        indeterminate={someSelected}
+                                        disabled={isDownloading}
+                                        aria-label={allSelected ? "Deselect all songs" : "Select all songs"}
+                                        onChange={() => {
+                                            if (allSelected) {
+                                                setSelectedIds(new Set());
+                                            } else {
+                                                setSelectedIds(new Set(playlistClips.map(c => c.id)));
+                                            }
+                                        }}
+                                    />
+                                </Table.Th>
                                 <Table.Th>Img</Table.Th>
                                 <Table.Th>Title</Table.Th>
                                 <Table.Th style={{ textAlign: "right" }}>Length</Table.Th>
@@ -472,6 +514,24 @@ function App() {
                         <Table.Tbody>
                             {playlistData && playlistClips?.map((clip) => (
                                 <Table.Tr key={clip.id} data-id={`row-${clip.id}`}>
+                                    <Table.Td w={40}>
+                                        <Checkbox
+                                            checked={selectedIds.has(clip.id)}
+                                            disabled={isDownloading}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                const checked = e.currentTarget.checked;
+                                                setSelectedIds(prev => {
+                                                    const next = new Set(prev);
+                                                    if (checked) {
+                                                        next.add(clip.id);
+                                                    } else {
+                                                        next.delete(clip.id);
+                                                    }
+                                                    return next;
+                                                });
+                                            }}
+                                        />
+                                    </Table.Td>
                                     <Table.Td w={50}>
                                         <Image radius="sm" w={40} fit="contain" src={clip.image_url} />
                                     </Table.Td>
@@ -564,7 +624,7 @@ function App() {
 
                     <Button
                         variant="filled"
-                        disabled={isGettingPlaylist || isDownloading || (!playlistData)}
+                        disabled={isGettingPlaylist || isDownloading || (!playlistData) || selectedIds.size === 0}
                         loading={isDownloading}
                         onClick={handleDownload}
                         leftSection={<IconDownload size={18} />}
@@ -578,7 +638,9 @@ function App() {
                             fontWeight: 500
                         }}
                     >
-                        {downloadMode === "zip" ? "Download ZIP" : "Download Songs"}
+                        {downloadMode === "zip"
+                            ? `Download ${selectedIds.size} ${selectedIds.size === 1 ? "song" : "songs"} as ZIP`
+                            : `Download ${selectedIds.size} ${selectedIds.size === 1 ? "Song" : "Songs"}`}
                     </Button>
                 </Flex>
 

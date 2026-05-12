@@ -35,15 +35,18 @@ function App() {
 
     const [playlistData, setPlaylistData] = useState<IPlaylist | null>(null);
     const [playlistClips, setPlaylistClips] = useState<IPlaylistClip[]>([]);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
     const getPlaylist = async () => {
         setIsGettingPLaylist(true);
         setPlaylistData(null);
         setPlaylistClips([]);
+        setSelectedIds(new Set());
         try {
             const data = await Suno.getSongsFromPlayList(playlistUrl);
             setPlaylistData(data[0]);
             setPlaylistClips(data[1]);
+            setSelectedIds(new Set(data[1].map((c: IPlaylistClip) => c.id)));
             Logger.log({ playlistUrl, noSongs: data[1].length });
         } catch (err) {
             console.log(err);
@@ -82,12 +85,18 @@ function App() {
     const downloadPlaylist = async () => {
         if (!playlistData || !playlistClips) return;
 
+        const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
+
         checkAndShowDonationModal();
         setDownloadPercentage(0);
         setIsDownloading(true);
 
         setPlaylistClips((prevClips) =>
-            prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Processing }))
+            prevClips.map((clip) =>
+                selectedIds.has(clip.id)
+                    ? { ...clip, status: IPlaylistClipStatus.Processing }
+                    : clip
+            )
         );
 
         const settings = {
@@ -109,12 +118,16 @@ function App() {
 
             await downloadPlaylistApi(
                 playlistData,
-                playlistClips,
+                selectedClips,
                 settings.embed_images === "true"
             );
 
             setPlaylistClips((prevClips) =>
-                prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Success }))
+                prevClips.map((clip) =>
+                    selectedIds.has(clip.id)
+                        ? { ...clip, status: IPlaylistClipStatus.Success }
+                        : clip
+                )
             );
 
             cleanup();
@@ -123,7 +136,11 @@ function App() {
             console.error("Download failed:", error);
             showError("Failed to download playlist");
             setPlaylistClips((prevClips) =>
-                prevClips.map((clip) => ({ ...clip, status: IPlaylistClipStatus.Error }))
+                prevClips.map((clip) =>
+                    selectedIds.has(clip.id)
+                        ? { ...clip, status: IPlaylistClipStatus.Error }
+                        : clip
+                )
             );
         }
 
@@ -146,6 +163,9 @@ function App() {
     useEffect(() => {
         document.documentElement.className = theme === 'dark' ? 'dark-mode' : 'light-mode';
     }, [theme]);
+
+    const allSelected = playlistClips.length > 0 && selectedIds.size === playlistClips.length;
+    const someSelected = selectedIds.size > 0 && selectedIds.size < playlistClips.length;
 
     return (
         <>
@@ -211,6 +231,23 @@ function App() {
                     <table ref={songTable} className="song-table">
                         <thead>
                             <tr>
+                                <th style={{ width: "40px" }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={allSelected}
+                                        ref={(el) => { if (el) el.indeterminate = someSelected; }}
+                                        disabled={isDownloading}
+                                        aria-label={allSelected ? "Deselect all songs" : "Select all songs"}
+                                        onChange={() => {
+                                            if (allSelected) {
+                                                setSelectedIds(new Set());
+                                            } else {
+                                                setSelectedIds(new Set(playlistClips.map(c => c.id)));
+                                            }
+                                        }}
+                                        style={{ cursor: isDownloading ? "not-allowed" : "pointer" }}
+                                    />
+                                </th>
                                 <th>Img</th>
                                 <th>Title</th>
                                 <th style={{ textAlign: "right" }}>Length</th>
@@ -220,6 +257,26 @@ function App() {
                         <tbody>
                             {playlistData && playlistClips?.map((clip) => (
                                 <tr key={clip.id} data-id={`row-${clip.id}`}>
+                                    <td style={{ width: "40px" }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.has(clip.id)}
+                                            disabled={isDownloading}
+                                            onChange={(e) => {
+                                                const checked = e.currentTarget.checked;
+                                                setSelectedIds(prev => {
+                                                    const next = new Set(prev);
+                                                    if (checked) {
+                                                        next.add(clip.id);
+                                                    } else {
+                                                        next.delete(clip.id);
+                                                    }
+                                                    return next;
+                                                });
+                                            }}
+                                            style={{ cursor: isDownloading ? "not-allowed" : "pointer" }}
+                                        />
+                                    </td>
                                     <td style={{ width: "50px" }}>
                                         <img
                                             src={clip.image_url}
@@ -256,12 +313,12 @@ function App() {
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
                         onClick={downloadPlaylist}
-                        disabled={isGettingPlaylist || isDownloading || !playlistData}
+                        disabled={isGettingPlaylist || isDownloading || !playlistData || selectedIds.size === 0}
                         className="btn-accent"
                         style={{ display: "flex", alignItems: "center", gap: "8px" }}
                     >
                         <IconDownload size={18} />
-                        Download as ZIP
+                        {`Download ${selectedIds.size} ${selectedIds.size === 1 ? "song" : "songs"} as ZIP`}
                     </button>
                   </div>
                 </div>
