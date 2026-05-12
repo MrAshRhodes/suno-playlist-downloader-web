@@ -45,7 +45,10 @@ See full details: `.planning/milestones/v2.0-ROADMAP.md`
   3. The download button label reads "Download N songs as ZIP" reflecting the current selection count
   4. The download button is disabled and visually inactive when zero songs are selected
   5. When a playlist loads, all songs are checked by default — unmodified behavior for users who never touch checkboxes
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 12-01-PLAN.md — Selection state, checkbox column, download filter, and button label
+
 **UI hint**: yes
 
 ### Phase 13: @Username Input UX
@@ -84,6 +87,6 @@ See full details: `.planning/milestones/v2.0-ROADMAP.md`
 | 9. SEO & Domain | v2.0 | 2/2 | Complete | 2026-04-30 |
 | 10. Adsterra Monetisation | v2.0 | 6/6 | Complete | 2026-05-01 |
 | 11. Security Check + Regression | v2.0 | 5/5 | Complete | 2026-05-02 |
-| 12. Per-Song Checkbox Selection | v2.1 | 0/? | Not started | - |
+| 12. Per-Song Checkbox Selection | v2.1 | 0/1 | Not started | - |
 | 13. @Username Input UX | v2.1 | 0/? | Not started | - |
 | 14. Dependabot Verification | v2.1 | 0/? | Not started | - |
