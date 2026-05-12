@@ -364,7 +364,7 @@ Note: A1 was cross-checked against the installed `.d.ts` (`ElementProps<'input',
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Mantine version discrepancy**
    - What we know: package.json declares v7.15.3, installed is v7.17.5. Planning docs say v6.
