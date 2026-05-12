@@ -49,7 +49,7 @@ class Suno {
         }
 
         // Extract Playlist Id
-        const regex = /suno\.com\/playlist\/(.*)/
+        const regex = /suno\.com\/playlist\/([^/?#]+)/
         const match = url.match(regex)
         let playlistId = ""
 
