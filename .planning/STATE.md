@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.1
-milestone_name: UX & Discovery
-status: v2.1 milestone complete — all 3 phases done
-stopped_at: Phase 14 complete — v2.1 fully shipped (Phases 12, 13, 14 all done)
+milestone: v2.2
+milestone_name: TBD
+status: v2.1 archived — planning v2.2
+stopped_at: v2.1 milestone closed and tagged
 last_updated: "2026-05-12T18:00:00.000Z"
 last_activity: 2026-05-12 — Phase 14 planned (14-01-PLAN.md — SEC-01 verified, SEC-02 fix: ip-address 10.1.0→10.2.0)
 progress:
@@ -20,13 +20,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-12)
 
 **Core value:** Visual modernization only — every download flow, setting, and API call unchanged
-**Current focus:** v2.1 complete — ready for v2.2 milestone planning
+**Current focus:** v2.2 planning — run /gsd-new-milestone
 
 ## Current Position
 
-Phase: 14 (complete)
+Phase: — (v2.1 closed)
 Plan: —
-Status: v2.1 complete — Phases 12, 13, 14 all shipped 2026-05-12
+Status: v2.1 archived 2026-05-12 — start v2.2 with /gsd-new-milestone
 Last activity: 2026-05-12 — Phase 12 shipped (per-song checkbox selection, SEL-01–05)
 
 ## Performance Metrics
