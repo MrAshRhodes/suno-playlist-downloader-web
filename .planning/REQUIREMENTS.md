@@ -52,13 +52,13 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEL-01 | — | Pending roadmap |
-| SEL-02 | — | Pending roadmap |
-| SEL-03 | — | Pending roadmap |
-| SEL-04 | — | Pending roadmap |
-| SEL-05 | — | Pending roadmap |
-| INP-01 | — | Pending roadmap |
-| INP-02 | — | Pending roadmap |
-| INP-03 | — | Pending roadmap |
-| SEC-01 | — | Pending roadmap |
-| SEC-02 | — | Pending roadmap |
+| SEL-01 | Phase 12 | Pending |
+| SEL-02 | Phase 12 | Pending |
+| SEL-03 | Phase 12 | Pending |
+| SEL-04 | Phase 12 | Pending |
+| SEL-05 | Phase 12 | Pending |
+| INP-01 | Phase 13 | Pending |
+| INP-02 | Phase 13 | Pending |
+| INP-03 | Phase 13 | Pending |
+| SEC-01 | Phase 14 | Pending |
+| SEC-02 | Phase 14 | Pending |

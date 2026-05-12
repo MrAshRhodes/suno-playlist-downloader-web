@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: UX & Discovery
-status: planning
-last_updated: "2026-05-12T09:51:08.883Z"
+status: roadmap_ready
+last_updated: "2026-05-12T00:00:00.000Z"
 last_activity: 2026-05-12
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-12)
+See: .planning/PROJECT.md (updated 2026-05-12)
 
 **Core value:** Visual modernization only — every download flow, setting, and API call unchanged
-**Current focus:** Phase 11 — Dependabot Security Check + Full Website Regression
+**Current focus:** v2.1 — Phase 12 (Per-Song Checkbox Selection) up next
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 12 (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-12 — Milestone v2.1 started
+Status: Roadmap ready — awaiting plan phase
+Last activity: 2026-05-12 — v2.1 roadmap created (Phases 12-14)
 
 ## Performance Metrics
 
@@ -127,10 +127,15 @@ Last activity: 2026-05-12 — Milestone v2.1 started
 - [Phase ?]: Phase 11-03: npm overrides for qs (>=6.14.1) and on-headers (>=1.1.0) — no parent bumps per D-01, resolves SEC-04 and SEC-05
 - [Phase 11]: uuid v14 ships own types — @types/uuid removed from both client trees — uuid v14 includes TypeScript types; @types/uuid conflicts
 - [Phase 11]: deploy.sh bypassed during security closure to prevent unauthorized git push — deploy.sh ends with git push; manual copy used instead
+- [v2.1 Roadmap]: Mantine v6 Checkbox onChange is (e: ChangeEvent<HTMLInputElement>) => e.currentTarget.checked — NOT v7 (checked) => pattern
+- [v2.1 Roadmap]: Three bulk-status maps in App.tsx (~lines 89, 116, 125) must guard with selectedIds.has(clip.id) to prevent status updates on unselected songs
+- [v2.1 Roadmap]: INP-03 regex branch goes in Suno.ts — extract @username from full suno.com/@username URL before passing to existing route
 
 ### Pending Todos
 
 - Download music by username as well as playlist (area: api)
+- Adsterra live publisher key (pending account approval)
+- sunozip.com domain purchase confirmation
 
 ### Roadmap Evolution
 
@@ -142,6 +147,9 @@ Last activity: 2026-05-12 — Milestone v2.1 started
 - Phase 6.1 inserted after Phase 6: Match site styling to new modern vector/neon hero banner (URGENT)
 - Phase 10 added: Replace blocked AdSense with Adsterra banner-only + parallel Media.net submission (research at .planning/research/ad-networks-vs-adsense.md)
 - Phase 11 added: Dependabot security check and full website regression for 11 open GitHub alerts across root, web-version, and web-version/client
+- Phase 12 added: Per-song checkbox selection — SEL-01..SEL-05
+- Phase 13 added: @Username input UX — INP-01..INP-03
+- Phase 14 added: Dependabot verification — SEC-01..SEC-02
 
 ### Blockers/Concerns
 
@@ -149,6 +157,6 @@ Last activity: 2026-05-12 — Milestone v2.1 started
 
 ## Session Continuity
 
-Last session: 2026-05-02T12:16:24.001Z
-Stopped at: Phase 11 planning complete — 5 plans ready
+Last session: 2026-05-12T00:00:00.000Z
+Stopped at: v2.1 roadmap created — Phases 12-14 ready for planning
 Resume file: None
