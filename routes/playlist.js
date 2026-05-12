@@ -1,278 +1,58 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import puppeteer from 'puppeteer';
 
 const router = express.Router();
 
-// Helper function to fetch ALL songs using browser automation with infinite scroll
-async function fetchAllSongsWithBrowser(username, totalSongs) {
-  let browser;
-  try {
-    console.log(`Starting browser automation to fetch all ${totalSongs} songs for @${username}...`);
-    
-    browser = await puppeteer.launch({ 
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    const page = await browser.newPage();
-    
-    // Set user agent and viewport
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-    await page.setViewport({ width: 1920, height: 1080 });
-    
-    // Navigate to user profile
-    const profileUrl = `https://suno.com/@${username}`;
-    console.log(`Loading profile: ${profileUrl}`);
-    await page.goto(profileUrl, { waitUntil: 'networkidle2', timeout: 30000 });
-    
-    // Wait for content to load
-    await page.waitForTimeout(3000);
-    
-    let previousCount = 0;
-    let currentCount = 0;
-    let consecutiveNoChange = 0;
-    const maxNoChange = 3;
-    
-    console.log('Starting infinite scroll to load all songs...');
-    
-    // Keep scrolling until we have all songs or no more are loading
-    while (currentCount < totalSongs && consecutiveNoChange < maxNoChange) {
-      // Scroll to bottom
-      await page.evaluate(() => {
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-      
-      // Wait for potential new content to load
-      await page.waitForTimeout(2000);
-      
-      // Count current songs on page
-      currentCount = await page.evaluate(() => {
-        // Look for song containers - try multiple selectors
-        const songSelectors = [
-          '[data-testid*="song"]',
-          '[class*="song"]',
-          '[class*="track"]',
-          '[class*="clip"]',
-          'div[id]' // Many songs have div with id
-        ];
-        
-        let maxCount = 0;
-        for (const selector of songSelectors) {
-          const elements = document.querySelectorAll(selector);
-          maxCount = Math.max(maxCount, elements.length);
-        }
-        
-        return maxCount;
-      });
-      
-      console.log(`Scrolled: Found ${currentCount} songs (target: ${totalSongs})`);
-      
-      // Check if count increased
-      if (currentCount <= previousCount) {
-        consecutiveNoChange++;
-        console.log(`No new songs loaded (${consecutiveNoChange}/${maxNoChange})`);
-      } else {
-        consecutiveNoChange = 0;
-      }
-      
-      previousCount = currentCount;
-    }
-    
-    console.log(`Infinite scroll complete. Extracting ${currentCount} songs...`);
-    
-    // Extract all song data from the fully loaded page
-    const allSongs = await page.evaluate(() => {
-      // Try to extract songs from the page's JavaScript state
-      const scripts = document.querySelectorAll('script');
-      let clips = [];
-      
-      for (const script of scripts) {
-        const content = script.textContent || script.innerHTML;
-        if (content.includes('clips') && content.includes('entity_type')) {
-          try {
-            // Look for clips array in various formats
-            const clipsPatterns = [
-              /"clips":\s*\[(.*?)\]/s,
-              /'clips':\s*\[(.*?)\]/s,
-              /clips:\s*\[(.*?)\]/s
-            ];
-            
-            for (const pattern of clipsPatterns) {
-              const match = content.match(pattern);
-              if (match) {
-                const clipsString = match[1];
-                // Clean up escaped quotes
-                const cleanedString = clipsString.replace(/\\"/g, '"').replace(/\\'/g, "'");
-                
-                try {
-                  const parsedClips = JSON.parse(`[${cleanedString}]`);
-                  if (Array.isArray(parsedClips) && parsedClips.length > 0) {
-                    // Filter for songs only
-                    const songClips = parsedClips.filter(clip => 
-                      clip.entity_type === 'song_schema' || 
-                      clip.type === 'song' ||
-                      !clip.entity_type
-                    );
-                    if (songClips.length > clips.length) {
-                      clips = songClips;
-                    }
-                  }
-                } catch (parseError) {
-                  // Continue trying other patterns
-                }
-              }
-            }
-          } catch (error) {
-            // Continue to next script
-          }
-        }
-      }
-      
-      return clips;
-    });
-    
-    console.log(`Browser automation extracted ${allSongs.length} songs`);
-    return allSongs;
-    
-  } catch (error) {
-    console.error('Browser automation failed:', error);
-    return [];
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
-  }
-}
+// Fetch remaining pages of a user's songs via POST /api/unified/feed.
+// Suno returns exactly 20 songs per page; cursor is a numeric string offset.
+// No authentication required — endpoint serves public profile data.
+async function fetchAllUserSongs(username, userId, firstPageSongs, initialCursor, totalSongs) {
+  const allSongs = [...firstPageSongs];
+  let cursor = initialCursor;
 
-// Helper function to fetch additional songs using multiple strategies
-async function fetchAdditionalSongs(username, userId, currentCount, totalSongs) {
-  const additionalClips = [];
-  console.log(`Attempting to fetch remaining ${totalSongs - currentCount} songs using multiple strategies...`);
-  
-  // Strategy 1: Try different API endpoint patterns (most likely to work)
-  const apiPatterns = [
-    // Try user handle-based endpoints
-    { 
-      url: `https://studio-api.prod.suno.com/api/clips`,
-      method: 'GET',
-      params: `?user_handle=${username}&limit=100`
-    },
-    {
-      url: `https://studio-api.prod.suno.com/api/clips`,
-      method: 'GET', 
-      params: `?user_id=${userId}&limit=100`
-    },
-    // Try profile-based endpoints
-    {
-      url: `https://studio-api.prod.suno.com/api/profile/${userId}`,
-      method: 'GET',
-      params: `?include_clips=true&limit=100`
-    },
-    // Try search endpoints
-    {
-      url: `https://studio-api.prod.suno.com/api/search`,
-      method: 'GET',
-      params: `?query=user:${username}&type=clip&limit=100`
-    },
-    // Try feed endpoints
-    {
-      url: `https://studio-api.prod.suno.com/api/feed/${userId}`,
-      method: 'GET',
-      params: `?limit=100`
-    }
-  ];
-  
-  for (const pattern of apiPatterns) {
+  while (cursor) {
     try {
-      const fullUrl = `${pattern.url}${pattern.params}`;
-      console.log(`Trying: ${pattern.method} ${fullUrl}`);
-      
-      const response = await fetch(fullUrl, {
-        method: pattern.method,
+      const resp = await fetch('https://studio-api-prod.suno.com/api/unified/feed', {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (compatible; SunoPlaylistDownloader/1.0)',
-          'Referer': `https://suno.com/@${username}`,
-        }
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'Referer': `https://suno.com/@${username}?page=songs`,
+          'Origin': 'https://suno.com',
+        },
+        body: JSON.stringify({
+          feed_id: 'user_songs',
+          target_user_id: userId,
+          request_metadata: { sort_by: 'created_at' },
+          cursor: cursor,
+          page_size: 20
+        }),
+        signal: AbortSignal.timeout(15000)
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        let clips = [];
-        
-        // Handle different response formats
-        if (data.clips && Array.isArray(data.clips)) {
-          clips = data.clips;
-        } else if (Array.isArray(data)) {
-          clips = data;
-        } else if (data.results && Array.isArray(data.results)) {
-          clips = data.results;
-        } else if (data.data && Array.isArray(data.data)) {
-          clips = data.data;
-        }
-        
-        if (clips.length > 0) {
-          // Filter for songs only and remove duplicates
-          const songClips = clips.filter(clip => 
-            clip.entity_type === 'song_schema' || 
-            clip.type === 'song' || 
-            !clip.entity_type // Assume songs if no type specified
-          );
-          
-          const existingIds = new Set(additionalClips.map(c => c.id));
-          const newClips = songClips.filter(clip => !existingIds.has(clip.id));
-          
-          additionalClips.push(...newClips);
-          console.log(`✅ Found ${newClips.length} new clips with ${pattern.method} ${pattern.url} (total: ${additionalClips.length})`);
-          
-          // If we got a good amount, this endpoint works
-          if (newClips.length >= 20) {
-            break;
-          }
-        }
-      } else {
-        console.log(`❌ ${pattern.method} ${pattern.url}: HTTP ${response.status}`);
+
+      if (!resp.ok) {
+        console.warn(`unified/feed cursor=${cursor}: HTTP ${resp.status}`);
+        break;
       }
+
+      const data = await resp.json();
+      const items = data.feed?.items || [];
+      const clips = items
+        .filter(i => i.content_type === 'clip' && i.content_item?.entity_type === 'song_schema')
+        .map(i => i.content_item);
+
+      allSongs.push(...clips);
+      cursor = data.feed?.next_cursor ?? null;
+
+      console.log(`  unified/feed: got ${clips.length}, total ${allSongs.length}/${totalSongs}, next cursor: ${cursor ?? 'none'}`);
     } catch (error) {
-      console.log(`❌ ${pattern.method} ${pattern.url}: ${error.message}`);
+      console.warn(`unified/feed error at cursor=${cursor}:`, error.message);
+      break;
     }
   }
-  
-  // Strategy 2: If API failed, try fetching multiple profile pages with different techniques
-  if (additionalClips.length === 0) {
-    console.log('API strategies failed, trying profile page scraping with different cursors...');
-    
-    // Try to extract pagination cursors from the original profile page
-    // and use them in subsequent requests
-    try {
-      for (let offset = 20; offset < Math.min(totalSongs, 200); offset += 20) {
-        const profileUrl = `https://suno.com/@${username}`;
-        const response = await fetch(profileUrl, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; SunoPlaylistDownloader/1.0)',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          }
-        });
-        
-        if (response.ok) {
-          const html = await response.text();
-          
-          // Try to find more clips in the HTML by looking for different patterns
-          const allClipMatches = html.match(/\\"id\\":\\"[a-f0-9-]+\\",\\"entity_type\\":\\"song_schema\\"/g);
-          if (allClipMatches && allClipMatches.length > currentCount) {
-            console.log(`Found ${allClipMatches.length} total clip references in profile page`);
-            // This indicates there might be more clips, but we can't extract them easily
-            break;
-          }
-        }
-      }
-    } catch (error) {
-      console.log(`Profile scraping failed: ${error.message}`);
-    }
-  }
-  
-  console.log(`Strategies complete: Found ${additionalClips.length} additional clips`);
-  return additionalClips.slice(0, totalSongs - currentCount);
+
+  return allSongs;
 }
 
 /**
@@ -575,6 +355,16 @@ router.get('/user/:username/songs', async (req, res) => {
         });
       }
 
+      // Fetch remaining pages if the user has more songs than the first page
+      const nextCursorMatch = profileHtml.match(/\\"next_cursor\\":\\"(\d+)\\"/);
+      const nextCursor = nextCursorMatch ? nextCursorMatch[1] : null;
+
+      if (nextCursor && clips.length < totalSongs) {
+        console.log(`Fetching remaining songs (cursor=${nextCursor}, total=${totalSongs})...`);
+        clips = await fetchAllUserSongs(cleanUsername, userId, clips, nextCursor, totalSongs);
+        console.log(`All pages complete: ${clips.length}/${totalSongs} songs`);
+      }
+
     } catch (error) {
       console.error("Error extracting clips:", error);
       return res.status(500).json({
@@ -608,26 +398,14 @@ router.get('/user/:username/songs', async (req, res) => {
     
     console.log(`Successfully extracted ${transformedClips.length} songs for @${cleanUsername}`);
     
-    // Create playlist name with pagination info
-    let playlistName = `@${cleanUsername}'s Songs (${transformedClips.length} songs)`;
-    if (totalSongs > transformedClips.length) {
-      playlistName = `@${cleanUsername}'s Songs (${transformedClips.length}/${totalSongs} songs - first page only)`;
-    }
-    
-    // Return in the same format as playlist API
+    const playlistName = `@${cleanUsername}'s Songs (${transformedClips.length} songs)`;
+
     res.json({
       playlist: {
         name: playlistName,
-        image: '' // User profiles don't have playlist images
+        image: ''
       },
-      clips: transformedClips,
-      metadata: {
-        totalSongs: totalSongs,
-        extractedSongs: transformedClips.length,
-        note: totalSongs > transformedClips.length ? 
-          "This is an experimental feature that only extracts the first page of songs. For complete access, use the user's playlists instead." : 
-          undefined
-      }
+      clips: transformedClips
     });
     
   } catch (error) {
