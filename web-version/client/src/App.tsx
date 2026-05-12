@@ -207,18 +207,18 @@ function App() {
             embed_images: localStorage.getItem('suno-embed-images') || "true"
         };
 
-        try {
-            // Setup progress monitoring
-            const cleanup = setupProgressMonitor(sessionId, (data) => {
-                if (data.progress) {
-                    setDownloadPercentage(data.progress);
-                    if (data.completedItem) {
-                        updateClipStatus(data.completedItem, IPlaylistClipStatus.Success);
-                        scrollToRow(data.completedItem);
-                    }
+        // Setup progress monitoring
+        const cleanup = setupProgressMonitor(sessionId, (data) => {
+            if (data.progress) {
+                setDownloadPercentage(data.progress);
+                if (data.completedItem) {
+                    updateClipStatus(data.completedItem, IPlaylistClipStatus.Success);
+                    scrollToRow(data.completedItem);
                 }
-            });
+            }
+        });
 
+        try {
             // Trigger the download
             await downloadPlaylist(
                 playlistData,
@@ -235,7 +235,6 @@ function App() {
                 )
             );
 
-            cleanup();
             showSuccess("Playlist ZIP file download initiated");
         } catch (error) {
             console.error("Download failed:", error);
@@ -249,6 +248,8 @@ function App() {
                         : clip
                 )
             );
+        } finally {
+            cleanup();
         }
 
         setIsDownloading(false);
