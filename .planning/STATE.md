@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Batch Downloads & Ops
 status: planning
-stopped_at: roadmap created
-last_updated: "2026-05-13T00:00:00.000Z"
+stopped_at: Phase 15 context gathered
+last_updated: "2026-05-13T09:54:29.849Z"
 last_activity: 2026-05-13 — v2.2 roadmap created (phases 15-17)
 progress:
-  total_phases: 3
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -166,6 +166,6 @@ Last activity: 2026-05-13 — v2.2 roadmap created (phases 15-17)
 
 ## Session Continuity
 
-Last session: 2026-05-13T00:00:00.000Z
-Stopped at: v2.2 roadmap created
-Resume file: .planning/ROADMAP.md
+Last session: 2026-05-13T09:54:29.843Z
+Stopped at: Phase 15 context gathered
+Resume file: .planning/phases/15-deploy-hardening/15-CONTEXT.md
