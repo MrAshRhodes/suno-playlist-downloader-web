@@ -30,8 +30,8 @@ function App() {
     const [downloadPercentage, setDownloadPercentage] = useState(0);
     const [sessionId] = useState(uuidv4());
 
-    const parsedBatchSize = parseInt(import.meta.env.VITE_BATCH_SIZE ?? '50', 10);
-    const BATCH_SIZE = (Number.isInteger(parsedBatchSize) && parsedBatchSize > 0) ? parsedBatchSize : 50;
+    const parsedBatchSize = parseInt(import.meta.env.VITE_BATCH_SIZE ?? '100', 10);
+    const BATCH_SIZE = (Number.isInteger(parsedBatchSize) && parsedBatchSize > 0) ? parsedBatchSize : 100;
 
     const [donationModalOpen, setDonationModalOpen] = useState(false);
 
