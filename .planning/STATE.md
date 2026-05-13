@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Batch Downloads & Ops
-status: complete
-stopped_at: Phase 17 complete
-last_updated: "2026-05-13T18:00:00.000Z"
-last_activity: 2026-05-13 — Phase 17 executed (archiver v7 streaming ZIP, batch loop, SSE wired)
+status: archived
+stopped_at: Milestone v2.2 closed 2026-05-13
+last_updated: "2026-05-13T19:00:00.000Z"
+last_activity: 2026-05-13 — v2.2 milestone archived (15 Deploy Hardening, 16 SEO Hygiene, 17 Batch Downloads — all 11 requirements complete)
 progress:
-  total_phases: 6
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 3
+  completed_phases: 3
+  total_plans: 4
+  completed_plans: 4
   percent: 100
 ---
 

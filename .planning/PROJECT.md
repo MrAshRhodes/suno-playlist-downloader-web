@@ -2,22 +2,23 @@
 
 ## What This Is
 
-A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. Live on Replit. v2.0 ships a premium dark-first UI (Monolith design system), p5.js atmospheric waveform, donation modal, AdSense + Adsterra monetization, full SEO infrastructure, and clean security posture. v2.1 adds per-song checkbox selection, @username full-URL input, and security verification. v2.2 targets batch downloading for large playlists on constrained VMs, SEO polish, and automated Replit deploy.
+A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. Live on Replit. v2.0 ships a premium dark-first UI (Monolith design system), p5.js atmospheric waveform, donation modal, AdSense + Adsterra monetization, full SEO infrastructure, and clean security posture. v2.1 adds per-song checkbox selection, @username full-URL input, and security verification. v2.2 ships streaming ZIP (archiver v7), client-side batch downloads, SSE progress wiring, hero WebP, FAQPage schema, deploy automation, and canonical tag.
 
 ## Core Value
 
 Downloads work reliably. Visual quality matches a premium product. Zero functional regressions from UI changes.
 
-## Current Milestone: v2.2 Batch Downloads & Ops
+## Previous: v2.2 Batch Downloads & Ops — SHIPPED 2026-05-13
 
-**Goal:** Memory-safe batch downloading for large playlists on a constrained Replit VM, SEO/performance polish, and automated Replit deploy workflow.
-
-**Target features:**
-- Batch ZIP downloading — streaming ZIP (no in-memory build), memory-safe for small VMs, timeout-proof, partial-resume
-- SEO hygiene — sitemap completeness, canonical tag, hero image compression, FAQ schema
-- Replit deploy automation — divergence-safe, Claude-runnable deploy script
-
-**Key constraint:** Replit VM is small — batch download research must cover streaming vs in-memory ZIP tradeoffs and RAM footprint under Replit's limits.
+**Shipped this milestone:**
+- Streaming ZIP downloads via archiver v7 — buffers never accumulate in memory, safe on Replit 2GB RAM
+- Client-side batch splitting — playlists > BATCH_SIZE produce sequential numbered ZIPs (batch-01-of-N)
+- SSE progress wired — sessionId in POST body enables per-clip status events
+- VITE_BATCH_SIZE env var (default 100) configures batch size without code change
+- Hero banner WebP at 121KB (down from 2.4MB PNG) — LCP bottleneck resolved
+- FAQPage JSON-LD schema in both HTML entry points
+- Canonical tag and sitemap with /privacy page
+- deploy-safe.sh and replit-sync.sh — divergence-safe deploy scripts
 
 ## Previous: v2.1 UX & Discovery — SHIPPED 2026-05-12
 
@@ -77,11 +78,14 @@ Downloads work reliably. Visual quality matches a premium product. Zero function
 - ✓ Dependabot PRs #2 and #3 verified closed; npm audit clean — v2.1
 - ✓ sunozip.com domain purchased and live on Replit — v2.1
 
-### Active (v2.2 targets)
+### Validated — v2.2
 
-- [ ] Batch ZIP downloading for large playlists — streaming, memory-safe, timeout-proof (v2.2, BAT area)
-- [ ] SEO hygiene — sitemap completeness, canonical tag, hero compression, FAQ schema (v2.2, SEO area)
-- [ ] Replit deploy automation — divergence-safe, Claude-runnable script (v2.2, OPS area)
+- ✓ Batch ZIP downloading — archiver v7 streaming, client-side BATCH_SIZE splitting, SSE progress — v2.2
+- ✓ SEO hygiene — canonical, hero WebP 121KB, sitemap+privacy, FAQPage JSON-LD — v2.2
+- ✓ Replit deploy automation — deploy-safe.sh, replit-sync.sh, push guard — v2.2
+
+### Active (v2.3 targets)
+
 - [ ] Adsterra live publisher key wired (pending Adsterra account approval)
 
 ### Out of Scope
@@ -133,4 +137,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-13 — v2.2 Batch Downloads & Ops milestone started*
+*Last updated: 2026-05-13 — v2.2 Batch Downloads & Ops milestone complete*
