@@ -96,7 +96,9 @@ Plans:
   1. Running `deploy-safe.sh` builds the client, copies dist to `public/`, and commits without triggering a git push
   2. Running `deploy.sh` when nothing is staged exits cleanly without pushing
   3. `replit-sync.sh` documents the `git reset --hard origin/main` recovery step and can be run on the Replit instance to resolve divergence
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 15-01-PLAN.md — Create deploy-safe.sh, replit-sync.sh, and update deploy.sh with push guard
 
 ### Phase 16: SEO Hygiene
 **Goal**: Site scores cleanly on Core Web Vitals — LCP bottleneck resolved, structured data added, crawl hygiene correct
@@ -141,6 +143,6 @@ Plans:
 | 12. Per-Song Checkbox Selection | v2.1 | 1/1 | Complete | 2026-05-12 |
 | 13. @Username Input UX | v2.1 | 1/1 | Complete | 2026-05-12 |
 | 14. Dependabot Verification | v2.1 | 1/1 | Complete | 2026-05-12 |
-| 15. Deploy Hardening | v2.2 | 0/? | Not started | - |
+| 15. Deploy Hardening | v2.2 | 1/1 | In progress | - |
 | 16. SEO Hygiene | v2.2 | 0/? | Not started | - |
 | 17. Batch Downloads + Archiver Migration | v2.2 | 0/? | Not started | - |
