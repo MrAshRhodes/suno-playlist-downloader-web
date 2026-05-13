@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Batch Downloads & Ops
 status: planning
-stopped_at: defining requirements
+stopped_at: roadmap created
 last_updated: "2026-05-13T00:00:00.000Z"
-last_activity: 2026-05-13 — Milestone v2.2 started
+last_activity: 2026-05-13 — v2.2 roadmap created (phases 15-17)
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-13)
 
 **Core value:** Downloads work reliably. Visual quality matches a premium product. Zero functional regressions.
-**Current focus:** v2.2 Batch Downloads & Ops — defining requirements
+**Current focus:** v2.2 Batch Downloads & Ops — roadmap created, ready to plan Phase 15
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap defined)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-13 — Milestone v2.2 Batch Downloads & Ops started
+Status: Ready to plan Phase 15: Deploy Hardening
+Last activity: 2026-05-13 — v2.2 roadmap created (phases 15-17)
 
 ## Performance Metrics
 
@@ -130,6 +130,12 @@ Last activity: 2026-05-13 — Milestone v2.2 Batch Downloads & Ops started
 - [v2.1 Roadmap]: Mantine v6 Checkbox onChange is (e: ChangeEvent<HTMLInputElement>) => e.currentTarget.checked — NOT v7 (checked) => pattern
 - [v2.1 Roadmap]: Three bulk-status maps in App.tsx (~lines 89, 116, 125) must guard with selectedIds.has(clip.id) to prevent status updates on unselected songs
 - [v2.1 Roadmap]: INP-03 regex branch goes in Suno.ts — extract @username from full suno.com/@username URL before passing to existing route
+- [v2.2 Roadmap]: archiver v7 chosen (NOT v8) — v8 has breaking API changes
+- [v2.2 Roadmap]: p-limit@4 added to root package.json (already present in client/)
+- [v2.2 Roadmap]: sharp added as devDep — build-time WebP conversion only, NOT deployed to Replit
+- [v2.2 Roadmap]: Client-side batching in App.tsx — server stays stateless, no new route needed
+- [v2.2 Roadmap]: BATCH_SIZE default 50 — Replit 2GB RAM, Puppeteer 200-400MB, 50 songs @ ~6MB = 300MB peak per batch
+- [v2.2 Roadmap]: OG card (og-card.png) must NOT be converted to WebP — WebP OG unreliable across Facebook/Twitter scrapers
 
 ### Pending Todos
 
@@ -150,6 +156,9 @@ Last activity: 2026-05-13 — Milestone v2.2 Batch Downloads & Ops started
 - Phase 12 added: Per-song checkbox selection — SEL-01..SEL-05
 - Phase 13 added: @Username input UX — INP-01..INP-03
 - Phase 14 added: Dependabot verification — SEC-01..SEC-02
+- Phase 15 added: Deploy hardening — OPS-01..OPS-03
+- Phase 16 added: SEO hygiene — SEO-01..SEO-04
+- Phase 17 added: Batch downloads + archiver migration — BAT-01..BAT-04
 
 ### Blockers/Concerns
 
@@ -157,6 +166,6 @@ Last activity: 2026-05-13 — Milestone v2.2 Batch Downloads & Ops started
 
 ## Session Continuity
 
-Last session: 2026-05-12T10:38:47.993Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-per-song-checkbox-selection/12-CONTEXT.md
+Last session: 2026-05-13T00:00:00.000Z
+Stopped at: v2.2 roadmap created
+Resume file: .planning/ROADMAP.md
