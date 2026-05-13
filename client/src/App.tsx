@@ -168,6 +168,17 @@ function App() {
                         );
                         return;
                     }
+
+                    // Fallback: flip any batch clips still Processing → Success.
+                    // SSE may not deliver events before POST completes on fast/small playlists.
+                    const batchIds = new Set(batchClips.map(c => c.id));
+                    setPlaylistClips(prev =>
+                        prev.map(c =>
+                            batchIds.has(c.id) && c.status === IPlaylistClipStatus.Processing
+                                ? { ...c, status: IPlaylistClipStatus.Success }
+                                : c
+                        )
+                    );
                 } catch (err) {
                     // D-04: stop-all on first batch HTTP/network failure
                     showError(`Failed to download batch ${batchNum} of ${totalBatches}`);
