@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Batch Downloads & Ops
 status: complete
-stopped_at: Phase 17 context gathered
-last_updated: "2026-05-13T16:00:00.000Z"
-last_activity: 2026-05-13 — Phase 17 context captured (archiver v7, VITE_BATCH_SIZE, batch UX)
+stopped_at: Phase 17 complete
+last_updated: "2026-05-13T18:00:00.000Z"
+last_activity: 2026-05-13 — Phase 17 executed (archiver v7 streaming ZIP, batch loop, SSE wired)
 progress:
   total_phases: 6
   completed_phases: 2
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-13)
 
 ## Current Position
 
-Phase: 16 — SEO Hygiene (complete)
-Plan: 16-01-PLAN.md — complete
-Status: All 4 tasks complete, SUMMARY written
-Last activity: 2026-05-13 — Phase 16 plan + research created, plan-checker PASS
+Phase: 17 — Batch Downloads + Archiver Migration (complete)
+Plan: 17-02-PLAN.md — complete
+Status: All tasks complete, both SUMMARYs written
+Last activity: 2026-05-13 — Phase 17 executed — archiver v7 streaming ZIP (17-01), batch loop + SSE wiring (17-02)
 
 ## Performance Metrics
 
