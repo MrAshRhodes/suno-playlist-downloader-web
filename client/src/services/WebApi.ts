@@ -62,9 +62,11 @@ export async function existsFile(path: string): Promise<boolean> {
  * @returns Promise that resolves when download starts
  */
 export async function downloadPlaylist(
-  playlist: any, 
-  clips: any[], 
-  embedImage: boolean = true
+  playlist: any,
+  clips: any[],
+  embedImage: boolean = true,
+  sessionId: string = '',
+  zipName?: string
 ): Promise<void> {
   try {
     const response = await fetch(`${API_BASE}/download/playlist`, {
@@ -75,20 +77,20 @@ export async function downloadPlaylist(
       body: JSON.stringify({
         playlist,
         clips,
-        embedImage: embedImage.toString()
+        embedImage: embedImage.toString(),
+        sessionId
       })
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to initiate playlist download');
     }
-    
-    // For blob response, create a download link
+
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${playlist.name}.zip`);
+    link.setAttribute('download', zipName ?? `${playlist.name}.zip`);
     document.body.appendChild(link);
     link.click();
     window.URL.revokeObjectURL(url);

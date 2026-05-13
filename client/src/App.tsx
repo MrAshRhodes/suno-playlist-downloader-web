@@ -26,8 +26,12 @@ function App() {
     const [playlistUrl, setPlaylistUrl] = useState("");
     const [isGettingPlaylist, setIsGettingPLaylist] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [downloadLabel, setDownloadLabel] = useState('');
     const [downloadPercentage, setDownloadPercentage] = useState(0);
     const [sessionId] = useState(uuidv4());
+
+    const parsedBatchSize = parseInt(import.meta.env.VITE_BATCH_SIZE ?? '50', 10);
+    const BATCH_SIZE = (Number.isInteger(parsedBatchSize) && parsedBatchSize > 0) ? parsedBatchSize : 50;
 
     const [donationModalOpen, setDonationModalOpen] = useState(false);
 
@@ -86,66 +90,109 @@ function App() {
         if (!playlistData || !playlistClips) return;
 
         const selectedClips = playlistClips.filter(c => selectedIds.has(c.id));
+        if (selectedClips.length === 0) return;
+
+        const batches: IPlaylistClip[][] = [];
+        for (let i = 0; i < selectedClips.length; i += BATCH_SIZE) {
+            batches.push(selectedClips.slice(i, i + BATCH_SIZE));
+        }
+        const totalBatches = batches.length;
+
+        // D-03: flip ALL selected rows to Processing before batch 1 fires
+        setPlaylistClips(prev =>
+            prev.map(c =>
+                selectedIds.has(c.id) ? { ...c, status: IPlaylistClipStatus.Processing } : c
+            )
+        );
 
         checkAndShowDonationModal();
         setDownloadPercentage(0);
         setIsDownloading(true);
 
-        setPlaylistClips((prevClips) =>
-            prevClips.map((clip) =>
-                selectedIds.has(clip.id)
-                    ? { ...clip, status: IPlaylistClipStatus.Processing }
-                    : clip
-            )
-        );
-
         const settings = {
-            name_templates: localStorage.getItem('suno-name-template') || "{trackno} - {name}",
-            overwrite_files: localStorage.getItem('suno-overwrite-files') || "false",
             embed_images: localStorage.getItem('suno-embed-images') || "true"
         };
 
+        // SSE monitor — set up ONCE before the batch loop; cleanup() called in finally
+        let batchHadError = false;
         const cleanup = setupProgressMonitor(sessionId, (data) => {
             if (data.progress) {
                 setDownloadPercentage(data.progress);
-                if (data.completedItem) {
-                    updateClipStatus(data.completedItem, IPlaylistClipStatus.Success);
-                    scrollToRow(data.completedItem);
+            }
+            if (data.completedItem) {
+                const status = data.error
+                    ? IPlaylistClipStatus.Error
+                    : IPlaylistClipStatus.Success;
+                updateClipStatus(data.completedItem, status);
+                scrollToRow(data.completedItem);
+                if (data.error) {
+                    batchHadError = true;
                 }
             }
         });
 
         try {
-            await downloadPlaylistApi(
-                playlistData,
-                selectedClips,
-                settings.embed_images === "true"
-            );
+            for (let batchIdx = 0; batchIdx < totalBatches; batchIdx++) {
+                const batchNum = batchIdx + 1;
+                batchHadError = false;
 
-            setPlaylistClips((prevClips) =>
-                prevClips.map((clip) =>
-                    selectedIds.has(clip.id)
-                        ? { ...clip, status: IPlaylistClipStatus.Success }
-                        : clip
-                )
-            );
+                // D-02: show batch label during multi-batch downloads
+                if (totalBatches > 1) {
+                    setDownloadLabel(`Downloading batch ${batchNum} of ${totalBatches}…`);
+                }
+                setDownloadPercentage(0);
 
-            showSuccess("Playlist ZIP file download initiated");
-        } catch (error) {
-            console.error("Download failed:", error);
-            showError("Failed to download playlist");
-            setPlaylistClips((prevClips) =>
-                prevClips.map((clip) =>
-                    selectedIds.has(clip.id)
-                        ? { ...clip, status: IPlaylistClipStatus.Error }
-                        : clip
-                )
+                const batchClips = batches[batchIdx];
+                const zipName = totalBatches === 1
+                    ? `${playlistData.name}.zip`
+                    : `${playlistData.name}-batch-${String(batchNum).padStart(2, '0')}-of-${totalBatches}.zip`;
+
+                try {
+                    await downloadPlaylistApi(
+                        playlistData,
+                        batchClips,
+                        settings.embed_images === "true",
+                        sessionId,
+                        zipName
+                    );
+
+                    if (batchHadError) {
+                        showError(`Failed to download batch ${batchNum} of ${totalBatches}`);
+                        const failedIds = new Set(
+                            batches.slice(batchIdx).flatMap(b => b.map(c => c.id))
+                        );
+                        setPlaylistClips(prev =>
+                            prev.map(c =>
+                                failedIds.has(c.id) ? { ...c, status: IPlaylistClipStatus.Error } : c
+                            )
+                        );
+                        return;
+                    }
+                } catch (err) {
+                    // D-04: stop-all on first batch HTTP/network failure
+                    showError(`Failed to download batch ${batchNum} of ${totalBatches}`);
+                    const failedIds = new Set(
+                        batches.slice(batchIdx).flatMap(b => b.map(c => c.id))
+                    );
+                    setPlaylistClips(prev =>
+                        prev.map(c =>
+                            failedIds.has(c.id) ? { ...c, status: IPlaylistClipStatus.Error } : c
+                        )
+                    );
+                    return;
+                }
+            }
+
+            showSuccess(
+                totalBatches === 1
+                    ? 'Playlist ZIP file download initiated'
+                    : `All ${totalBatches} batch ZIPs downloaded`
             );
         } finally {
             cleanup();
+            setIsDownloading(false);
+            setDownloadLabel('');
         }
-
-        setIsDownloading(false);
     };
 
     const formatSecondsToTime = (seconds: number) => {
@@ -322,7 +369,9 @@ function App() {
                         style={{ display: "flex", alignItems: "center", gap: "8px" }}
                     >
                         <IconDownload size={18} />
-                        {`Download ${selectedIds.size} ${selectedIds.size === 1 ? "song" : "songs"} as ZIP`}
+                        {isDownloading && downloadLabel
+                            ? downloadLabel
+                            : `Download ${selectedIds.size} ${selectedIds.size === 1 ? "song" : "songs"} as ZIP`}
                     </button>
                   </div>
                 </div>
