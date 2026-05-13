@@ -6,7 +6,7 @@ import {
   IconDownload,
 } from "@tabler/icons-react";
 
-import heroBannerImg from './assets/hero-banner.png';
+import heroBannerImg from './assets/hero-banner.webp';
 
 import { useDarkMode } from './hooks/useDarkMode';
 import ThemeToggle from './components/ThemeToggle';
