@@ -1,119 +1,135 @@
 # Project Research Summary
 
-**Project:** Suno Playlist Downloader — v2.1 UX & Discovery
-**Domain:** Music download tool — per-song selection, input UX, housekeeping
-**Researched:** 2026-05-12
-**Confidence:** HIGH
+**Project:** Suno Playlist Downloader
+**Milestone:** v2.2 Batch Downloads & Ops
+**Researched:** 2026-05-13
+**Confidence:** MEDIUM-HIGH (three internal conflicts resolved below)
+
+---
 
 ## Executive Summary
 
-v2.1 is a pure client-side feature milestone with zero new dependencies and zero backend changes. All three work streams — per-song checkbox selection, @username input guidance, and Dependabot verification — are satisfied entirely by the existing stack: React 18, TypeScript 5, and Mantine 6.0.13. The download route already accepts an arbitrary `clips[]` array, so selective download is a frontend filter applied before the existing `downloadPlaylistApi` call; no new API parameters or route modifications are required.
+v2.2 has three tracks: fix a critical memory bug blocking large playlist downloads, apply high-ROI SEO improvements, and harden the deploy pipeline. The OOM root cause is two compounding bugs: `Promise.all()` with no concurrency limit fires 500+ simultaneous fetches, and `AdmZip` builds the full ZIP in memory before streaming. Fix: `archiver@8` piped directly to `res` + `p-limit(8)` server-side. Also discovered: SSE progress bar has never worked — `sessionId` is never sent in POST body, so server cannot emit progress events. Phase 17 fixes batch support, archiver migration, SSE wiring, and concurrency control as a coherent unit.
 
-Three independent, non-blocking work streams executable in any order. Per-song selection carries the highest implementation surface (5 state and UI changes to App.tsx) and the most traps. The @username stream is low-effort copy plus one optional Suno.ts branch addition. The Dependabot stream is a single CLI command. None depends on the others.
+SEO work is high-ROI and low-risk: hero image compression (2.4MB PNG → WebP <150KB) directly improves LCP — a confirmed Google ranking signal. Canonical tag and sitemap completeness are hygiene fixes.
 
-The primary risk is subtle state contamination in App.tsx. Three existing bulk-status map calls will mark unselected clips as Processing/Success/Error unless each is guarded against the `selectedIds` Set. A secondary risk is using the Mantine v7 Checkbox `onChange` signature (`(checked) => ...`) instead of the v6 pattern (`(e) => e.currentTarget.checked`) — this silently makes all checkboxes always-checked and TypeScript will not catch it.
+Deploy automation closes recurring friction: `deploy.sh` has an unconditional `git push` that fires even when nothing changed, and no documented Replit divergence recovery. Hard ceiling: Replit Cloud Run has no programmatic redeploy API — the Replit UI "Redeploy" button is unavoidable.
+
+---
 
 ## Key Findings
 
 ### Recommended Stack
 
-No new packages. Zero changes to `package.json` or any backend file. The entire milestone is confined to `client/src/`. Mantine v6 `Checkbox` with `indeterminate` prop support ships in the already-installed `@mantine/core@6.0.13`.
+| Package | Version | Purpose | Notes |
+|---------|---------|---------|-------|
+| archiver | ^8.0.0 | Streaming ZIP to `res` | Replaces adm-zip; Node 20 compat confirmed |
+| p-limit | ^4.0.0 (root) | Bounded fetch concurrency | Already in client/; add to root package.json |
+| sharp | ^0.34.5 (devDep) | One-off hero WebP conversion | Build-time only; NOT deployed to Replit |
 
-**Core technologies:**
-- `React 18.2.0` — `useState<Set<string>>` + `useEffect` are the entire selection state model
-- `@mantine/core 6.0.13` — `Checkbox` (with `indeterminate`), `Badge`, `Text`, `Alert` — already installed
-- `TypeScript 5.0.4` — extend existing `IPlaylistClip` usage; no new interfaces, no schema changes
-- `Express.js 4.19.2` — backend frozen; `clips[]` param already accepted by download route
+**Remove:** `adm-zip` from root dependencies after archiver migration.
+
+---
 
 ### Expected Features
 
-**Must have (table stakes):**
-- Checkbox per song row — `Checkbox` from existing Mantine install
-- Select All / Deselect All header control — `indeterminate` state in header checkbox
-- Download button reflects selection count — "Download 4 songs as ZIP"
-- Input placeholder hints at `@username` format — single attribute change
+**P1 — Must ship:**
 
-**Should have (differentiator):**
-- Default-all-selected on playlist load — opt-out preserves current behavior
-- Selective ZIP download — client filter before `downloadPlaylistApi`, no backend change
-- Helper text below input — one `<p>` element, no state
+| Feature | Notes |
+|---------|-------|
+| `p-limit(8)` server-side | Fix OOM root cause — add BEFORE archiver migration |
+| Streaming ZIP via archiver | Replaces AdmZip in-memory build; pipes directly to `res` |
+| Client-side batch slicing loop | 50-song chunks of `selectedClips`; auto-queue all batches |
+| SSE progress wiring fix | Add `sessionId` to POST body; server emits per-clip events |
+| ZIP naming: `Name-batch-01-of-N.zip` | Zero-padded, OS sort-safe |
+| Hero image WebP: <150KB | Direct LCP win; `public/assets/hero-*.png` only |
+| Canonical tag guard in `client/index.html` | Verify current state first — may already exist |
+| `deploy-safe.sh` | Claude-runnable build+commit; no bare `git push` |
 
-**Defer (v2.2+):**
-- Shift-click range selection
-- Tag/genre filter panel
-- Audio preview (Out of Scope in PROJECT.md)
+**P2 — Should ship:**
+
+| Feature | Notes |
+|---------|-------|
+| Sitemap `/privacy` URL | Completeness; update `lastmod` only on content change |
+| `replit-sync.sh` | Documents + automates Replit divergence recovery |
+
+**Defer to v2.3+:** Batch count preview UI, pause/resume mid-batch, FAQ JSON-LD schema, page title keyword tuning.
+
+**Fixed batch size: 50 songs** (expose as `BATCH_SIZE` env var). Memory math: Replit Shared VM 2GB, Puppeteer adds 200–400MB outside V8 heap. 50 songs at ~6MB each = 300MB peak per batch — safe margin.
+
+---
 
 ### Architecture Approach
 
-The v2.1 architecture is minimal — one new `useState<Set<string>>` in App.tsx, one `useEffect` keyed on `playlistClips`, three guard additions to existing status-map calls, one filter applied before `downloadPlaylistApi`, and one new disabled condition on the download button.
+**Client-side batching** — `App.tsx` slices `selectedClips` into 50-song chunks, calls `POST /api/download/playlist` once per batch. Server stays stateless; no new route or cross-request coordination needed.
 
-**Key implementation surfaces:**
-1. `App.tsx` state block — add `selectedIds: Set<string>`, init via `useEffect`
-2. `App.tsx` song table — prepend `<th>` / `<td>` columns with Mantine `Checkbox`
-3. `App.tsx` bulk-status maps (lines ~89, ~116, ~125) — add `selectedIds.has(clip.id)` guard to all three
-4. `App.tsx` download call — filter `playlistClips` by `selectedIds` before `downloadPlaylistApi`
-5. `App.tsx` input area — update placeholder; add helper `<p>` below input row
-6. `Suno.ts` (optional) — add `suno.com/@username` URL format branch if that format is advertised
+**Modified files:**
+1. `routes/download.js` — archiver + p-limit + sessionId from body + SSE emit + cleanup flag + event handler order
+2. `client/src/App.tsx` — batch slicing loop, sessionId passed to API call
+3. `client/src/services/WebApi.ts` — add `sessionId` field to POST body (currently missing — silent SSE bug)
+4. `client/index.html` — canonical tag guard (verify state first)
+5. `deploy.sh` — conditional push guard (`git diff --cached --quiet` check)
+
+**New files:**
+- `client/src/utils/batch.ts` — `chunk<T>(arr, size)` utility
+- `deploy-safe.sh` — Claude-runnable build+commit script
+- `replit-sync.sh` — Replit divergence recovery (`git reset --hard origin/main`)
+
+---
 
 ### Critical Pitfalls
 
-1. **Bulk-status maps mark unselected clips** — `App.tsx` lines ~89, ~116, ~125 map unconditionally across all clips. Add `selectedIds.has(clip.id)` guard to all three; unselected rows must stay `IPlaylistClipStatus.None`.
+1. **`p-limit` before archiver** — unbounded `Promise.all()` is the primary OOM cause. Add p-limit first; archiver alone won't prevent OOM on large playlists.
+2. **Archiver disconnect leak** — `stream.pipeline()` + `res.on('close', () => archive.abort())`. Open issue archiverjs#89 since 2015.
+3. **`req.on('close')` fires on normal completion (Node 16+)** — causes premature temp dir cleanup. Guard: `let downloadComplete = false` flag.
+4. **Event handler order** — `archive.on('error')` and `archive.on('warning')` MUST be registered BEFORE `archive.pipe()`/`pipeline()`. Unhandled errors crash process.
+5. **SSE and ZIP cannot coexist on one response** — keep two-endpoint model: POST for ZIP bytes, GET SSE for progress.
+6. **OG image must stay PNG** — `public/assets/og-card.png` must not be converted to WebP. Apply WebP to hero/banner assets only.
+7. **Replit VM: 2GB RAM / 0.5 vCPU** — safe `p-limit` concurrency: 5–8; safe batch size: 50 songs.
 
-2. **Mantine v6 Checkbox `onChange` signature** — v6 is `(e: ChangeEvent<HTMLInputElement>) => void`; read value as `e.currentTarget.checked`. The v7 pattern `(checked) => ...` always evaluates truthy. TypeScript will not catch this.
+---
 
-3. **Selection leaks into backend payload** — do not add `selected` field to `IPlaylistClip`; the interface is serialized to the frozen Express backend. Keep selection in a separate `Set<string>`, filter before POST.
+## Conflict Resolutions
 
-4. **Stale selection on playlist re-fetch** — call `setSelectedIds(new Set())` in `getPlaylist()` after `setPlaylistClips(data[1])`; also use `useEffect` keyed on `playlistData` as a safety net.
+| Conflict | Resolution |
+|----------|-----------|
+| Canonical tag: already present (PITFALLS) vs missing (ARCHITECTURE) | Verify with `grep "rel=\"canonical\"" client/index.html` at phase start; guard either way |
+| Sitemap lastmod: auto-update every deploy vs conservative | Conservative — update only on actual content change; avoids crawl budget waste |
+| Batch size: 100 (FEATURES) vs 50 (PITFALLS) | Default 50 with Puppeteer RAM budget; expose as `BATCH_SIZE` env var |
 
-5. **Download button enabled with 0 songs selected** — extend the existing `disabled` condition with `|| selectedIds.size === 0`.
+---
 
-6. **`suno.com/@username` URL falls through validation** — `Suno.ts` handles bare `@user` but not the full profile URL format. Decide scope before Phase 2 implementation.
+## Recommended Phase Order
 
-## Implications for Roadmap
+| Phase | Name | Rationale |
+|-------|------|-----------|
+| 15 | Deploy Hardening | Lowest risk; hardened pipeline gates all subsequent phases |
+| 16 | SEO Hygiene | Zero functional risk; validates deploy pipeline cheaply |
+| 17 | Batch Downloads + Archiver Migration | Highest complexity; ships last on proven rails |
 
-### Suggested Phases (3)
+Phases continue from v2.1 (Phase 14 was last).
 
-**Phase 12: Per-Song Checkbox Selection**
-Delivers: `selectedIds` state, checkbox column, Select All header, filtered download call, button count label, empty-selection guard.
-Prevents: Pitfalls 1–5 (bulk-status guards, v6 onChange, no interface pollution, stale clear, button gate).
-
-**Phase 13: @Username Input UX**
-Delivers: Updated placeholder, helper text, optional `suno.com/@username` URL branch in Suno.ts.
-Prevents: Pitfalls 6–8 (no validation bypass, sync placeholder to actual supported formats).
-Gate: Decide URL format scope before implementing.
-
-**Phase 14: Dependabot Verification**
-Delivers: Confirmed npm audit clean from root, PRs #2 and #3 closed.
-Prevents: Pitfall 9 (root audit vs. web-version/ subtree confusion).
-
-### Research Flags
-
-No further research needed for any phase — all patterns documented with line-level specificity.
-
-### Open Decisions
-
-1. **`suno.com/@username` URL format scope** — advertise bare `@username` only (no Suno.ts change) or also support pasting full profile URLs (add regex branch in Suno.ts). Must be decided before Phase 13.
-2. **Dependabot PR identity** — confirm which trees PRs #2 and #3 target with `gh pr view 2` and `gh pr view 3` before closing Phase 14.
+---
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Direct reads of package.json, download.js, App.tsx, Suno.ts |
-| Features | HIGH | Grounded in existing codebase surface |
-| Architecture | HIGH | v2.1 arch derived from App.tsx line-level analysis |
-| Pitfalls | HIGH | Each pitfall traced to specific line numbers in source files |
+| Stack | HIGH | npm registry + direct package.json inspection |
+| Features | HIGH | Official Replit docs, SEO signals research |
+| Architecture | HIGH | Line-level source inspection of all 7 files |
+| Pitfalls | HIGH | Direct code inspection + verified upstream issues |
 
-**Overall confidence:** HIGH
+---
 
 ## Sources
 
-- `client/package.json` — confirmed `@mantine/core ^6.0.13`, React 18.2.0, TypeScript 5.0.4
-- `web-version/routes/download.js` lines 96–98 — `clips` array destructured; no new param needed
-- `client/src/App.tsx` lines 82–131, 211–248, 259 — bulk-status maps, song table, download button
-- `client/src/services/Suno.ts` lines 38–75 — `getSongsFromPlayList` routing and validation
-- `client/src/services/WebApi.ts` lines 64–99 — `downloadPlaylist` payload construction
-- Mantine v6 changelog — `Checkbox` `indeterminate` prop confirmed in v6.0.13
+- `routes/download.js`, `client/src/App.tsx`, `client/src/services/WebApi.ts` — direct line-level inspection
+- archiver npm v8.0.0 — Node 18+ compat confirmed
+- archiverjs/node-archiver#89 — disconnect leak (open since 2015)
+- Replit deployment docs — 2GB/0.5vCPU Shared VM, no programmatic redeploy API
+- Node.js stream docs — `pipeline()` cleanup semantics
+- Google Core Web Vitals docs — LCP threshold 2.5s as ranking signal
 
 ---
-*Research completed: 2026-05-12 | Ready for roadmap: yes*
+*Research completed: 2026-05-13 | Ready for requirements: yes*
