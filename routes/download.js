@@ -25,7 +25,7 @@ router.post('/playlist', async (req, res) => {
   const zipFilename = filenamify(`${playlist.name}.zip`);
 
   res.setHeader('Content-Type', 'application/zip');
-  res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`);
+  res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(zipFilename)}`);
 
   const archive = archiver('zip', { zlib: { level: 6 } });
 
@@ -40,7 +40,9 @@ router.post('/playlist', async (req, res) => {
 
   const abortController = new AbortController();
 
-  req.on('close', () => {
+  // res.on('close') fires when the connection is destroyed before response ends.
+  // req.on('close') fires when the request body is consumed — too early for streaming responses.
+  res.on('close', () => {
     if (!res.writableEnded) {
       console.log('Client disconnected, aborting archive and in-flight fetches');
       archive.abort();
@@ -116,7 +118,13 @@ router.post('/playlist', async (req, res) => {
     }))
   );
 
-  await archive.finalize();
+  try {
+    await archive.finalize();
+  } catch (err) {
+    if (err.code !== 'ABORTED') {
+      console.error('Archive finalize error:', err);
+    }
+  }
 });
 
 /**
