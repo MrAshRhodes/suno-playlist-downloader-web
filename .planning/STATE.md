@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Batch Downloads & Ops
-status: verifying
-stopped_at: Phase 15 plan 01 complete — all 3 scripts created, OPS-01/02/03 marked complete
+status: complete
+stopped_at: Phase 15 complete — UAT passed 4/4, ROADMAP updated
 last_updated: "2026-05-13T11:00:00.000Z"
 last_activity: 2026-05-13 — Phase 15 executed, deploy hardening scripts shipped
 progress:
