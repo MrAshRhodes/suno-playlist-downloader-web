@@ -8,9 +8,9 @@
 
 ### Deploy Automation (OPS)
 
-- [ ] **OPS-01**: Developer can run `deploy-safe.sh` to build the client, copy dist to `public/`, and commit — without triggering a bare `git push`
-- [ ] **OPS-02**: `deploy.sh` only pushes when there are staged changes (`git diff --cached --quiet` guard prevents no-op pushes)
-- [ ] **OPS-03**: `replit-sync.sh` documents and automates Replit divergence recovery (`git reset --hard origin/main` on the Replit instance)
+- [x] **OPS-01**: Developer can run `deploy-safe.sh` to build the client, copy dist to `public/`, and commit — without triggering a bare `git push`
+- [x] **OPS-02**: `deploy.sh` only pushes when there are unpushed commits (`git log origin/main..HEAD --oneline` guard — non-empty output triggers push)
+- [x] **OPS-03**: `replit-sync.sh` documents and automates Replit divergence recovery (`git reset --hard origin/main` on the Replit instance)
 
 ### SEO Hygiene (SEO)
 
@@ -50,9 +50,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OPS-01 | Phase 15 | Pending |
-| OPS-02 | Phase 15 | Pending |
-| OPS-03 | Phase 15 | Pending |
+| OPS-01 | Phase 15 | Complete |
+| OPS-02 | Phase 15 | Complete |
+| OPS-03 | Phase 15 | Complete |
 | SEO-01 | Phase 16 | Pending |
 | SEO-02 | Phase 16 | Pending |
 | SEO-03 | Phase 16 | Pending |

@@ -1,19 +1,21 @@
 #!/bin/bash
-# Build client and push to GitHub for Replit deployment
+# Build client, commit public/, and push to GitHub for Replit deployment.
+# Delegates build+commit to deploy-safe.sh, then pushes only if commits are unpushed.
 set -e
 
-echo "Building client..."
-cd client && npm run build && cd ..
+# Step 1: Build and commit (no push)
+./deploy-safe.sh
 
-echo "Updating public/..."
-rm -rf public/assets
-cp -r client/dist/* public/
+# Step 2: Push guard — only push if there are commits ahead of origin/main
+echo "Checking for unpushed commits..."
+UNPUSHED=$(git log origin/main..HEAD --oneline)
 
-echo "Committing..."
-git add public/
-git commit -m "build: rebuild public/ for deployment" || echo "No changes to commit"
+if [ -z "$UNPUSHED" ]; then
+  echo "Nothing to push — already up to date with origin/main."
+  exit 0
+fi
 
-echo "Pushing..."
+echo "Pushing to origin/main..."
 git push
 
-echo "Done. Pull on Replit: git reset --hard origin/main"
+echo "Done. Pull on Replit: ./replit-sync.sh"
