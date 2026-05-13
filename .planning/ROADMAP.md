@@ -42,7 +42,7 @@ See full details: `.planning/milestones/v2.1-ROADMAP.md`
 ### v2.2 Batch Downloads & Ops
 
 - [x] **Phase 15: Deploy Hardening** — Automated, divergence-safe deploy and Replit sync scripts
-- [ ] **Phase 16: SEO Hygiene** — Canonical tag, hero WebP compression, sitemap completeness, FAQ schema
+- [x] **Phase 16: SEO Hygiene** — Canonical tag, hero WebP compression, sitemap completeness, FAQ schema
 - [ ] **Phase 17: Batch Downloads + Archiver Migration** — Streaming ZIP, client-side batching, SSE wiring, concurrency control
 
 ## Phase Details
@@ -111,7 +111,7 @@ Plans:
   4. `client/index.html` contains a `FAQPage` JSON-LD `<script type="application/ld+json">` block with 3-5 Q&A entries
 **Plans**: 1 plan
 Plans:
-- [ ] 16-01-PLAN.md — Hero WebP, privacy page, sitemap, FAQPage JSON-LD
+- [x] 16-01-PLAN.md — Hero WebP, privacy page, sitemap, FAQPage JSON-LD
 
 **UI hint**: yes
 
@@ -146,5 +146,5 @@ Plans:
 | 13. @Username Input UX | v2.1 | 1/1 | Complete | 2026-05-12 |
 | 14. Dependabot Verification | v2.1 | 1/1 | Complete | 2026-05-12 |
 | 15. Deploy Hardening | v2.2 | 1/1 | Complete | 2026-05-13 |
-| 16. SEO Hygiene | v2.2 | 0/? | Not started | - |
+| 16. SEO Hygiene | v2.2 | 1/1 | Complete | 2026-05-13 |
 | 17. Batch Downloads + Archiver Migration | v2.2 | 0/? | Not started | - |
