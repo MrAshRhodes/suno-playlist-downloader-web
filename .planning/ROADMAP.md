@@ -109,7 +109,9 @@ Plans:
   2. The hero banner image in `public/assets/` is a WebP file under 150KB (down from 2.4MB PNG)
   3. `public/sitemap.xml` includes the `/privacy` page URL; `lastmod` on unchanged pages is not bumped on re-deploy
   4. `client/index.html` contains a `FAQPage` JSON-LD `<script type="application/ld+json">` block with 3-5 Q&A entries
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 16-01-PLAN.md — Hero WebP, privacy page, sitemap, FAQPage JSON-LD
 
 **UI hint**: yes
 
