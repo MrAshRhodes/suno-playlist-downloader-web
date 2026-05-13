@@ -1,184 +1,175 @@
 # Pitfalls Research
 
-**Domain:** React 18 + Mantine v6 — adding checkbox selection + @username UX to existing download app
-**Researched:** 2026-05-12
-**Confidence:** HIGH — grounded in actual App.tsx, WebApi.ts, and Suno.ts code
+**Domain:** Streaming ZIP batch download on constrained VM — Node.js/Express/Replit
+**Researched:** 2026-05-13
+**Confidence:** HIGH (streaming/Node.js pitfalls from code review + docs), MEDIUM (Replit RAM tiers from official pricing page), HIGH (SEO/OG format from multi-source verification), MEDIUM (deploy race — inferred from deploy.sh + Replit architecture)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Bulk-Status Updates Mark Unselected Clips
+### Pitfall 1: Unbounded Concurrency — The Real OOM Root Cause
 
 **What goes wrong:**
-`App.tsx` lines 89–91, 116–118, and 125–127 run `prevClips.map(clip => ({ ...clip, status: X }))` unconditionally across the entire `playlistClips` array. After per-song selection exists, this sets Processing / Success / Error on clips the user never wanted downloaded.
+`download.js` uses `Promise.all(downloadPromises)` with no concurrency limit despite `p-limit` being installed. On a 500-song playlist, every fetch fires simultaneously: 500 × (~10MB MP3 + ~500KB cover) = ~5GB in-flight buffers. This OOMs before AdmZip even runs. Switching to `archiver` without fixing this first just moves the OOM earlier in the pipeline.
 
 **Why it happens:**
-The original code had no selection concept — "all clips" and "clips to download" were the same thing. The bulk-status helpers predate selection and will be naively left unchanged.
+`p-limit` is listed in `package.json` as a dependency but is never imported in `download.js`. The in-memory ZIP build gets blamed for OOM, but concurrent `audioResponse.arrayBuffer()` calls are the first bottleneck.
 
 **How to avoid:**
-Keep `selectedIds` as a `Set<string>` in state. Thread it into all three status-map calls:
-- Line 89 (Processing sweep): skip clips not in `selectedIds`
-- Line 116 (post-download success sweep): same guard
-- Line 125 (error recovery sweep): same guard
+Import and apply `p-limit` around the per-song fetch+write loop before addressing the ZIP library. Set concurrency to 5–10 for Replit's 2GB Shared VM. This is a 10-minute fix and must be the first code change in the batch download phase.
 
 **Warning signs:**
-Unselected rows show Processing spinner during download, then flip to Success/Error on completion.
+- Server RSS grows faster than songs complete during download
+- Process killed with no stack trace (OOM kill, not a Node exception)
+- Works on playlists under 50 songs, fails reliably above 200
 
-**Phase to address:** Per-song checkbox phase.
+**Phase to address:** Phase 1 (batch download implementation) — first line item before any ZIP library work
 
 ---
 
-### Pitfall 2: Selection State Leaks Into Backend Payload
+### Pitfall 2: Triple-Buffering of MP3 Files Under AdmZip
 
 **What goes wrong:**
-`WebApi.ts:75` sends `clips` verbatim: `body: JSON.stringify({ playlist, clips, embedImage })`. If `selected: boolean` is added to `IPlaylistClip`, that field ships to the frozen Express backend. The backend is frozen — even if it currently ignores unknown fields, this pollutes the domain model permanently.
+The current flow creates ~3× peak memory per song: `arrayBuffer()` → `Buffer.from(arrayBuffer)` → `fs.writeFileSync` → `addLocalFile` reads the file again into AdmZip's in-memory store → `writeZip` builds a second full copy on disk → `createReadStream` re-reads for piping. For 100 songs × 10MB = up to 3GB peak even for a "batched" download that should only use ~100MB.
 
 **Why it happens:**
-Adding a convenience boolean to the existing interface is the path of least resistance. Developers forget the interface is serialized directly.
+AdmZip builds the entire ZIP in memory before writing to disk. This was fine for small playlists but scales linearly with total playlist size, not with concurrency limit.
 
 **How to avoid:**
-Do not add selection state to `IPlaylistClip`. Keep selection in a separate `Set<string> selectedIds`. Before calling `downloadPlaylistApi`, filter: `playlistClips.filter(c => selectedIds.has(c.id))`. Pass only that slice. Backend receives only the clips to process — no interface changes, no payload pollution.
+Switch to `archiver`. With `archive.file(filePath, { name: fileName })`, archiver streams each file from disk into the ZIP transform stream on-demand. Peak memory per song drops to: fetch buffer + disk write + archiver's per-entry streaming overhead (small). Songs written to disk are eligible for GC after archiver reads them. Combined with `p-limit(8)`, peak heap usage scales with concurrency, not playlist size.
+
+**Safe batch size math at Replit Shared VM (2GB RAM):**
+- Node 20 default heap = 50% of container RAM = ~1GB
+- Budget 30% headroom for V8, libuv, Express, session overhead = ~700MB usable
+- Per song peak (fetch phase): ~12MB (MP3 + cover)
+- At `p-limit(8)`: 8 × 12MB = ~96MB concurrent fetch + ~50MB archiver/Express overhead = ~150MB in-flight
+- Safe batch size: **50–100 songs** (`p-limit(8)`, no Puppeteer running)
+- If Puppeteer is potentially active: Chromium adds 200–400MB native heap outside V8 — drop to `p-limit(5)` and batch size 50
 
 **Warning signs:**
-`IPlaylistClip` gains a `selected` or `checked` field. Network tab shows `selected: true/false` in the POST body.
+- Heap grows linearly with total song count (not with `p-limit` concurrency setting)
+- `process.memoryUsage().heapUsed` spikes to proportional to full playlist size
 
-**Phase to address:** Per-song checkbox phase.
+**Phase to address:** Phase 1 (batch download implementation)
 
 ---
 
-### Pitfall 3: Mantine v6 Checkbox `onChange` Signature Differs From v7
+### Pitfall 3: Archiver Client Disconnect — Silent Leak
 
 **What goes wrong:**
-Mantine v6 `Checkbox.onChange` is `(event: ChangeEvent<HTMLInputElement>) => void`. Writing `onChange={(checked) => ...}` (the v7 pattern) silently passes the event object as `checked` — always truthy — making all checkboxes appear permanently checked.
+When a client disconnects mid-stream, `archive.pipe(res)` receives an `unpipe` event, but `node-archiver` does not automatically abort. The internal queue continues processing: downloading more songs to temp files, compressing entries, running until all appended items complete — burning CPU, disk I/O, and memory against a closed socket.
 
 **Why it happens:**
-Mantine v7 changed the signature to `(checked: boolean)`. Any v7 example, docs snippet, or AI output will use the wrong pattern for this v6-frozen project.
+`node-archiver` issue #89 (open since 2015, still unresolved): premature close on the destination stream triggers `unpipe` which archiver ignores. The workaround is not built into the library — callers must implement it.
 
 **How to avoid:**
-Read the value as `e.currentTarget.checked`. The "select all" header checkbox requires the `indeterminate` prop when `selectedIds.size > 0 && selectedIds.size < playlistClips.length` — Mantine v6 supports this prop on `Checkbox`.
+Use `stream.pipeline()` instead of manual `.pipe()`. `pipeline()` automatically destroys all streams in the chain on error or close. Also add explicit abort on response close as defense-in-depth:
 
-**Warning signs:**
-Checkboxes appear always-checked or never toggle. TypeScript may not catch this because `ChangeEvent` is truthy.
-
-**Phase to address:** Per-song checkbox phase.
-
----
-
-### Pitfall 4: Selection Not Cleared on `getPlaylist` Re-fetch
-
-**What goes wrong:**
-`getPlaylist()` calls `setPlaylistClips(data[1])` which replaces the clips array with fresh IDs. A `selectedIds` Set in separate state is not automatically cleared. Stale IDs from the previous playlist persist — on the next download, the filter matches nothing and a 0-song ZIP is produced.
-
-**Why it happens:**
-`useState` for clips and `useState` for selectedIds are independent. Clearing clips does not clear selection.
-
-**How to avoid:**
-In `getPlaylist()`, after `setPlaylistClips(data[1])`, also call `setSelectedIds(new Set())`. A `useEffect` keyed on `playlistData` as a safety net reinforces this.
-
-**Warning signs:**
-After loading a second playlist, selected IDs from the first persist in state. Download produces an empty ZIP or the download button is oddly disabled.
-
-**Phase to address:** Per-song checkbox phase.
-
----
-
-### Pitfall 5: Download Button Guard Misses Empty Selection
-
-**What goes wrong:**
-`App.tsx:259` disables the download button only on `isGettingPlaylist || isDownloading || !playlistData`. After selection exists, a user can load a playlist, deselect all songs, and click Download — resulting in a POST with an empty `clips` array, a broken ZIP, or a server error.
-
-**Why it happens:**
-The existing guard predates selection. `!playlistData` was sufficient when all loaded songs were implicitly included.
-
-**How to avoid:**
-Add `|| selectedIds.size === 0` to the disabled condition. If "select all by default" behavior is implemented on playlist load, this still correctly prevents post-deselect accidental submits.
-
-**Warning signs:**
-Download button is clickable with 0 checkboxes selected.
-
-**Phase to address:** Per-song checkbox phase.
-
----
-
-### Pitfall 6: `@username` UX Change Bypasses Existing Validation Logic
-
-**What goes wrong:**
-`Suno.ts:41` contains the load-bearing routing:
-```ts
-if (url.startsWith('@') || (!url.includes('http') && !url.includes('playlist') && !url.includes('.')))
+```javascript
+const { pipeline } = require('stream/promises');
+res.on('close', () => archive.abort());
+req.on('close', () => { if (!downloadComplete) archive.abort(); });
+await pipeline(archive, res);
 ```
-Any UX change that adds a separate input field, a mode toggle, or transforms the value before calling `getSongsFromPlayList` can bypass this branch. Routing logic lives in `Suno.ts`, not the UI — UX work that treats it as a pure UI change misses the coupling.
 
-**Why it happens:**
-The developer thinks "separate username input" is a pure UI change. The connection to the service layer through the raw string value is not obvious.
-
-**How to avoid:**
-Keep `getSongsFromPlayList` as the single entry point — do not bypass it or add a parallel call to `getSongsFromUser`. If adding a username-specific input, pass its value directly to `getSongsFromPlayList` unmodified (with or without `@` prefix — the service handles both). Do not pre-validate or transform in the UI.
+Register `archive.on('error', handler)` and `archive.on('warning', handler)` BEFORE calling `pipeline()` or `pipe()`.
 
 **Warning signs:**
-A user entering `@artist` in a new username field gets "Failed to fetch playlist data" — the service branch was never entered.
+- CPU stays elevated for 30–60 seconds after browser tab is closed during download
+- Temp files not cleaned up after aborted sessions
+- `global.downloadTrackers` entries accumulate without cleanup
 
-**Phase to address:** @username UX phase.
+**Phase to address:** Phase 1 (batch download implementation)
 
 ---
 
-### Pitfall 7: Suno Profile URL `suno.com/@username` Falls Through Validation
+### Pitfall 4: `req.on('close')` Fires on Normal Completion in Node 16+
 
 **What goes wrong:**
-Pasting `https://suno.com/@username` hits neither the `@`-prefix branch (no `@` at position 0) nor the bare-username branch (has `http` and `.`). It falls through to the playlist regex `/suno\.com\/playlist\/(.*)/` which produces no match, throwing "Invalid URL or no playlist ID found."
+In Node.js 16+, `req.on('close')` fires on both client disconnect AND normal request completion (when the TCP connection closes cleanly). The current `download.js` uses `req.on('close')` to detect disconnects and schedule 5-second cleanup. This fires on every successful download and races with the 15-second cleanup in `fileStream.on('end')`. With archiver-based streaming there is no `fileStream.on('end')` — the race becomes a guaranteed premature cleanup.
 
 **Why it happens:**
-The `@username` feature was added after the original URL-only design. The validation handles bare `@user` input but not full Suno profile URL format.
+Node.js changed `req.on('close')` semantics in v16. Before: only abnormal closes. After: fires on all socket closes including normal completion.
 
 **How to avoid:**
-If the UX work claims to support pasting full Suno profile URLs, add an explicit branch in `getSongsFromPlayList` before the playlist regex:
-```ts
-const profileMatch = url.match(/suno\.com\/@([^/?]+)/);
-if (profileMatch) return this.getSongsFromUser(profileMatch[1]);
+Track completion with a boolean flag. Check `downloadComplete` inside the `close` handler:
+
+```javascript
+let downloadComplete = false;
+archive.on('finish', () => { downloadComplete = true; });
+req.on('close', () => {
+  if (!downloadComplete) {
+    archive.abort();
+    scheduleCleanup(sessionDir, 5000);
+  }
+  // normal close: cleanup is handled by archive finish handler
+});
 ```
-If UX changes are guidance/copy only (not new format support), the placeholder and error text must list only the formats that actually work — not imply "paste any Suno link."
 
 **Warning signs:**
-Any placeholder or copy that says "paste any Suno link" or "paste profile URL" without the corresponding code branch in Suno.ts.
+- Temp directories cleaned up immediately after successful downloads
+- Subsequent API calls fail because temp files were already removed
+- 5-second cleanup fires even on 200 OK responses
 
-**Phase to address:** @username UX phase.
+**Phase to address:** Phase 1 (batch download implementation)
 
 ---
 
-### Pitfall 8: Placeholder Text and Validation Are Out of Sync
+### Pitfall 5: `node-id3` Is File-Mutating — True Streaming ZIP Is Impossible
 
 **What goes wrong:**
-`App.tsx:190` currently shows `placeholder="https://suno.com/playlist/..."` — users don't discover that `@username` works. Updating the placeholder to "Paste playlist URL or @username" without verifying the full URL format case (Pitfall 7) creates a false promise.
+Any architecture that promises "stream MP3 bytes directly into archiver without touching disk" will fail for the `embedImages === 'true'` path. `node-id3` v0.2's `NodeID3.write(tags, filePath)` reads the file, modifies the ID3 block, and writes it back — it is sync and file-path based with no stream interface.
 
 **Why it happens:**
-Placeholder updates feel like pure UI changes. The developer doesn't trace the shown format through `Suno.ts` validation.
+`node-id3` is a sync, file-mutating library. Upgrading to a streaming ID3 library (like `music-metadata`) would require replacing the write path entirely — out of scope for v2.2.
 
 **How to avoid:**
-Map every example shown in the placeholder to a specific branch in `Suno.ts`. Update placeholder and error message text together so they agree on what is actually supported.
+Accept that per-song temp files are required for the image embedding path. The correct sequence: fetch → `fs.promises.writeFile` → `NodeID3.write` (sync, in-place) → `archive.file(filePath, { name })` → delete temp file after archiver emits `entry` event for that file. Do not pass MP3 as a Buffer to `archive.append()` — this reintroduces full-song-in-memory.
 
 **Warning signs:**
-Placeholder shows a format not covered by any branch in `getSongsFromPlayList`.
+- Architecture plan mentions "stream directly from fetch to archive"
+- No temp file writes in the new implementation despite embedImages being supported
 
-**Phase to address:** @username UX phase.
+**Phase to address:** Phase 1 (batch download implementation)
 
 ---
 
-### Pitfall 9: Dependabot PRs Target `web-version/` Not the Deployed Root
+### Pitfall 6: SSE and Streaming ZIP Cannot Coexist on One Response
 
 **What goes wrong:**
-Dependabot may have targeted the `web-version/` subtree (separate `package.json`) rather than the root. The root `server.js` is what Replit deploys. Closing `web-version/` PRs without checking the root audit gives a false clean bill of health.
+SSE requires `Content-Type: text/event-stream` with chunked text. ZIP streaming requires `Content-Type: application/zip`. These cannot be multiplexed on a single HTTP response. Any plan to "unify" progress and file delivery into one endpoint will fail.
 
 **Why it happens:**
-The repo has multiple `package.json` files. Dependabot creates PRs per package file. `web-version/` is not deployed — only root is.
+Developers conflate "streaming the download" (binary transfer) with "streaming progress updates" (text events). They look similar at the implementation level.
 
 **How to avoid:**
-Verify what files Dependabot PRs #2 and #3 actually modified. Run `npm audit` from the repo root (not `web-version/`) to confirm the deployed tree is clean. Note: existing `overrides` in root `package.json` already cover transitively-pinned deps from previous Dependabot work — PRs touching only those paths may be no-ops for the deployed app.
+Keep the two-endpoint model: `POST /api/download/playlist` for ZIP bytes, `GET /api/download/progress/:sessionId` for SSE. The shared state is `global.downloadTrackers` keyed by session UUID. The POST endpoint writes progress events into the tracker; the GET endpoint reads from it. Key isolation risk: `global.downloadTrackers` is process-global — concurrent users share the same map. Use a per-request UUID as tracker key and delete entries on SSE `close`.
 
 **Warning signs:**
-PR diff shows changes only under `web-version/`. Root `package-lock.json` is unmodified.
+- Plan proposes a single endpoint that returns both progress and ZIP bytes
+- `global.downloadTrackers` keyed by playlist ID instead of a unique session UUID
 
-**Phase to address:** Dependabot verification phase.
+**Phase to address:** Phase 1 (batch download implementation)
+
+---
+
+### Pitfall 7: Archiver Event Handler Registration Order
+
+**What goes wrong:**
+Calling `archive.pipe(res)` or `archive.finalize()` before registering `archive.on('error')` means errors that occur during initialization or early entry processing go unhandled. Node.js throws unhandled error events, crashing the process.
+
+**Why it happens:**
+The archiver docs show `pipe()` first in examples, then event registration. Developers copy this order.
+
+**How to avoid:**
+Strict order: `archive.on('error')` → `archive.on('warning')` → `archive.pipe(res)` (or `pipeline()`) → start appending files → `archive.finalize()`. Never call `finalize()` before all `archive.file()` / `archive.append()` calls are set up (they can be called after `finalize()` starts if the queue isn't drained, but the append loop must complete before `finalize()` is invoked in practice).
+
+**Warning signs:**
+- Intermittent unhandled error crashes during download
+- `archive.on('error')` registered after `archive.pipe()`
+
+**Phase to address:** Phase 1 (batch download implementation)
 
 ---
 
@@ -186,10 +177,11 @@ PR diff shows changes only under `web-version/`. Root `package-lock.json` is unm
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Adding `selected` to `IPlaylistClip` | One fewer state variable | Interface serialized to backend — payload pollution, field leaks | Never |
-| Bypassing `getSongsFromPlayList` for @username path | Simpler UI code | Two code paths for same operation, validation diverges silently | Never |
-| Sharing full `playlistClips` as download list | No filter step | Unselected songs download; all rows get status updates | Never |
-| Separate @username input that transforms value before service call | Cleaner UI intent | Breaks routing in Suno.ts silently | Never |
+| `Promise.all()` without p-limit | Simple code | OOM on playlists > 50 songs | Never — p-limit is already installed, 5-minute fix |
+| AdmZip for ZIP build | Single library, simple API | Full ZIP in memory before streaming | Never for batches > 20 songs on constrained VM |
+| `global.downloadTrackers` without TTL or per-session keys | Simple cross-request state | Memory leak on sustained traffic; user isolation failure | Only acceptable with UUID keys + cleanup on SSE disconnect |
+| Hardcoding `p-limit(8)` with no config | No config needed | Wrong tradeoff for smaller VMs or burst traffic | Acceptable for v2.2; expose as env var if Replit tier changes |
+| `fs.writeFileSync` for MP3 writes | Simple code | Blocks event loop during writes | Acceptable at low concurrency; replace with `fs.promises.writeFile` in Phase 1 |
 
 ---
 
@@ -197,10 +189,34 @@ PR diff shows changes only under `web-version/`. Root `package-lock.json` is unm
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Mantine v6 Checkbox | Copy v7 `onChange={(checked) => ...}` pattern | `onChange={(e) => e.currentTarget.checked}` |
-| Mantine v6 Checkbox header row | Omit `indeterminate` prop on partial selection | Pass `indeterminate={selectedIds.size > 0 && selectedIds.size < clips.length}` |
-| `downloadPlaylistApi` (WebApi.ts) | Pass full `playlistClips` when selection exists | Pre-filter to `playlistClips.filter(c => selectedIds.has(c.id))` before call |
-| SSE progress monitor | Think completedItem IDs outside selectedSet are a bug | They are safe no-ops — server fires for all completed items regardless |
+| archiver + Express res | `archive.pipe(res)` without error handler — any archiver error crashes the process | Register `archive.on('error', handler)` BEFORE calling `pipe()` |
+| archiver + Express res | Registering events after `pipe()` — misses initialization errors | All event handlers registered before `pipe()` or `pipeline()` |
+| archiver + p-limit | Calling `archive.finalize()` before all p-limit tasks resolve | `await Promise.all(allTasks)` then call `archive.finalize()` |
+| archiver + node-id3 | Calling `archive.file(path)` before `NodeID3.write` finishes | NodeID3.write is sync — it completes before the next line, but be explicit |
+| archiver + temp files | Not deleting temp files after archiver `entry` event | Attach handler: `archive.on('entry', () => fs.unlink(filePath, noop))` |
+| archiver abort + cleanup | Calling `archive.abort()` without also scheduling sessionDir cleanup | Pair every `abort()` with a `cleanupTempDirectory(sessionDir, 5000)` call |
+
+---
+
+## Performance Traps
+
+| Trap | Symptoms | Prevention | When It Breaks |
+|------|----------|------------|----------------|
+| `arrayBuffer()` for large MP3s | Entire MP3 in V8 heap before disk write | Use `response.body.pipe(fs.createWriteStream(path))` instead | Every song > 5MB |
+| `fs.writeFileSync` in high-concurrency loop | Event loop blocked during I/O | Use `fs.promises.writeFile` | > 20 concurrent writes |
+| ZIP with deflate level 9 on MP3s | CPU spike, minimal size reduction | MP3 is already compressed — use store mode or deflate level 1 | Always for MP3 content |
+| Temp files not deleted after archiver `entry` | Disk fills up mid-session on large playlists | Delete each temp file after archiver `entry` event | > 200 songs per session |
+| Puppeteer running concurrently with batch download | OOM despite p-limit | Ensure profile scraping is complete before ZIP streaming begins | Anytime both are active |
+
+---
+
+## Security Mistakes
+
+| Mistake | Risk | Prevention |
+|---------|------|------------|
+| `filenamify` only on filename, not full path | Path traversal if playlist name contains `../` | Already using `path.join(sessionDir, fileName)` — sessionDir is server-controlled, not user input |
+| Session IDs predictable | Session hijacking to access another user's ZIP | Already using uuid v4 (random) — maintain this for batch session keys |
+| Temp files world-readable on multi-tenant host | Other processes read downloaded audio | Replit Cloud Run is single-tenant per deployment — acceptable risk level |
 
 ---
 
@@ -208,24 +224,25 @@ PR diff shows changes only under `web-version/`. Root `package-lock.json` is unm
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| Unselected rows show Processing/Success/Error | User confused — did they download things they didn't select? | Guard all three status-map calls with selectedIds |
-| No "select all" / "deselect all" shortcut | 50-song playlist requires 50 clicks to undo deselect | Header checkbox with indeterminate state |
-| Download button enabled with 0 songs selected | Empty ZIP or server error on click | Disable when `selectedIds.size === 0` |
-| Placeholder claims format validation doesn't support | Valid-looking input fails with cryptic error | Match placeholder exactly to supported branches in Suno.ts |
+| No per-batch progress reset in SSE | Progress bar resets to 0% between batches with no context | Emit `batch_start` SSE event with `{ batchIndex, totalBatches }` — client updates label to "Batch 2 of 8" |
+| Batch ZIP naming: `PlaylistName.zip` | Browser renames second download `PlaylistName (1).zip` silently | Name convention: `PlaylistName-batch-01-of-08.zip` |
+| No signal when all batches complete | User unsure if more downloads are coming | Emit `all_batches_complete` SSE event; show "All 8 batches downloaded" toast |
+| Download button re-enabled between batches | User clicks again thinking batch failed | Keep button in "Queuing next batch…" state between batches |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Checkbox selection:** Unselected rows remain `IPlaylistClipStatus.None` throughout and after download.
-- [ ] **Checkbox selection:** `selectedIds` is cleared when `getPlaylist` loads a new playlist.
-- [ ] **Checkbox selection:** Download button is disabled when `selectedIds.size === 0`.
-- [ ] **Checkbox selection:** POST body to `/api/download/playlist` contains only selected clips, not the full array.
-- [ ] **Checkbox selection:** `IPlaylistClip` interface has no new `selected`/`checked` field.
-- [ ] **@username UX:** `@username`, bare `username`, and `https://suno.com/playlist/...` all still resolve correctly.
-- [ ] **@username UX:** Every input format shown in placeholder has a corresponding branch in Suno.ts.
-- [ ] **Dependabot:** `npm audit` from repo root is clean (not just `web-version/` subtree).
-- [ ] **Dependabot:** PRs #2 and #3 are confirmed closed (not "stale / awaiting review").
+- [ ] **Streaming ZIP:** `archive.abort()` is called on client disconnect — verify with a real mid-download tab close, not just normal completion
+- [ ] **Streaming ZIP:** `archive.on('error')` is registered before `archive.pipe()` — grep for registration order
+- [ ] **p-limit applied:** `limit()` wraps both the fetch AND the ID3 write (not just fetch) — grep `download.js` for `limit(`
+- [ ] **Temp file cleanup:** Each MP3 temp file is deleted after archiver `entry` event — verify disk usage doesn't grow linearly with batch size
+- [ ] **Error path cleanup:** `archive.on('error')` triggers `cleanupTempDirectory(sessionDir)` — verify with a forced fetch failure
+- [ ] **Batch progress:** SSE tracker key is tied to a specific session UUID, not a playlist ID — check `global.downloadTrackers` key format
+- [ ] **OG image format:** `public/assets/og-card.png` is PNG not WebP — verify file extension and MIME type (`file public/assets/og-card.png`)
+- [ ] **Canonical URL:** `public/index.html` canonical still points to `sunozip.com` after every `deploy.sh` run — add assertion to deploy.sh
+- [ ] **Sitemap lastmod:** `sitemap.xml` `lastmod` is not modified by build.sh or any script — grep build.sh for sitemap references
+- [ ] **`req.on('close')` guard:** `downloadComplete` flag is set before cleanup is triggered — no cleanup fires on successful 200 responses
 
 ---
 
@@ -233,12 +250,13 @@ PR diff shows changes only under `web-version/`. Root `package-lock.json` is unm
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Bulk-status marks unselected clips | LOW | Add `selectedIds.has(clip.id)` guard to three map calls in App.tsx |
-| Selection leaks into backend payload | LOW | Move selection to `Set<string>`, filter before POST |
-| getPlaylist does not clear selection | LOW | Add `setSelectedIds(new Set())` in getPlaylist after setPlaylistClips |
-| Mantine v6 onChange wrong signature | LOW | Change handler to use `e.currentTarget.checked` |
-| @username UX bypasses validation | MEDIUM | Revert UI changes, re-thread value through `getSongsFromPlayList` |
-| Suno profile URL not handled | MEDIUM | Add regex branch to Suno.ts before playlist regex |
+| OOM mid-download (no p-limit) | LOW | Add `import pLimit from 'p-limit'` + wrap loop in `limit()` — 10 min, deploy via deploy.sh |
+| Memory leak from disconnect (no abort) | MEDIUM | Replace `pipe()` with `pipeline()`, add `abort()` on close — 1–2 hours |
+| Temp files not cleaned (no entry handler) | LOW | Add `archive.on('entry', () => fs.unlink(...))` — 30 min |
+| Premature cleanup on success (close event) | LOW | Add `downloadComplete` flag — 30 min |
+| Canonical pointing to wrong domain after rebuild | LOW | Single line edit in `public/index.html` + re-run `deploy.sh` |
+| OG image converted to WebP | LOW | Re-export as PNG, update `og:image` meta tag |
+| deploy.sh git conflict on Replit | MEDIUM | SSH into Replit, run `git fetch && git reset --hard origin/main` manually |
 
 ---
 
@@ -246,28 +264,102 @@ PR diff shows changes only under `web-version/`. Root `package-lock.json` is unm
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Bulk-status marks unselected clips | Per-song checkbox phase | Unselected rows stay None throughout download |
-| Selection leaks into backend payload | Per-song checkbox phase | Network tab: POST body contains only selected clips |
-| Mantine v6 Checkbox onChange signature | Per-song checkbox phase | Checkboxes toggle; TypeScript compiles |
-| Selection not cleared on re-fetch | Per-song checkbox phase | Load playlist A, select some; load B — selection resets |
-| Download button guard misses empty selection | Per-song checkbox phase | Button disabled with 0 checkboxes selected |
-| @username UX breaks validation logic | @username UX phase | All input formats still resolve correctly |
-| Suno profile URL falls through validation | @username UX phase | `suno.com/@artist` resolves if that format is claimed |
-| Placeholder / validation out of sync | @username UX phase | Every placeholder example has a corresponding Suno.ts branch |
-| Dependabot PRs target wrong package tree | Dependabot verification phase | Root `npm audit` clean; PRs closed |
+| Unbounded concurrency (no p-limit) | Phase 1: Batch download | Load test with 200-song playlist; `process.memoryUsage()` stays flat after initial rise |
+| Triple-buffering (AdmZip in-memory) | Phase 1: Batch download | Heap profiler shows peak scales with `p-limit` setting, not playlist size |
+| Archiver disconnect leak | Phase 1: Batch download | Kill browser tab mid-download; CPU returns to baseline within 10s; temp dir cleaned |
+| `req.on('close')` premature cleanup | Phase 1: Batch download | Complete a normal download; temp dir survives 15s post-200 response |
+| node-id3 requires temp files | Phase 1: Batch download | Architecture acknowledges this constraint — no disk-free path for embedImages |
+| SSE + ZIP two-endpoint model | Phase 1: Batch download | Concurrent users test: two browsers downloading simultaneously, no progress crossover |
+| Archiver event handler order | Phase 1: Batch download | Code review: all handlers before `pipe()` or `pipeline()` |
+| OG image WebP incompatibility | Phase 2: SEO | Facebook Sharing Debugger shows preview without error |
+| Canonical URL regression post-build | Phase 2: SEO | `grep sunozip.com public/index.html` passes after every deploy.sh run |
+| Sitemap auto-update on build | Phase 2: SEO | `git diff public/sitemap.xml` shows no change after build |
+| deploy.sh git conflict | Phase 3: Deploy automation | Script adds `git status --porcelain` check before commit; exits non-zero on unexpected state |
+
+---
+
+## Replit VM Constraints — Concrete Numbers
+
+**RAM tiers (source: docs.replit.com/billing/deployment-pricing, verified 2026-05-13):**
+- Shared VM: 0.5 vCPU / **2GB RAM** — $20/month (likely tier for sunozip.com)
+- Dedicated small: 1 vCPU / 4GB RAM — $40/month
+- Dedicated medium: 2 vCPU / 8GB RAM — $80/month
+
+**Node.js 20 heap defaults (verified via Red Hat developer article, Node.js docs):**
+- Node 20 auto-sets heap to 50% of container RAM up to 4GB ceiling
+- On 2GB Shared VM: default heap = ~1GB
+- Recommended `NODE_OPTIONS`: `--max-old-space-size=1280` (64% of 2GB = leaves ~720MB for V8 native, libuv, Puppeteer's Chromium)
+- Critical: Chromium (Puppeteer) consumes 200–400MB native heap outside V8 heap. Budget this separately.
+
+**OOM behavior in Cloud Run containers (Replit uses Cloud Run):**
+- If Node heap hits `--max-old-space-size` limit → throws `JavaScript heap out of memory` (catchable, but process usually exits)
+- If container hits cgroup memory limit → Linux OOM killer sends **SIGKILL** → instant unclean kill, no cleanup handlers run, no `finally` blocks, temp files stranded
+- The SIGKILL scenario is worse than the Node exception scenario — it's silent and leaves disk state dirty
+
+---
+
+## SEO-Specific Pitfalls
+
+### Canonical Already Correct — Regression Risk Only
+
+Both `client/index.html` and `public/index.html` already have `<link rel="canonical" href="https://sunozip.com/" />`. The Replit `.replit.app` subdomain appears nowhere in meta tags. This is the correct state.
+
+Risk vector: if Vite's build process ever regenerates `index.html` from a template that derives canonical from `VITE_BASE_URL` or `process.env`, a rebuild would corrupt it. `deploy.sh` currently copies `client/dist/*` into `public/` — verify that the built `index.html` preserves the hardcoded canonical and does not interpolate env vars.
+
+**Prevention:** Never derive canonical URL from an environment variable. Hardcode `sunozip.com` in the source HTML.
+
+### OG Image — Do Not Convert to WebP
+
+`public/assets/og-card.png` is currently PNG. WebP support for OG images is inconsistent: Facebook's crawler has documented failures with WebP despite platform-level claims of support. Twitter/X does not reliably display OG images at all in current testing. PNG is universally supported by all scrapers.
+
+**Prevention:** If hero image compression is added (e.g., converting the p5.js background export to WebP), use a `<picture>` element with WebP source + PNG fallback for the visible `<img>`. Keep `og:image` pointing to the PNG file always.
+
+### Sitemap lastmod — Do Not Auto-Update
+
+`public/sitemap.xml` has `<lastmod>2026-04-14</lastmod>` hardcoded. `deploy.sh` does not touch `sitemap.xml`. This is correct. If a future SEO script auto-updates `lastmod` on every build, search engines will see the page as constantly updating without content changes — this can waste crawl budget and trigger quality flags.
+
+**Prevention:** Only bump `lastmod` when content actually changes. Grep `build.sh` and `deploy.sh` for any `sitemap` references before adding SEO tooling.
+
+---
+
+## Deploy Automation Pitfalls
+
+### deploy.sh Model: Push to GitHub → Manual Pull on Replit
+
+The deploy model (from `deploy.sh`) is:
+1. Build client: `cd client && npm run build`
+2. Copy to `public/`: `cp -r client/dist/* public/`
+3. Commit `public/` to git
+4. `git push` to GitHub
+5. Then manually on Replit: `git reset --hard origin/main`
+
+There is NO automatic webhook or auto-pull — Replit must be manually synced. The `.replit` config shows `deploymentTarget = cloudrun`, suggesting the deployment is re-triggered via the Replit UI Deploy button, not by git push alone.
+
+**Race condition:** If `git push` and a Replit auto-deploy are somehow both triggered (e.g., via GitHub Actions webhook), the Replit build could start before `public/` assets arrive in the push. Prevention: `deploy.sh` should be atomic — push includes `public/` in the same commit, which it already does.
+
+**Git conflict on Replit:** If someone edits files directly in the Replit workspace (common), the Replit working tree diverges from `origin/main`. `git reset --hard origin/main` (in the deploy.sh reminder line) discards those changes. This is intentional but destructive — any direct Replit edits are silently overwritten.
+
+**Prevention:** All edits go through git, never directly in the Replit workspace. deploy.sh should warn if `git status` shows uncommitted changes before push.
 
 ---
 
 ## Sources
 
-- App.tsx lines 82–131: download flow, bulk-status map calls
-- App.tsx line 259: download button disabled condition
-- App.tsx line 190: placeholder text
-- Suno.ts lines 38–75: getSongsFromPlayList routing and playlist regex
-- Suno.ts lines 77–112: getSongsFromUser
-- WebApi.ts lines 64–99: downloadPlaylist payload construction
-- Mantine v6 Checkbox API: onChange signature, indeterminate prop
+- Node.js backpressure docs: https://nodejs.org/learn/modules/backpressuring-in-streams
+- archiver disconnect issue (open since 2015): https://github.com/archiverjs/node-archiver/issues/89
+- archiver memory leak issue: https://github.com/archiverjs/node-archiver/issues/281
+- archiver backpressure async.queue issue: https://github.com/archiverjs/node-archiver/issues/611
+- Node.js stream error cleanup in production: https://medium.com/@1nick1patel1/the-7-node-stream-errors-that-skip-cleanup-ae22dcf66bfd
+- Node.js memory management in containers (Red Hat, 2025): https://developers.redhat.com/articles/2025/10/10/nodejs-20-memory-management-containers
+- Node.js --max-old-space-size container best practices: https://github.com/Wagner-Kazuhiko/Node.js-Best-Practices/blob/master/sections/docker/memory-limit.md
+- Replit deployment pricing (RAM tiers, verified): https://docs.replit.com/billing/deployment-pricing
+- OG image WebP compatibility across platforms: https://darekkay.com/blog/open-graph-image-formats/
+- WebP OG image inconsistency: https://www.ctrl.blog/entry/webp-ogp.html
+- archiver API docs (Context7, node-archiver): https://github.com/archiverjs/node-archiver/blob/master/website/docs/archiver_api.md
+- Code inspection: routes/download.js (no p-limit import, Promise.all pattern, req.on close behavior)
+- Code inspection: client/index.html, public/index.html (canonical sunozip.com confirmed)
+- Code inspection: deploy.sh (manual git push + manual Replit pull model confirmed)
 
 ---
-*Pitfalls research for: Suno Playlist Downloader v2.1 — checkbox selection + @username UX + Dependabot verification*
-*Researched: 2026-05-12*
+*Pitfalls research for: Suno Playlist Downloader v2.2 — streaming ZIP batch download on Replit/Node.js*
+*Researched: 2026-05-13*
