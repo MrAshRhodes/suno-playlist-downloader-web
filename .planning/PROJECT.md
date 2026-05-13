@@ -2,20 +2,29 @@
 
 ## What This Is
 
-A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. Live on Replit. v2.0 ships a premium dark-first UI (Monolith design system), p5.js atmospheric waveform, donation modal, AdSense + Adsterra monetization, full SEO infrastructure, and clean security posture across all dependency trees.
+A web-based tool that downloads music from Suno playlists and user profiles as ZIP archives with embedded ID3 metadata. Live on Replit. v2.0 ships a premium dark-first UI (Monolith design system), p5.js atmospheric waveform, donation modal, AdSense + Adsterra monetization, full SEO infrastructure, and clean security posture. v2.1 adds per-song checkbox selection, @username full-URL input, and security verification. v2.2 targets batch downloading for large playlists on constrained VMs, SEO polish, and automated Replit deploy.
 
 ## Core Value
 
 Downloads work reliably. Visual quality matches a premium product. Zero functional regressions from UI changes.
 
-## Current Milestone: v2.1 UX & Discovery
+## Current Milestone: v2.2 Batch Downloads & Ops
 
-**Goal:** Improve song selection UX and @username discovery while keeping all downloads intact.
+**Goal:** Memory-safe batch downloading for large playlists on a constrained Replit VM, SEO/performance polish, and automated Replit deploy workflow.
 
 **Target features:**
-- Verify Dependabot PR #2 + #3 auto-closed (housekeeping)
-- @username download UX — better discovery/guidance (backend route already works)
-- Per-song selection — checkboxes in song table, selective ZIP download
+- Batch ZIP downloading — streaming ZIP (no in-memory build), memory-safe for small VMs, timeout-proof, partial-resume
+- SEO hygiene — sitemap completeness, canonical tag, hero image compression, FAQ schema
+- Replit deploy automation — divergence-safe, Claude-runnable deploy script
+
+**Key constraint:** Replit VM is small — batch download research must cover streaming vs in-memory ZIP tradeoffs and RAM footprint under Replit's limits.
+
+## Previous: v2.1 UX & Discovery — SHIPPED 2026-05-12
+
+**Shipped this milestone:**
+- Per-song checkbox selection with select-all, indeterminate state, download count label, zero-disabled button
+- @Username full URL input — `https://suno.com/@username` parsed and routed correctly
+- Dependabot PRs #2 and #3 verified closed, npm audit clean, ip-address patched to 10.2.0
 
 ## Previous: v2.0 Monolith UI — SHIPPED 2026-05-02
 
@@ -59,22 +68,31 @@ Downloads work reliably. Visual quality matches a premium product. Zero function
 - ✓ Session-based temp file management with automatic cleanup
 - ✓ Replit deployment with Node.js 20
 
-### Active (next milestone candidates)
+### Validated — v2.1
 
-- [ ] Download music by @username as well as playlist URL (backlog, api area)
-- [ ] Select individual songs from playlist before download (backlog, ui area)
-- [ ] Adsterra live publisher key wired (pending Adsterra account approval)
+- ✓ Per-song checkbox selection: opt-out model, select-all/deselect-all, indeterminate state — v2.1
+- ✓ Download button label updates with selection count; disabled at zero — v2.1
+- ✓ @Username full URL input: `https://suno.com/@username` parsed and routed — v2.1
+- ✓ Input placeholder and helper text describe accepted formats — v2.1
+- ✓ Dependabot PRs #2 and #3 verified closed; npm audit clean — v2.1
 - ✓ sunozip.com domain purchased and live on Replit — v2.1
+
+### Active (v2.2 targets)
+
+- [ ] Batch ZIP downloading for large playlists — streaming, memory-safe, timeout-proof (v2.2, BAT area)
+- [ ] SEO hygiene — sitemap completeness, canonical tag, hero compression, FAQ schema (v2.2, SEO area)
+- [ ] Replit deploy automation — divergence-safe, Claude-runnable script (v2.2, OPS area)
+- [ ] Adsterra live publisher key wired (pending Adsterra account approval)
 
 ### Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Backend/API changes | Functionality is frozen |
 | Mantine v7 upgrade | Breaking changes, risk to functionality |
 | Mobile app / Tauri desktop | Web-only scope |
-| Audio preview playback | New feature, not in current scope |
+| Audio preview playback | New feature, not in v2.2 scope |
 | Offline mode | Real-time download is core value |
+| Existing download flow changes | New batch API adds capability; existing `/api/download/playlist` route unchanged |
 
 ## Key Decisions
 
@@ -91,7 +109,8 @@ Downloads work reliably. Visual quality matches a premium product. Zero function
 
 ## Constraints
 
-- **No functional changes**: Every download flow, API call, and setting must continue working identically
+- **Existing flows unchanged**: All existing download flows, API calls, and settings must continue working identically — new batch API is additive only
+- **Memory-constrained VM**: Replit's small VM means batch download must use streaming ZIP, not in-memory build
 - **Mantine v6**: Cannot upgrade — too many breaking changes, risk to functionality
 - **Replit deployment**: Must remain deployable on Replit with current build process
 - **Node.js 20**: Minimum runtime requirement
@@ -114,4 +133,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-12 — v2.1 UX & Discovery milestone started*
+*Last updated: 2026-05-13 — v2.2 Batch Downloads & Ops milestone started*

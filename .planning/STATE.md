@@ -1,33 +1,33 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.2
-milestone_name: TBD
-status: v2.1 archived — planning v2.2
-stopped_at: v2.1 milestone closed and tagged
-last_updated: "2026-05-12T18:00:00.000Z"
-last_activity: 2026-05-12 — Phase 14 planned (14-01-PLAN.md — SEC-01 verified, SEC-02 fix: ip-address 10.1.0→10.2.0)
+milestone_name: Batch Downloads & Ops
+status: planning
+stopped_at: defining requirements
+last_updated: "2026-05-13T00:00:00.000Z"
+last_activity: 2026-05-13 — Milestone v2.2 started
 progress:
-  total_phases: 3
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 1
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-12)
+See: .planning/PROJECT.md (updated 2026-05-13)
 
-**Core value:** Visual modernization only — every download flow, setting, and API call unchanged
-**Current focus:** v2.2 planning — run /gsd-new-milestone
+**Core value:** Downloads work reliably. Visual quality matches a premium product. Zero functional regressions.
+**Current focus:** v2.2 Batch Downloads & Ops — defining requirements
 
 ## Current Position
 
-Phase: — (v2.1 closed)
+Phase: Not started (defining requirements)
 Plan: —
-Status: v2.1 archived 2026-05-12 — start v2.2 with /gsd-new-milestone
-Last activity: 2026-05-12 — Phase 12 shipped (per-song checkbox selection, SEL-01–05)
+Status: Defining requirements
+Last activity: 2026-05-13 — Milestone v2.2 Batch Downloads & Ops started
 
 ## Performance Metrics
 
