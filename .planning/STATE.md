@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Batch Downloads & Ops
 status: complete
-stopped_at: Completed 16-01-PLAN.md
-last_updated: "2026-05-13T15:00:00.000Z"
-last_activity: 2026-05-13 — Phase 16 SEO hygiene complete (WebP hero, privacy page, FAQPage JSON-LD)
+stopped_at: Phase 17 context gathered
+last_updated: "2026-05-13T16:00:00.000Z"
+last_activity: 2026-05-13 — Phase 17 context captured (archiver v7, VITE_BATCH_SIZE, batch UX)
 progress:
   total_phases: 6
   completed_phases: 2
