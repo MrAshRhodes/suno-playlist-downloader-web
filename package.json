@@ -32,6 +32,9 @@
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.0"
   },
+  "overrides": {
+    "js-yaml": "4.2.0"
+  },
   "engines": {
     "node": ">=16.0.0"
   }
