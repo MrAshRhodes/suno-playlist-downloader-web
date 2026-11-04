@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "test": "node --test tests/*.test.js",
     "dev": "nodemon server.js",
     "client": "cd client && npm run dev",
     "client-build": "cd client && npm install && (npm run build || npm run build:static)",
@@ -16,7 +17,7 @@
     "deploy": "npm run client-build && npm start"
   },
   "dependencies": {
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.22.2",
@@ -25,17 +26,21 @@
     "morgan": "^1.10.0",
     "node-fetch": "^3.3.2",
     "node-id3": "^0.2.6",
-    "p-limit": "^4.0.0",
-    "puppeteer": "^24.9.0"
+    "p-limit": "^4.0.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.0"
   },
-  "overrides": {
-    "js-yaml": "4.2.0"
-  },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "20 || >=22"
+  },
+  "overrides": {
+    "nodemon": {
+      "minimatch": "^11.0.4"
+    },
+    "readdir-glob": {
+      "minimatch": "^11.0.4"
+    }
   }
 }
