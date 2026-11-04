@@ -36,6 +36,9 @@
     "node": "20 || >=22"
   },
   "overrides": {
+    "nodemon": {
+      "minimatch": "^11.0.4"
+    },
     "readdir-glob": {
       "minimatch": "^11.0.4"
     }

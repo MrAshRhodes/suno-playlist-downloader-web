@@ -14,6 +14,7 @@ import settingsRouter from '../routes/settings.js';
 import alternateSettingsRouter from '../web-version/routes/settings.js';
 
 const alternateRequire = createRequire(new URL('../web-version/package.json', import.meta.url));
+const require = createRequire(import.meta.url);
 const AdmZip = alternateRequire('adm-zip');
 const audio = Buffer.from('local audio fixture');
 const cover = Buffer.from([0xff, 0xd8, 0xff, 0xd9]);
@@ -129,3 +130,17 @@ test('alternate ZIP library writes archives that it can read back', () => {
   assert.equal(result.getEntries().length, 1);
   assert.deepEqual(result.readFile('01 - Track.mp3'), audio);
 });
+
+for (const [name, load] of [['primary', require], ['alternate', alternateRequire]]) {
+  test(`${name} nodemon includes watched extensions and excludes ignored directories`, () => {
+    const match = load('nodemon/lib/monitor/match.js');
+    const result = match(
+      ['routes/download.js', 'routes/nested/settings.mjs', 'node_modules/example/index.js', 'README.md'],
+      ['**/*', '!**/node_modules/**'],
+      'js,mjs'
+    );
+    assert.deepEqual(result.result.sort(), [
+      path.resolve('routes/download.js'), path.resolve('routes/nested/settings.mjs')
+    ].sort());
+  });
+}

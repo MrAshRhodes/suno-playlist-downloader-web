@@ -49,7 +49,7 @@ DrummerSi
 ## Setup and Running
 
 ### Prerequisites
-- Node.js 20+ (recommended for local development)
+- Node.js 20.19+ or 22.12+ (required by the frontend build tools)
 - Node.js 20 supported on Replit deployment
 - npm or yarn
 
@@ -174,6 +174,36 @@ This web version replaces the Tauri/Rust functionality with a Node.js backend:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Dependency security verification
+
+The root and `web-version/` applications have independent server and client
+lockfiles. Install and audit all four trees when updating dependencies:
+
+```sh
+npm ci --ignore-scripts
+npm --prefix client ci --ignore-scripts
+npm --prefix web-version ci --ignore-scripts
+npm --prefix web-version/client ci --ignore-scripts
+npm audit
+npm --prefix client audit
+npm --prefix web-version audit
+npm --prefix web-version/client audit
+npm test
+npm --prefix client run build
+npm --prefix web-version/client run build
+```
+
+`npm test` uses local HTTP fixtures, not Suno or browser automation. It covers
+streaming ZIP contents, artwork and ID3 metadata, download progress, session
+settings, ZIP round trips, archive glob filtering and development file watching.
+Both server dependency trees must be installed to run these tests.
+
+The scoped `minimatch` overrides fix denial-of-service advisories while upstream
+`nodemon` and `readdir-glob` still require older majors. These consumers use the
+retained named `minimatch` export or `Minimatch.match()` API; do not broaden the
+override to consumers relying on removed APIs. The patched matcher requires
+Node 20 or 22+, which remains compatible with Replit's Node 20 runtime.
 
 ## License
 

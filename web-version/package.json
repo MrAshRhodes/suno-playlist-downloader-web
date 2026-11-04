@@ -29,9 +29,12 @@
     "nodemon": "^3.1.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20 || >=22"
   },
   "overrides": {
+    "nodemon": {
+      "minimatch": "^11.0.4"
+    },
     "qs": ">=6.14.1",
     "on-headers": ">=1.1.0"
   }
