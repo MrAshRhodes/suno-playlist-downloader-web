@@ -1,7 +1,7 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import NodeID3 from 'node-id3';
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import pLimit from 'p-limit';
 import filenamify from 'filenamify';
 
@@ -27,7 +27,7 @@ router.post('/playlist', async (req, res) => {
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(zipFilename)}`);
 
-  const archive = archiver('zip', { zlib: { level: 6 } });
+  const archive = new ZipArchive({ zlib: { level: 6 } });
 
   archive.on('error', (err) => {
     console.error('Archive error:', err);
